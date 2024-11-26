@@ -1,15 +1,28 @@
+using BudgetExpenseSystem.Domain.Domains;
+using BudgetExpenseSystem.Repository;
+using BudgetExpenseSystem.Repository.Interfaces;
+using BudgetExpenseSystem.Repository.Repositories;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<RoleDomain>();
 
+var connectionString = builder.Configuration.GetConnectionString("ConnectionDefault");
+var mySqlVersion = ServerVersion.Parse("10.4.28-mariadb");
+builder.Services.AddDbContext<ApplicationDbContext>(options => 
+    { options.UseMySql(connectionString, mySqlVersion); });
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
