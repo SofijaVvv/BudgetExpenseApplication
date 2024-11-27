@@ -9,13 +9,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="203c6909-639d-4990-ba14-dd52c5297778" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.BudgetExpenseSystem/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.BudgetExpenseSystem/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BudgetExpenseSystem.Api/BudgetExpenseSystem.Api.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/BudgetExpenseSystem.Api/BudgetExpenseSystem.Api.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BudgetExpenseSystem.Api/Controllers/WeatherForecastController.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BudgetExpenseSystem.Api/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BudgetExpenseSystem.Api/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BudgetExpenseSystem.Api/WeatherForecast.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BudgetExpenseSystem.Api/appsettings.json" beforeDir="false" afterPath="$PROJECT_DIR$/BudgetExpenseSystem.Api/appsettings.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BudgetExpenseSystem.sln" beforeDir="false" afterPath="$PROJECT_DIR$/BudgetExpenseSystem.sln" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,7 +36,7 @@
   }
 }</component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="mock:///Applications/XAMPP/xamppfiles/htdocs/budget-expense-system/BudgetExpenseSystem/BudgetExpenseSystem.Api/appsettings.json" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/BudgetExpenseSystem.Api/obj/Debug/net8.0/.NETCoreApp,Version=v8.0.AssemblyAttributes.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
   <component name="ProjectColorInfo">{
@@ -53,20 +48,20 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;.NET Launch Settings Profile.BudgetExpenseSystem.Api: http.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    ".NET Launch Settings Profile.BudgetExpenseSystem.Api: http.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "main",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.fileTypes",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RunManager" selected=".NET Launch Settings Profile.BudgetExpenseSystem.Api: http">
     <configuration name="BudgetExpenseSystem.Api: http" type="LaunchSettings" factoryName=".NET Launch Settings Profile">
       <option name="LAUNCH_PROFILE_PROJECT_FILE_PATH" value="$PROJECT_DIR$/BudgetExpenseSystem.Api/BudgetExpenseSystem.Api.csproj" />
@@ -116,6 +111,8 @@
       <workItem from="1732619035611" duration="7682000" />
       <workItem from="1732630072656" duration="36000" />
       <workItem from="1732630141344" duration="6241000" />
+      <workItem from="1732652271595" duration="477000" />
+      <workItem from="1732710957232" duration="1226000" />
     </task>
     <task id="LOCAL-00001" summary="First commit">
       <option name="closed" value="true" />
@@ -125,7 +122,15 @@
       <option name="project" value="LOCAL" />
       <updated>1731663052087</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Added entities&#10;Added migrations&#10;Added repositories&#10;Added domain layer&#10;Added RoleController">
+      <option name="closed" value="true" />
+      <created>1732652483372</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1732652483372</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -147,6 +152,7 @@
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
     <MESSAGE value="First commit" />
-    <option name="LAST_COMMIT_MESSAGE" value="First commit" />
+    <MESSAGE value="Added entities&#10;Added migrations&#10;Added repositories&#10;Added domain layer&#10;Added RoleController" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added entities&#10;Added migrations&#10;Added repositories&#10;Added domain layer&#10;Added RoleController" />
   </component>
 </project>
