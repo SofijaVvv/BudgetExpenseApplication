@@ -1,4 +1,4 @@
 .idea/
 **/bin/
 **/obj/
-.idea/.idea.BudgetExpenseSystem/.idea
+**/.idea/**/*.xml

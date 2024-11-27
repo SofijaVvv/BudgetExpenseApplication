@@ -8,9 +8,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="203c6909-639d-4990-ba14-dd52c5297778" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.BudgetExpenseSystem/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.BudgetExpenseSystem/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="203c6909-639d-4990-ba14-dd52c5297778" name="Changes" comment="Added .gitignore">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -112,7 +111,7 @@
       <workItem from="1732630072656" duration="36000" />
       <workItem from="1732630141344" duration="6241000" />
       <workItem from="1732652271595" duration="477000" />
-      <workItem from="1732710957232" duration="1226000" />
+      <workItem from="1732710957232" duration="1490000" />
     </task>
     <task id="LOCAL-00001" summary="First commit">
       <option name="closed" value="true" />
@@ -130,7 +129,23 @@
       <option name="project" value="LOCAL" />
       <updated>1732652483372</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Added .gitignore">
+      <option name="closed" value="true" />
+      <created>1732712246114</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1732712246114</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Added .gitignore">
+      <option name="closed" value="true" />
+      <created>1732712322687</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1732712322687</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -153,6 +168,7 @@
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
     <MESSAGE value="First commit" />
     <MESSAGE value="Added entities&#10;Added migrations&#10;Added repositories&#10;Added domain layer&#10;Added RoleController" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added entities&#10;Added migrations&#10;Added repositories&#10;Added domain layer&#10;Added RoleController" />
+    <MESSAGE value="Added .gitignore" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added .gitignore" />
   </component>
 </project>
