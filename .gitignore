@@ -1,9 +1,6 @@
 .idea/
 **/bin/
 **/obj/
-.idea/.idea.BudgetExpenseSystem/.idea
-BudgetExpenseSystem.sln
-
 .vs/
 .vscode/
 *.log
