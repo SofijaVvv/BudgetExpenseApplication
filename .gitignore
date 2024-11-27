@@ -1,4 +1,10 @@
 .idea/
 **/bin/
 **/obj/
-**/.idea/**/*.xml
+.idea/.idea.BudgetExpenseSystem/.idea
+BudgetExpenseSystem.sln
+
+.vs/
+.vscode/
+*.log
+*.tmp
