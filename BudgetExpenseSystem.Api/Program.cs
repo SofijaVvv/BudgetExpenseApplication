@@ -1,4 +1,5 @@
 using BudgetExpenseSystem.Domain.Domains;
+using BudgetExpenseSystem.Domain.Interfaces;
 using BudgetExpenseSystem.Repository;
 using BudgetExpenseSystem.Repository.Interfaces;
 using BudgetExpenseSystem.Repository.Repositories;
@@ -15,6 +16,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<RoleDomain>();
+builder.Services.AddScoped(typeof(IGenericDomain<>));
 
 var connectionString = builder.Configuration.GetConnectionString("ConnectionDefault")
     ?? throw new Exception("Connection string 'ConnectionDefault' is not configured or is missing.");
