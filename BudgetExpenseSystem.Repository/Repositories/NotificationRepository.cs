@@ -12,7 +12,7 @@ public class NotificationRepository : GenericRepository<Notification>
         _context = context;
     }
     
-    public override async Task<List<Notification>> All()
+    public override async Task<List<Notification>> GetAllAsync()
     {
         return await _context.Notifications
             .Include(n => n.User) 
@@ -20,7 +20,7 @@ public class NotificationRepository : GenericRepository<Notification>
     }
     
     
-    public override async Task<Notification?> GetById(int id)
+    public override async Task<Notification?> GetByIdAsync(int id)
     {
         return await _context.Notifications
             .Include(n => n.User)

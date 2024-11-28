@@ -12,7 +12,7 @@ public class BudgetRepository : GenericRepository<Budget>
         _context = context;
     }
 
-    public override async Task<List<Budget>> All()
+    public override async Task<List<Budget>> GetAllAsync()
     {
         return await _context.Budgets
             .Include(b => b.User)
@@ -21,7 +21,7 @@ public class BudgetRepository : GenericRepository<Budget>
             .ToListAsync();
     }
     
-    public override async Task<Budget?> GetById(int id)
+    public override async Task<Budget?> GetByIdAsync(int id)
     {
         return await _context.Budgets
             .Include(b => b.User)

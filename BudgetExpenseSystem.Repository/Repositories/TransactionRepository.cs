@@ -12,7 +12,7 @@ public class TransactionRepository : GenericRepository<Transaction>
         _context = context;
     }
 
-    public override async Task<List<Transaction>> All()
+    public override async Task<List<Transaction>> GetAllAsync()
     {
         return await _context.Transactions
             .Include(t => t.Account)
@@ -21,7 +21,7 @@ public class TransactionRepository : GenericRepository<Transaction>
             .ToListAsync();
     }
     
-    public override async Task<Transaction?> GetById(int id)
+    public override async Task<Transaction?> GetByIdAsync(int id)
     {
         return await _context.Transactions
             .Include(t => t.Account)

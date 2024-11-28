@@ -13,7 +13,7 @@ public class AccountRepository : GenericRepository<Account>
     }
 
 
-    public override async Task<List<Account>> All()
+    public override async Task<List<Account>> GetAllAsync()
     {
         return await _context.Accounts
             .Include(a => a.User)
@@ -21,7 +21,7 @@ public class AccountRepository : GenericRepository<Account>
     }
 
 
-    public override async Task<Account?> GetById(int id)
+    public override async Task<Account?> GetByIdAsync(int id)
     {
         return await _context.Accounts
             .Include(a => a.User)

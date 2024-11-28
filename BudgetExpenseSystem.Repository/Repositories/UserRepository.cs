@@ -12,7 +12,7 @@ public class UserRepository : GenericRepository<User>
         _context = context;
     }
 
-    public override async Task<List<User>> All()
+    public override async Task<List<User>> GetAllAsync()
     {
         return await _context.Users
             .Include(u => u.Role) 
@@ -20,7 +20,7 @@ public class UserRepository : GenericRepository<User>
     }
     
     
-    public override async Task<User?> GetById(int id)
+    public override async Task<User?> GetByIdAsync(int id)
     {
         return await _context.Users
             .Include(u => u.Role)

@@ -2,9 +2,9 @@ namespace BudgetExpenseSystem.Repository.Interfaces;
 
 public interface IGenericRepository<T> where T : class
 {
-    Task<List<T>> All();
-    Task<T?> GetById(int id);
-    void Add(T entity);
-    Task<bool> Delete(int id);
+    Task<List<T>> GetAllAsync();
+    Task<T?> GetByIdAsync(int id);
+    void AddAsync(T entity);
+    Task<bool> DeleteAsync(int id);
     void Update(T entity);
 }
