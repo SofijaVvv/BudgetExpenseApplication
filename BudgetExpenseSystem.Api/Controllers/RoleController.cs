@@ -17,7 +17,7 @@ public class RoleController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<List<Role>>> GetAllRoles()
     {
-        return await _roleDomain.RetrieveAllRoles();
+        return await _roleDomain.GetAllAsync();
     }
     
 }
