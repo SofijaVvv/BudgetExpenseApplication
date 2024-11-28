@@ -16,7 +16,8 @@ builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepositor
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<RoleDomain>();
 
-var connectionString = builder.Configuration.GetConnectionString("ConnectionDefault");
+var connectionString = builder.Configuration.GetConnectionString("ConnectionDefault")
+    ?? throw new Exception("Connection string 'ConnectionDefault' is not configured or is missing.");
 var mySqlVersion = ServerVersion.Parse("10.4.28-mariadb");
 builder.Services.AddDbContext<ApplicationDbContext>(options => 
     { options.UseMySql(connectionString, mySqlVersion); });
