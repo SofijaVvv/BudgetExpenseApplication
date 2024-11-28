@@ -1,65 +1,52 @@
-using BudgetExpenseSystem.Domain.CustomExceptions;
+using BudgetExpenseSystem.Domain.Interfaces;
 using BudgetExpenseSystem.Model.Models;
 using BudgetExpenseSystem.Repository.Interfaces;
-using MySqlConnector;
 
 namespace BudgetExpenseSystem.Domain.Domains;
 
-public class CategoryDomain
+public class CategoryDomain : IGenericDomain<Category>
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IGenericRepository<Category> _genericRepository;
 
     public CategoryDomain(IUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork;
+        _genericRepository = _unitOfWork.GetRepository<Category>();
     }
     
-    public async Task<List<Category>> RetrieveAllCategory()
+    public async Task<List<Category>> GetAllAsync()
     {
-        return await _unitOfWork.GetRepository<Category>().All();
-    }
-    
-    
-    public async Task<Category?> FindCategoryById(int id)
-    {
-        try
-        {
-            return await _unitOfWork.GetRepository<Category>().GetById(id);
-        }
-        catch (MySqlException ex)
-        {
-            throw new InvalidIdException($"Category Id: {id} is invalid", ex);
-        }
+        return await _genericRepository.GetAllAsync();
     }
     
     
-    public async Task<Category> HandleCreateCategory(Category category)
+    public async Task<Category?> GetByIdAsync(int id)
     {
-        _unitOfWork.GetRepository<Category>().Add(category);
+        return await _genericRepository.GetByIdAsync(id);
+    }
+    
+    
+    public async Task<Category> AddAsync(Category category)
+    {
+        _genericRepository.AddAsync(category);
             
-        await _unitOfWork.CompleteAsync();
+        await _unitOfWork.SaveAsync();
         return category;
     }
     
     
     
-    public async void HandleUpdateCategory(Category category)
+    public async void Update(Category category)
     {
-        _unitOfWork.GetRepository<Category>().Update(category);
+        _genericRepository.Update(category);
             
-        await _unitOfWork.CompleteAsync();
+        await _unitOfWork.SaveAsync();
     }
     
     
-    public async Task<bool> HandleDeleteCategory(int id)
+    public async Task<bool> DeleteAsync(int id)
     {
-        try
-        {
-            return await _unitOfWork.GetRepository<Category>().Delete(id);
-        }
-        catch (Exception ex)
-        {
-            throw new InvalidIdException($"Category Id: {id} is invalid", ex);
-        }
+        return await _genericRepository.DeleteAsync(id);
     }
 }

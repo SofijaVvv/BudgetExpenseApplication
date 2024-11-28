@@ -1,61 +1,48 @@
-using BudgetExpenseSystem.Domain.CustomExceptions;
+using BudgetExpenseSystem.Domain.Interfaces;
 using BudgetExpenseSystem.Model.Models;
 using BudgetExpenseSystem.Repository.Interfaces;
-using MySqlConnector;
 
 namespace BudgetExpenseSystem.Domain.Domains;
 
-public class TransactionDomain
+public class TransactionDomain : IGenericDomain<Transaction>
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IGenericRepository<Transaction> _genericRepository;
 
     public TransactionDomain(IUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork;
+        _genericRepository = _unitOfWork.GetRepository<Transaction>();
     }
     
     
-    public async Task<List<Transaction>> RetrieveAllTransactions()
+    public async Task<List<Transaction>> GetAllAsync()
     {
-        return await _unitOfWork.GetRepository<Transaction>().All();
+        return await _genericRepository.GetAllAsync();
     }
 
-    public async Task<Transaction?> FindTransactionById(int id)
+    public async Task<Transaction?> GetByIdAsync(int id)
     {
-        try
-        {
-            return await _unitOfWork.GetRepository<Transaction>().GetById(id);
-        }
-        catch (MySqlException ex)
-        {
-            throw new InvalidIdException($"Transaction Id: {id} is invalid", ex);
-        }
+        return await _genericRepository.GetByIdAsync(id);
     }
 
-    public async Task<Transaction> HandleCreateTransaction(Transaction transaction)
+    public async Task<Transaction> AddAsync(Transaction transaction)
     {
-        _unitOfWork.GetRepository<Transaction>().Add(transaction);
+        _genericRepository.AddAsync(transaction);
 
-        await _unitOfWork.CompleteAsync();
+        await _unitOfWork.SaveAsync();
         return transaction;
     }
 
-    public async void HandleUpdateTransaction(Transaction transaction)
+    public async void Update(Transaction transaction)
     {
-        _unitOfWork.GetRepository<Transaction>().Update(transaction);
+        _genericRepository.Update(transaction);
 
-        await _unitOfWork.CompleteAsync();
+        await _unitOfWork.SaveAsync();
     }
 
-    public async Task<bool> HandleDeleteTransaction(int id)
+    public async Task<bool> DeleteAsync(int id)
     {
-        try
-        {
-            return await _unitOfWork.GetRepository<Transaction>().Delete(id);
-        }
-        catch (Exception ex)
-        {
-            throw new InvalidIdException($"Transaction Id: {id} is invalid", ex);
-        }
+        return await _genericRepository.DeleteAsync(id);
     }
 }

@@ -1,77 +1,51 @@
-using BudgetExpenseSystem.Domain.CustomExceptions;
+using BudgetExpenseSystem.Domain.Interfaces;
 using BudgetExpenseSystem.Model.Models;
 using BudgetExpenseSystem.Repository.Interfaces;
-using MySqlConnector;
 
 namespace BudgetExpenseSystem.Domain.Domains;
 
-public class RoleDomain
+public class RoleDomain : IGenericDomain<Role>
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IGenericRepository<Role> _genericRepository;
 
     public RoleDomain(IUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork;
+        _genericRepository = _unitOfWork.GetRepository<Role>();
     }
 
-    public async Task<List<Role>> RetrieveAllRoles()
+    public async Task<List<Role>> GetAllAsync()
     {
-            return await _unitOfWork.GetRepository<Role>().All();
-    }
-
-    
-    public async Task<Role?> FindRoleById(int id)
-    {
-        try
-        {
-            return await _unitOfWork.GetRepository<Role>().GetById(id);
-        }
-        catch (MySqlException ex)
-        {
-            throw new InvalidIdException($"Role Id: {id} is invalid", ex);
-        }
+            return await _genericRepository.GetAllAsync();
     }
 
     
-    public async Task<Role> HandleCreateRole(Role role)
+    public async Task<Role?> GetByIdAsync(int id)
     {
-            _unitOfWork.GetRepository<Role>().Add(role);
+            return await _genericRepository.GetByIdAsync(id);
+    }
+
+    
+    public async Task<Role> AddAsync(Role role)
+    {
+            _genericRepository.AddAsync(role);
             
-            await _unitOfWork.CompleteAsync();
+            await _unitOfWork.SaveAsync();
             return role;
     }
     
     
-    public async void HandleUpdateRole(Role role)
+    public async void Update(Role role)
     {
-            _unitOfWork.GetRepository<Role>().Update(role);
+            _genericRepository.Update(role);
             
-            await _unitOfWork.CompleteAsync();
+            await _unitOfWork.SaveAsync();
     }
     
     
-    public async Task<bool> HandleDeleteRole(int id)
+    public async Task<bool> DeleteAsync(int id)
     {
-        try
-        {
-            return await _unitOfWork.GetRepository<Role>().Delete(id);
-        }
-        catch (Exception ex)
-        {
-            throw new InvalidIdException($"Role Id: {id} is invalid", ex);
-        }
+            return await _genericRepository.DeleteAsync(id);
     }
-    
-    // public async Task<bool> HandleDeleteRole(int id)
-    // {
-    //     try
-    //     {
-    //         return await _unitOfWork.GetRepository<Role>().Delete(id);
-    //     }
-    //     catch (Exception ex)
-    //     {
-    //         throw new Exception($"An error occurred while deleting the role with ID {id}.", ex);
-    //     }
-    // }
-    
 }

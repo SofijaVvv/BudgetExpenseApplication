@@ -1,61 +1,48 @@
-using BudgetExpenseSystem.Domain.CustomExceptions;
+using BudgetExpenseSystem.Domain.Interfaces;
 using BudgetExpenseSystem.Model.Models;
 using BudgetExpenseSystem.Repository.Interfaces;
-using MySqlConnector;
 
 namespace BudgetExpenseSystem.Domain.Domains;
 
-public class UserDomain
+public class UserDomain : IGenericDomain<User>
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IGenericRepository<User> _genericRepository;
 
     public UserDomain(IUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork;
+        _genericRepository = _unitOfWork.GetRepository<User>();
     }
 
-    public async Task<List<User>> RetrieveAllUsers()
+    public async Task<List<User>> GetAllAsync()
     {
-            return await _unitOfWork.GetRepository<User>().All();
+        return await _genericRepository.GetAllAsync();
     }
 
-    public async Task<User?> FindUserById(int id)
+    public async Task<User?> GetByIdAsync(int id)
     {
-        try
-        {
-            return await _unitOfWork.GetRepository<User>().GetById(id);
-        }
-        catch (MySqlException ex)
-        {
-            throw new InvalidIdException($"User Id: {id} is invalid", ex);
-        }
+        return await _genericRepository.GetByIdAsync(id);
     }
 
-    public async Task<User> HandleCreateUser(User user)
+    public async Task<User> AddAsync(User user)
     {
-            _unitOfWork.GetRepository<User>().Add(user);
+            _genericRepository.AddAsync(user);
 
-            await _unitOfWork.CompleteAsync();
+            await _unitOfWork.SaveAsync();
             return user;
     }
 
-    public async void HandleUpdateUser(User user)
+    public async void Update(User user)
     {
-        _unitOfWork.GetRepository<User>().Update(user);
+        _genericRepository.Update(user);
 
-        await _unitOfWork.CompleteAsync();
+        await _unitOfWork.SaveAsync();
     }
 
-    public async Task<bool> HandleDeleteUser(int id)
+    public async Task<bool> DeleteAsync(int id)
     {
-        try
-        {
-            return await _unitOfWork.GetRepository<User>().Delete(id);
-        }
-        catch (Exception ex)
-        {
-            throw new InvalidIdException($"User Id: {id} is invalid", ex);
-        }
+        return await _genericRepository.DeleteAsync(id);
     }
-    
+
 }

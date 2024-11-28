@@ -1,66 +1,53 @@
-using BudgetExpenseSystem.Domain.CustomExceptions;
+using BudgetExpenseSystem.Domain.Interfaces;
 using BudgetExpenseSystem.Model.Models;
 using BudgetExpenseSystem.Repository.Interfaces;
-using MySqlConnector;
 
 namespace BudgetExpenseSystem.Domain.Domains;
 
-public class BudgetDomain
+public class BudgetDomain : IGenericDomain<Budget>
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IGenericRepository<Budget> _genericRepository;
 
     public BudgetDomain(IUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork;
+        _genericRepository = _unitOfWork.GetRepository<Budget>();
     }
     
-    public async Task<List<Budget>> RetrieveAllBudget()
+    public async Task<List<Budget>> GetAllAsync()
     {
-        return await _unitOfWork.GetRepository<Budget>().All();
-    }
-    
-    
-    public async Task<Budget?> FindBudgetById(int id)
-    {
-        try
-        {
-            return await _unitOfWork.GetRepository<Budget>().GetById(id);
-        }
-        catch (MySqlException ex)
-        {
-            throw new InvalidIdException($"Budget Id: {id} is invalid", ex);
-        }
+        return await _genericRepository.GetAllAsync();
     }
     
     
-    public async Task<Budget> HandleCreateBudget(Budget budget)
+    public async Task<Budget?> GetByIdAsync(int id)
     {
-        _unitOfWork.GetRepository<Budget>().Add(budget);
+        return await _genericRepository.GetByIdAsync(id);
+    }
+    
+    
+    public async Task<Budget> AddAsync(Budget budget)
+    {
+        _genericRepository.AddAsync(budget);
             
-        await _unitOfWork.CompleteAsync();
+        await _unitOfWork.SaveAsync();
         return budget;
     }
     
     
     
-    public async void HandleUpdateBudget(Budget budget)
+    public async void Update(Budget budget)
     {
-        _unitOfWork.GetRepository<Budget>().Update(budget);
+        _genericRepository.Update(budget);
             
-        await _unitOfWork.CompleteAsync();
+        await _unitOfWork.SaveAsync();
     }
     
     
-    public async Task<bool> HandleDeleteBudget(int id)
+    public async Task<bool> DeleteAsync(int id)
     {
-        try
-        {
-            return await _unitOfWork.GetRepository<Budget>().Delete(id);
-        }
-        catch (Exception ex)
-        {
-            throw new InvalidIdException($"Budget Id: {id} is invalid", ex);
-        }
+        return await _genericRepository.DeleteAsync(id);
     }
     
 }

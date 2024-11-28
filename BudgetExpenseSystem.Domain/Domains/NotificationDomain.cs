@@ -1,65 +1,52 @@
-using BudgetExpenseSystem.Domain.CustomExceptions;
+using BudgetExpenseSystem.Domain.Interfaces;
 using BudgetExpenseSystem.Model.Models;
 using BudgetExpenseSystem.Repository.Interfaces;
-using MySqlConnector;
 
 namespace BudgetExpenseSystem.Domain.Domains;
 
-public class NotificationDomain
+public class NotificationDomain : IGenericDomain<Notification>
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IGenericRepository<Notification> _genericRepository;
 
     public NotificationDomain(IUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork;
+        _genericRepository = _unitOfWork.GetRepository<Notification>();
     }
     
-    public async Task<List<Notification>> RetrieveAllNotification()
+    public async Task<List<Notification>> GetAllAsync()
     {
-        return await _unitOfWork.GetRepository<Notification>().All();
-    }
-    
-    
-    public async Task<Notification?> FindNotificationById(int id)
-    {
-        try
-        {
-            return await _unitOfWork.GetRepository<Notification>().GetById(id);
-        }
-        catch (MySqlException ex)
-        {
-            throw new InvalidIdException($"Notification Id: {id} is invalid", ex);
-        }
+        return await _genericRepository.GetAllAsync();
     }
     
     
-    public async Task<Notification> HandleCreateNotification(Notification notification)
+    public async Task<Notification?> GetByIdAsync(int id)
     {
-        _unitOfWork.GetRepository<Notification>().Add(notification);
+        return await _genericRepository.GetByIdAsync(id);
+    }
+    
+    
+    public async Task<Notification> AddAsync(Notification notification)
+    {
+       _genericRepository.AddAsync(notification);
             
-        await _unitOfWork.CompleteAsync();
+        await _unitOfWork.SaveAsync();
         return notification;
     }
     
     
     
-    public async void HandleUpdateNotification(Notification notification)
+    public async void Update(Notification notification)
     {
-        _unitOfWork.GetRepository<Notification>().Update(notification);
+       _genericRepository.Update(notification);
             
-        await _unitOfWork.CompleteAsync();
+        await _unitOfWork.SaveAsync();
     }
     
     
-    public async Task<bool> HandleDeleteNotification(int id)
+    public async Task<bool> DeleteAsync(int id)
     {
-        try
-        {
-            return await _unitOfWork.GetRepository<Notification>().Delete(id);
-        }
-        catch (Exception ex)
-        {
-            throw new InvalidIdException($"Notification Id: {id} is invalid", ex);
-        }
+        return await _genericRepository.DeleteAsync(id);
     }
 }
