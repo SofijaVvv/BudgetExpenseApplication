@@ -8,7 +8,7 @@ public class AccountResponse
     
     public int UserId { get; set; }
     
-    public decimal Balance { get; set; }
+    public decimal Balancee { get; set; }
     
     public DateOnly CreatedDate { get; set; }
 }
