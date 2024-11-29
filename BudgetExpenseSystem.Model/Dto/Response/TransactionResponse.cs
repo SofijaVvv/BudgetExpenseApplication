@@ -12,5 +12,5 @@ public class TransactionResponse
     
     public decimal Amount { get; set; }
     
-    public DateOnly TransactionDatee { get; set; }
+    public DateOnly TransactionDate { get; set; }
 }
