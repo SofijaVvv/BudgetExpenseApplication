@@ -33,7 +33,7 @@ public class UserDomain : IGenericDomain<User>
             return user;
     }
 
-    public async void Update(User user)
+    public async Task Update(User user)
     {
         _genericRepository.Update(user);
 

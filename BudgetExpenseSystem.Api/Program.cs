@@ -16,7 +16,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<RoleDomain>();
-builder.Services.AddScoped(typeof(IGenericDomain<>));
+builder.Services.AddScoped<AccountDomain>();
+
 
 var connectionString = builder.Configuration.GetConnectionString("ConnectionDefault")
     ?? throw new Exception("Connection string 'ConnectionDefault' is not configured or is missing.");

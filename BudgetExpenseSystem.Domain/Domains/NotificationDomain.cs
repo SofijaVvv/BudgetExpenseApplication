@@ -4,7 +4,7 @@ using BudgetExpenseSystem.Repository.Interfaces;
 
 namespace BudgetExpenseSystem.Domain.Domains;
 
-public class NotificationDomain : IGenericDomain<Notification>
+public class NotificationDomain 
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IGenericRepository<Notification> _genericRepository;
@@ -37,7 +37,7 @@ public class NotificationDomain : IGenericDomain<Notification>
     
     
     
-    public async void Update(Notification notification)
+    public async Task Update(Notification notification)
     {
        _genericRepository.Update(notification);
             

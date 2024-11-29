@@ -1,10 +1,9 @@
-using BudgetExpenseSystem.Domain.Interfaces;
 using BudgetExpenseSystem.Model.Models;
 using BudgetExpenseSystem.Repository.Interfaces;
 
 namespace BudgetExpenseSystem.Domain.Domains;
 
-public class RoleDomain : IGenericDomain<Role>
+public class RoleDomain 
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IGenericRepository<Role> _genericRepository;
@@ -36,7 +35,7 @@ public class RoleDomain : IGenericDomain<Role>
     }
     
     
-    public async void Update(Role role)
+    public async Task Update(Role role)
     {
             _genericRepository.Update(role);
             
@@ -46,6 +45,8 @@ public class RoleDomain : IGenericDomain<Role>
     
     public async Task<bool> DeleteAsync(int id)
     {
-            return await _genericRepository.DeleteAsync(id);
+            await _genericRepository.DeleteAsync(id);
+            await _unitOfWork.SaveAsync();
+            return true;
     }
 }

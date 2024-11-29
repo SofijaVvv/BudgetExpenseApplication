@@ -34,7 +34,7 @@ public class TransactionDomain : IGenericDomain<Transaction>
         return transaction;
     }
 
-    public async void Update(Transaction transaction)
+    public async Task Update(Transaction transaction)
     {
         _genericRepository.Update(transaction);
 

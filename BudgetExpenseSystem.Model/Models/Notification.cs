@@ -17,7 +17,6 @@ public class Notification
     
     public DateOnly CreatedDate { get; set; }
     public DateTime ReadAt { get; set; }
-    
     public virtual User User { get; set; } 
     
 }

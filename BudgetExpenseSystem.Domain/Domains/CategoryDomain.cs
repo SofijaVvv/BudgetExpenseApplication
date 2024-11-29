@@ -4,7 +4,7 @@ using BudgetExpenseSystem.Repository.Interfaces;
 
 namespace BudgetExpenseSystem.Domain.Domains;
 
-public class CategoryDomain : IGenericDomain<Category>
+public class CategoryDomain 
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IGenericRepository<Category> _genericRepository;
@@ -37,7 +37,7 @@ public class CategoryDomain : IGenericDomain<Category>
     
     
     
-    public async void Update(Category category)
+    public async Task Update(Category category)
     {
         _genericRepository.Update(category);
             
