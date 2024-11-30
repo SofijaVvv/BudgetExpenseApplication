@@ -1,5 +1,5 @@
+using BudgetExpenseSystem.Api.Filters;
 using BudgetExpenseSystem.Domain.Domains;
-using BudgetExpenseSystem.Domain.Interfaces;
 using BudgetExpenseSystem.Repository;
 using BudgetExpenseSystem.Repository.Interfaces;
 using BudgetExpenseSystem.Repository.Repositories;
@@ -9,7 +9,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(options => 
+    options.Filters.Add<GlobalExceptionFilter>()
+    );
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
