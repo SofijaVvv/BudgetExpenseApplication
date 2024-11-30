@@ -52,12 +52,11 @@ public class RoleController : ControllerBase
     [HttpPut("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult> UpdateRole([FromBody] UpdateRoleRequest? role)
+    public async Task<ActionResult> UpdateRole(
+        [FromRoute] int id,
+        [FromBody] UpdateRoleRequest? updateRoleRequest)
     {
-        if (role == null) return NotFound("Role not found");
-        
-        var result =  role.ToRole();
-        await _roleDomain.Update(result);
+        await _roleDomain.Update(id, updateRoleRequest);
 
         return NoContent();
     }
