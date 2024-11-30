@@ -15,16 +15,6 @@ public static class RoleExtentions
         };
     }
 
-    public static Role ToRole(this UpdateRoleRequest request)
-    {
-        return new Role
-        { 
-            Id = request.Id,
-            Name = request.Name,
-            CreatedDate = request.CreatedDate
-        };
-    }
-
     public static RoleResponse ToResponse(this Role response)
     {
         return new RoleResponse
