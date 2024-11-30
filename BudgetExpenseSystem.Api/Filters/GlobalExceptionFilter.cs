@@ -14,18 +14,24 @@ public class GlobalExceptionFilter : IExceptionFilter
         switch (context.Exception)
         {
             case NotFoundException notFoundException:
-                errorModel = new ErrorModel(404, notFoundException.Message);
+                errorModel = new ErrorModel
+                {
+                    StatusCode = StatusCodes.Status404NotFound,
+                    Message = notFoundException.Message
+                };
                 context.Result = new JsonResult(errorModel)
                 {
-                    StatusCode = 404
+                    StatusCode = StatusCodes.Status404NotFound
                 };
                 break;
 
             default:
-                errorModel = new ErrorModel(
-                    StatusCodes.Status500InternalServerError, 
-                    context.Exception.Message, 
-                    context.Exception.StackTrace);
+                errorModel = new ErrorModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = context.Exception.Message,
+                    Details = context.Exception.StackTrace
+                };
                 context.Result = new JsonResult(errorModel)
                 {
                     StatusCode = StatusCodes.Status500InternalServerError
