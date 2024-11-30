@@ -7,29 +7,29 @@ namespace BudgetExpenseSystem.Domain.Domains;
 public class BudgetTypeDomain 
 {
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IGenericRepository<BudgetType> _genericRepository;
+    private readonly IGenericRepository<BudgetType> _budgetTypeRepository;
 
     public BudgetTypeDomain(IUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork;
-        _genericRepository = _unitOfWork.GetRepository<BudgetType>();
+        _budgetTypeRepository = _unitOfWork.GetRepository<BudgetType>();
     }
     
     public async Task<List<BudgetType>> GetAllAsync()
     {
-        return await _genericRepository.GetAllAsync();
+        return await _budgetTypeRepository.GetAllAsync();
     }
     
     
     public async Task<BudgetType?> GetByIdAsync(int id)
     {
-        return await _genericRepository.GetByIdAsync(id);
+        return await _budgetTypeRepository.GetByIdAsync(id);
     }
     
     
     public async Task<BudgetType> AddAsync(BudgetType budgetType)
     {
-        _genericRepository.AddAsync(budgetType);
+        _budgetTypeRepository.AddAsync(budgetType);
             
         await _unitOfWork.SaveAsync();
         return budgetType;
@@ -39,7 +39,7 @@ public class BudgetTypeDomain
     
     public async Task Update(BudgetType budgetType)
     {
-        _genericRepository.Update(budgetType);
+        _budgetTypeRepository.Update(budgetType);
             
         await _unitOfWork.SaveAsync();
     }
@@ -47,6 +47,6 @@ public class BudgetTypeDomain
     
     public async Task<bool> DeleteAsync(int id)
     {
-        return await _genericRepository.DeleteAsync(id);
+        return await _budgetTypeRepository.DeleteAsync(id);
     }
 }

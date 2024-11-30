@@ -7,29 +7,29 @@ namespace BudgetExpenseSystem.Domain.Domains;
 public class BudgetDomain
 {
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IGenericRepository<Budget> _genericRepository;
+    private readonly IGenericRepository<Budget> _budgetRepository;
 
     public BudgetDomain(IUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork;
-        _genericRepository = _unitOfWork.GetRepository<Budget>();
+        _budgetRepository = _unitOfWork.GetRepository<Budget>();
     }
     
     public async Task<List<Budget>> GetAllAsync()
     {
-        return await _genericRepository.GetAllAsync();
+        return await _budgetRepository.GetAllAsync();
     }
     
     
     public async Task<Budget?> GetByIdAsync(int id)
     {
-        return await _genericRepository.GetByIdAsync(id);
+        return await _budgetRepository.GetByIdAsync(id);
     }
     
     
     public async Task<Budget> AddAsync(Budget budget)
     {
-        _genericRepository.AddAsync(budget);
+        _budgetRepository.AddAsync(budget);
             
         await _unitOfWork.SaveAsync();
         return budget;
@@ -39,7 +39,7 @@ public class BudgetDomain
     
     public async Task Update(Budget budget)
     {
-        _genericRepository.Update(budget);
+        _budgetRepository.Update(budget);
             
         await _unitOfWork.SaveAsync();
     }
@@ -47,7 +47,7 @@ public class BudgetDomain
     
     public async Task<bool> DeleteAsync(int id)
     {
-        return await _genericRepository.DeleteAsync(id);
+        return await _budgetRepository.DeleteAsync(id);
     }
     
 }

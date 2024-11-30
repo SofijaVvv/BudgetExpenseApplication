@@ -7,29 +7,29 @@ namespace BudgetExpenseSystem.Domain.Domains;
 public class NotificationDomain 
 {
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IGenericRepository<Notification> _genericRepository;
+    private readonly IGenericRepository<Notification> _notificationRepository;
 
     public NotificationDomain(IUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork;
-        _genericRepository = _unitOfWork.GetRepository<Notification>();
+        _notificationRepository = _unitOfWork.GetRepository<Notification>();
     }
     
     public async Task<List<Notification>> GetAllAsync()
     {
-        return await _genericRepository.GetAllAsync();
+        return await _notificationRepository.GetAllAsync();
     }
     
     
     public async Task<Notification?> GetByIdAsync(int id)
     {
-        return await _genericRepository.GetByIdAsync(id);
+        return await _notificationRepository.GetByIdAsync(id);
     }
     
     
     public async Task<Notification> AddAsync(Notification notification)
     {
-       _genericRepository.AddAsync(notification);
+       _notificationRepository.AddAsync(notification);
             
         await _unitOfWork.SaveAsync();
         return notification;
@@ -39,7 +39,7 @@ public class NotificationDomain
     
     public async Task Update(Notification notification)
     {
-       _genericRepository.Update(notification);
+       _notificationRepository.Update(notification);
             
         await _unitOfWork.SaveAsync();
     }
@@ -47,6 +47,6 @@ public class NotificationDomain
     
     public async Task<bool> DeleteAsync(int id)
     {
-        return await _genericRepository.DeleteAsync(id);
+        return await _notificationRepository.DeleteAsync(id);
     }
 }
