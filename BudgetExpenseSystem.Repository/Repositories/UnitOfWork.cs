@@ -4,20 +4,20 @@ namespace BudgetExpenseSystem.Repository.Repositories;
 
 public class UnitOfWork : IUnitOfWork
 {
-    private readonly ApplicationDbContext _context;
+	private readonly ApplicationDbContext _context;
 
-    public UnitOfWork(ApplicationDbContext context)
-    {
-        _context = context;
-    }
-    
-    public IGenericRepository<T> GetRepository<T>() where T : class
-    {
-        return new GenericRepository<T>(_context);
-    }
+	public UnitOfWork(ApplicationDbContext context)
+	{
+		_context = context;
+	}
 
-    public async Task SaveAsync()
-    {
-        await _context.SaveChangesAsync();
-    }
+	public IGenericRepository<T> GetRepository<T>() where T : class
+	{
+		return new GenericRepository<T>(_context);
+	}
+
+	public async Task SaveAsync()
+	{
+		await _context.SaveChangesAsync();
+	}
 }

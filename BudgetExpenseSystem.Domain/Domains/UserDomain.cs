@@ -1,48 +1,54 @@
-using BudgetExpenseSystem.Domain.Interfaces;
+using BudgetExpenseSystem.Domain.Exceptions;
 using BudgetExpenseSystem.Model.Models;
 using BudgetExpenseSystem.Repository.Interfaces;
 
 namespace BudgetExpenseSystem.Domain.Domains;
 
-public class UserDomain : IGenericDomain<User>
+public class UserDomain
 {
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IGenericRepository<User> _userRepository;
+	private readonly IUnitOfWork _unitOfWork;
+	private readonly IGenericRepository<User> _userRepository;
 
-    public UserDomain(IUnitOfWork unitOfWork)
-    {
-        _unitOfWork = unitOfWork;
-        _userRepository = _unitOfWork.GetRepository<User>();
-    }
+	public UserDomain(IUnitOfWork unitOfWork)
+	{
+		_unitOfWork = unitOfWork;
+		_userRepository = _unitOfWork.GetRepository<User>();
+	}
 
-    public async Task<List<User>> GetAllAsync()
-    {
-        return await _userRepository.GetAllAsync();
-    }
+	public async Task<List<User>> GetAllAsync()
+	{
+		return await _userRepository.GetAllAsync();
+	}
 
-    public async Task<User?> GetByIdAsync(int id)
-    {
-        return await _userRepository.GetByIdAsync(id);
-    }
+	public async Task<User> GetByIdAsync(int id)
+	{
+		var user = await _userRepository.GetByIdAsync(id);
+		if (user == null) throw new NotFoundException($"User Id: {id} not found");
 
-    public async Task<User> AddAsync(User user)
-    {
-            _userRepository.AddAsync(user);
+		return user;
+	}
 
-            await _unitOfWork.SaveAsync();
-            return user;
-    }
+	public async Task<User> AddAsync(User user)
+	{
+		_userRepository.AddAsync(user);
 
-    public async Task Update(User user)
-    {
-        _userRepository.Update(user);
+		await _unitOfWork.SaveAsync();
+		return user;
+	}
 
-        await _unitOfWork.SaveAsync();
-    }
+	public async Task Update(User user)
+	{
+		_userRepository.Update(user);
 
-    public async Task<bool> DeleteAsync(int id)
-    {
-        return await _userRepository.DeleteAsync(id);
-    }
+		await _unitOfWork.SaveAsync();
+	}
 
+	public async Task DeleteAsync(int id)
+	{
+		var user = await _userRepository.GetByIdAsync(id);
+		if (user == null) throw new NotFoundException($"User Id: {id} not found");
+
+		await _userRepository.DeleteAsync(id);
+		await _unitOfWork.SaveAsync();
+	}
 }

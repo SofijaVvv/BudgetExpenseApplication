@@ -6,69 +6,64 @@ using BudgetExpenseSystem.Model.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BudgetExpenseSystem.Api.Controllers;
+
 [Route("api/[controller]s")]
 [ApiController]
 public class RoleController : ControllerBase
 {
-    private readonly RoleDomain _roleDomain;
+	private readonly RoleDomain _roleDomain;
 
-    public RoleController(RoleDomain roleDomain)
-    {
-        _roleDomain = roleDomain;
-    }
+	public RoleController(RoleDomain roleDomain)
+	{
+		_roleDomain = roleDomain;
+	}
 
-    [HttpGet]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<RoleResponse>))]
-    public async Task<ActionResult<List<Role>>> GetAllRoles()
-    {
-        var roles = await _roleDomain.GetAllAsync();
-        
-        var result = roles.ToResponse();
-        return Ok(result);
-    }
+	[HttpGet]
+	[ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<RoleResponse>))]
+	public async Task<ActionResult<List<Role>>> GetAllRoles()
+	{
+		var roles = await _roleDomain.GetAllAsync();
 
-    [HttpGet("{id}")]
-    public async Task<ActionResult> GetRoleById(int id)
-    {
-        var role = await _roleDomain.GetByIdAsync(id);
+		var result = roles.ToResponse();
+		return Ok(result);
+	}
 
-        if (role == null) return NotFound($"Role Id: {id} not found");
+	[HttpGet("{id}")]
+	[ProducesResponseType(StatusCodes.Status200OK, Type = typeof(RoleResponse))]
+	public async Task<ActionResult> GetRoleById([FromRoute] int id)
+	{
+		var role = await _roleDomain.GetByIdAsync(id);
 
-        var result = role.ToResponse();
-        return Ok(result);
-    }
+		var result = role.ToResponse();
+		return Ok(result);
+	}
 
+	[HttpPost]
+	[ProducesResponseType(StatusCodes.Status201Created, Type = typeof(RoleResponse))]
+	public async Task<ActionResult> AddRole([FromBody] RoleRequest roleRequest)
+	{
+		var result = roleRequest.ToRole();
+		await _roleDomain.AddAsync(result);
 
-    [HttpPost]
-    [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(RoleResponse))]
-    public async Task<ActionResult> AddRole([FromBody] RoleRequest role)
-    {
-        var result = role.ToRole();
-        await _roleDomain.AddAsync(result);
+		return CreatedAtAction(nameof(GetRoleById), new { id = result.Id }, result);
+	}
 
-        return CreatedAtAction(nameof(GetRoleById), new { id = result.Id }, result);
-    }
+	[HttpPut("{id}")]
+	[ProducesResponseType(StatusCodes.Status204NoContent)]
+	public async Task<ActionResult> UpdateRole(
+		[FromRoute] int id,
+		[FromBody] UpdateRoleRequest updateRoleRequest)
+	{
+		await _roleDomain.Update(id, updateRoleRequest);
 
-    [HttpPut("{id}")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult> UpdateRole(
-        [FromRoute] int id,
-        [FromBody] UpdateRoleRequest? updateRoleRequest)
-    {
-        await _roleDomain.Update(id, updateRoleRequest);
+		return NoContent();
+	}
 
-        return NoContent();
-    }
-
-    [HttpDelete("{id}")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult> DeleteRole(int id)
-    {
-         var isFound = await _roleDomain.DeleteAsync(id);
-         if (!isFound) return NotFound("Role not found");
-         return NoContent();
-    }
-    
+	[HttpDelete("{id}")]
+	[ProducesResponseType(StatusCodes.Status204NoContent)]
+	public async Task<ActionResult> DeleteRole([FromRoute] int id)
+	{
+		await _roleDomain.DeleteAsync(id);
+		return NoContent();
+	}
 }

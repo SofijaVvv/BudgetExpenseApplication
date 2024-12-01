@@ -7,21 +7,21 @@ namespace BudgetExpenseSystem.Repository;
 
 public class ApplicationDbContextFactory : IDesignTimeDbContextFactory<ApplicationDbContext>
 {
-    const string ErrorMessage = "Connection string is not configured properly or is missing.";
+	private const string ErrorMessage = "Connection string is not configured properly or is missing.";
 
-    public ApplicationDbContext CreateDbContext(string[]? args = null)
-    {
-        var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
+	public ApplicationDbContext CreateDbContext(string[]? args = null)
+	{
+		var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
 
-        var configuration = new ConfigurationBuilder()
-            .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "../BudgetExpenseSystem.Api"))
-            .AddJsonFile("appsettings.json", false)
-            .Build();
+		var configuration = new ConfigurationBuilder()
+			.SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "../BudgetExpenseSystem.Api"))
+			.AddJsonFile("appsettings.json", false)
+			.Build();
 
-        var connectionString = configuration.GetConnectionString("ConnectionDefault");
-        var mySqlVersion = ServerVersion.Parse("10.4.28-mariadb");
-        optionsBuilder.UseMySql(connectionString ?? throw new InvalidOperationException(ErrorMessage), mySqlVersion); 
+		var connectionString = configuration.GetConnectionString("ConnectionDefault");
+		var mySqlVersion = ServerVersion.Parse("10.4.28-mariadb");
+		optionsBuilder.UseMySql(connectionString ?? throw new InvalidOperationException(ErrorMessage), mySqlVersion);
 
-        return new ApplicationDbContext(optionsBuilder.Options);
-    }
+		return new ApplicationDbContext(optionsBuilder.Options);
+	}
 }

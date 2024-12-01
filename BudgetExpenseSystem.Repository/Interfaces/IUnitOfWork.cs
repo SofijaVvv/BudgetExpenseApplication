@@ -2,9 +2,9 @@ using BudgetExpenseSystem.Model.Models;
 
 namespace BudgetExpenseSystem.Repository.Interfaces;
 
-public interface IUnitOfWork 
+public interface IUnitOfWork
 {
-    IGenericRepository<T> GetRepository<T>() where T : class;
+	IGenericRepository<T> GetRepository<T>() where T : class;
 
-    Task SaveAsync();
+	Task SaveAsync();
 }
