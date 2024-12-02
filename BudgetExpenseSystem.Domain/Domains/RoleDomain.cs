@@ -8,12 +8,12 @@ namespace BudgetExpenseSystem.Domain.Domains;
 public class RoleDomain
 {
 	private readonly IUnitOfWork _unitOfWork;
-	private readonly IGenericRepository<Role> _roleRepository;
+	private readonly IRoleRepository _roleRepository;
 
-	public RoleDomain(IUnitOfWork unitOfWork)
+	public RoleDomain(IUnitOfWork unitOfWork, IRoleRepository roleRepository)
 	{
 		_unitOfWork = unitOfWork;
-		_roleRepository = _unitOfWork.GetRepository<Role>();
+		_roleRepository = roleRepository;
 	}
 
 	public async Task<List<Role>> GetAllAsync()
@@ -53,8 +53,8 @@ public class RoleDomain
 
 	public async Task DeleteAsync(int id)
 	{
-		var account = await _roleRepository.GetByIdAsync(id);
-		if (account == null) throw new NotFoundException($"Role Id: {id} not found");
+		var role = await _roleRepository.GetByIdAsync(id);
+		if (role == null) throw new NotFoundException($"Role Id: {id} not found");
 
 		await _roleRepository.DeleteAsync(id);
 		await _unitOfWork.SaveAsync();

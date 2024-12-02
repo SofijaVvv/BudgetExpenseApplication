@@ -1,6 +1,6 @@
-using BudgetExpenseSystem.Api.Controllers;
 using BudgetExpenseSystem.Api.Filters;
 using BudgetExpenseSystem.Domain.Domains;
+using BudgetExpenseSystem.Domain.Interfaces;
 using BudgetExpenseSystem.Repository;
 using BudgetExpenseSystem.Repository.Interfaces;
 using BudgetExpenseSystem.Repository.Repositories;
@@ -18,8 +18,21 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<RoleDomain>();
-builder.Services.AddScoped<AccountDomain>();
+builder.Services.AddScoped<IAccountDomain, AccountDomain>();
 builder.Services.AddScoped<UserDomain>();
+builder.Services.AddScoped<IBudgetDomain, BudgetDomain>();
+builder.Services.AddScoped<BudgetTypeDomain>();
+builder.Services.AddScoped<CategoryDomain>();
+builder.Services.AddScoped<NotificationDomain>();
+builder.Services.AddScoped<TransactionDomain>();
+builder.Services.AddScoped<IBudgetRepository, BudgetRepository>();
+builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
+builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
+builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddScoped<IBudgetTypeRepository, BudgetTypeRepository>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+builder.Services.AddLogging();
 
 
 var connectionString = builder.Configuration.GetConnectionString("ConnectionDefault")

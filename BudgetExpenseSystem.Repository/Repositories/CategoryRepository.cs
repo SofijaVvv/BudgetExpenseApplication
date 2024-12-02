@@ -3,9 +3,9 @@ using BudgetExpenseSystem.Repository.Interfaces;
 
 namespace BudgetExpenseSystem.Repository.Repositories;
 
-public class AccountRepository : GenericRepository<Account>, IAccountRepository
+public class CategoryRepository : GenericRepository<Category>, ICategoryRepository
 {
-	public AccountRepository(ApplicationDbContext context) : base(context)
+	public CategoryRepository(ApplicationDbContext context) : base(context)
 	{
 	}
 }

@@ -1,4 +1,4 @@
-using BudgetExpenseSystem.Domain.Domains;
+using BudgetExpenseSystem.Domain.Interfaces;
 using BudgetExpenseSystem.Model.Dto.Requests;
 using BudgetExpenseSystem.Model.Dto.Response;
 using BudgetExpenseSystem.Model.Extentions;
@@ -11,9 +11,9 @@ namespace BudgetExpenseSystem.Api.Controllers;
 [ApiController]
 public class BudgetController : ControllerBase
 {
-	private readonly BudgetDomain _budgetDomain;
+	private readonly IBudgetDomain _budgetDomain;
 
-	public BudgetController(BudgetDomain budgetDomain)
+	public BudgetController(IBudgetDomain budgetDomain)
 	{
 		_budgetDomain = budgetDomain;
 	}
@@ -42,8 +42,8 @@ public class BudgetController : ControllerBase
 	[ProducesResponseType(StatusCodes.Status201Created, Type = typeof(BudgetResponse))]
 	public async Task<ActionResult> AddBudget([FromBody] BudgetRequest budgetRequest)
 	{
-		var result = budgetRequest.ToBudget();
-		await _budgetDomain.AddAsync(result);
+		var budget = budgetRequest.ToBudget();
+		var result = await _budgetDomain.AddAsync(budget);
 
 		return CreatedAtAction(nameof(GetBudgetById), new { id = result.Id }, result);
 	}

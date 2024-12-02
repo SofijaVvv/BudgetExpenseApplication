@@ -1,5 +1,4 @@
 using BudgetExpenseSystem.Domain.Exceptions;
-using BudgetExpenseSystem.Domain.Interfaces;
 using BudgetExpenseSystem.Model.Dto.Requests;
 using BudgetExpenseSystem.Model.Models;
 using BudgetExpenseSystem.Repository.Interfaces;
@@ -9,12 +8,12 @@ namespace BudgetExpenseSystem.Domain.Domains;
 public class TransactionDomain
 {
 	private readonly IUnitOfWork _unitOfWork;
-	private readonly IGenericRepository<Transaction> _transactionRepository;
+	private readonly ITransactionRepository _transactionRepository;
 
-	public TransactionDomain(IUnitOfWork unitOfWork)
+	public TransactionDomain(IUnitOfWork unitOfWork, ITransactionRepository transactionRepository)
 	{
 		_unitOfWork = unitOfWork;
-		_transactionRepository = _unitOfWork.GetRepository<Transaction>();
+		_transactionRepository = transactionRepository;
 	}
 
 

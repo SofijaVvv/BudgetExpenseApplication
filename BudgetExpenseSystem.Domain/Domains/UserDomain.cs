@@ -7,12 +7,12 @@ namespace BudgetExpenseSystem.Domain.Domains;
 public class UserDomain
 {
 	private readonly IUnitOfWork _unitOfWork;
-	private readonly IGenericRepository<User> _userRepository;
+	private readonly IUserRepository _userRepository;
 
-	public UserDomain(IUnitOfWork unitOfWork)
+	public UserDomain(IUnitOfWork unitOfWork, IUserRepository userRepository)
 	{
 		_unitOfWork = unitOfWork;
-		_userRepository = _unitOfWork.GetRepository<User>();
+		_userRepository = userRepository;
 	}
 
 	public async Task<List<User>> GetAllAsync()

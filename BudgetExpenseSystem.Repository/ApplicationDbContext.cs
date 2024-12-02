@@ -19,6 +19,7 @@ public class ApplicationDbContext : DbContext
 	public DbSet<Transaction> Transactions { get; set; }
 	public DbSet<Notification> Notifications { get; set; }
 
+
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
 		modelBuilder.Entity<User>(entity =>
@@ -32,23 +33,10 @@ public class ApplicationDbContext : DbContext
 		});
 
 
-		modelBuilder.Entity<Account>(entity =>
-		{
-			entity.HasIndex(u => u.UserId).IsUnique();
-
-			entity.HasOne(a => a.User)
-				.WithOne()
-				.HasForeignKey<Account>(a => a.UserId)
-				.IsRequired();
-		});
-
-
 		modelBuilder.Entity<Budget>(entity =>
 		{
-			entity.HasOne(b => b.User)
-				.WithMany()
-				.HasForeignKey(b => b.UserId)
-				.IsRequired();
+			entity.Property(b => b.Amount)
+				.HasColumnType("decimal(18, 2)");
 
 			entity.HasOne(b => b.Category)
 				.WithMany()

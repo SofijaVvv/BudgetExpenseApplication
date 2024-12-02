@@ -1,19 +1,20 @@
 using BudgetExpenseSystem.Domain.Exceptions;
+using BudgetExpenseSystem.Domain.Interfaces;
 using BudgetExpenseSystem.Model.Dto.Requests;
 using BudgetExpenseSystem.Model.Models;
 using BudgetExpenseSystem.Repository.Interfaces;
 
 namespace BudgetExpenseSystem.Domain.Domains;
 
-public class AccountDomain
+public class AccountDomain : IAccountDomain
 {
 	private readonly IUnitOfWork _unitOfWork;
-	private readonly IGenericRepository<Account> _accountRepository;
+	private readonly IAccountRepository _accountRepository;
 
-	public AccountDomain(IUnitOfWork unitOfWork)
+	public AccountDomain(IUnitOfWork unitOfWork, IAccountRepository accountRepository)
 	{
 		_unitOfWork = unitOfWork;
-		_accountRepository = _unitOfWork.GetRepository<Account>();
+		_accountRepository = accountRepository;
 	}
 
 	public async Task<List<Account>> GetAllAsync()
@@ -53,8 +54,8 @@ public class AccountDomain
 
 	public async Task DeleteAsync(int id)
 	{
-		var accout = await _accountRepository.GetByIdAsync(id);
-		if (accout is null) throw new NotFoundException($"Account Id: {id} not found");
+		var account = await _accountRepository.GetByIdAsync(id);
+		if (account is null) throw new NotFoundException($"Account Id: {id} not found");
 
 		await _accountRepository.DeleteAsync(id);
 		await _unitOfWork.SaveAsync();

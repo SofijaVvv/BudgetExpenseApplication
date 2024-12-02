@@ -10,7 +10,6 @@ public static class BudgetExtentions
 	{
 		return new Budget
 		{
-			UserId = request.UserId,
 			CategoryId = request.CategoryId,
 			BudgetTypeId = request.BudgetTypeId,
 			Amount = request.Amount,
@@ -23,7 +22,6 @@ public static class BudgetExtentions
 		return new BudgetResponse
 		{
 			Id = response.Id,
-			UserId = response.UserId,
 			Category = new CategoryResponse
 			{
 				Id = response.Category.Id,
@@ -38,6 +36,7 @@ public static class BudgetExtentions
 			CreatedDate = response.CreatedDate
 		};
 	}
+
 
 	public static List<BudgetResponse> ToResponse(this List<Budget> response)
 	{

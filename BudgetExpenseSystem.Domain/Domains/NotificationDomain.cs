@@ -8,12 +8,12 @@ namespace BudgetExpenseSystem.Domain.Domains;
 public class NotificationDomain
 {
 	private readonly IUnitOfWork _unitOfWork;
-	private readonly IGenericRepository<Notification> _notificationRepository;
+	private readonly INotificationRepository _notificationRepository;
 
-	public NotificationDomain(IUnitOfWork unitOfWork)
+	public NotificationDomain(IUnitOfWork unitOfWork, INotificationRepository notificationRepository)
 	{
 		_unitOfWork = unitOfWork;
-		_notificationRepository = _unitOfWork.GetRepository<Notification>();
+		_notificationRepository = notificationRepository;
 	}
 
 	public async Task<List<Notification>> GetAllAsync()

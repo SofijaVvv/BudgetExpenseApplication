@@ -1,4 +1,5 @@
 using BudgetExpenseSystem.Domain.Domains;
+using BudgetExpenseSystem.Domain.Interfaces;
 using BudgetExpenseSystem.Model.Dto.Requests;
 using BudgetExpenseSystem.Model.Dto.Response;
 using BudgetExpenseSystem.Model.Extentions;
@@ -11,16 +12,16 @@ namespace BudgetExpenseSystem.Api.Controllers;
 [ApiController]
 public class AccountController : ControllerBase
 {
-	private readonly AccountDomain _accountDomain;
+	private readonly IAccountDomain _accountDomain;
 
-	public AccountController(AccountDomain accountDomain)
+	public AccountController(IAccountDomain accountDomain)
 	{
 		_accountDomain = accountDomain;
 	}
 
 	[HttpGet]
 	[ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<AccountResponse>))]
-	public async Task<ActionResult<List<Account>>> GetAllAccounts()
+	public async Task<ActionResult> GetAllAccounts()
 	{
 		var roles = await _accountDomain.GetAllAsync();
 

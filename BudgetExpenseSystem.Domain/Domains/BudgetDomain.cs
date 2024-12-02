@@ -1,19 +1,21 @@
 using BudgetExpenseSystem.Domain.Exceptions;
+using BudgetExpenseSystem.Domain.Interfaces;
 using BudgetExpenseSystem.Model.Dto.Requests;
+using BudgetExpenseSystem.Model.Dto.Response;
 using BudgetExpenseSystem.Model.Models;
 using BudgetExpenseSystem.Repository.Interfaces;
 
 namespace BudgetExpenseSystem.Domain.Domains;
 
-public class BudgetDomain
+public class BudgetDomain : IBudgetDomain
 {
 	private readonly IUnitOfWork _unitOfWork;
-	private readonly IGenericRepository<Budget> _budgetRepository;
+	private readonly IBudgetRepository _budgetRepository;
 
-	public BudgetDomain(IUnitOfWork unitOfWork)
+	public BudgetDomain(IUnitOfWork unitOfWork, IBudgetRepository budgetRepository)
 	{
 		_unitOfWork = unitOfWork;
-		_budgetRepository = _unitOfWork.GetRepository<Budget>();
+		_budgetRepository = budgetRepository;
 	}
 
 	public async Task<List<Budget>> GetAllAsync()
@@ -29,18 +31,42 @@ public class BudgetDomain
 		return budget;
 	}
 
-	public async Task<Budget> AddAsync(Budget budget)
+	public async Task<BudgetResponse> AddAsync(Budget budget)
 	{
 		_budgetRepository.AddAsync(budget);
-
 		await _unitOfWork.SaveAsync();
-		return budget;
+
+		var savedBudget = await _budgetRepository.GetBudgetByIdAsync(budget.Id);
+		if (savedBudget == null)
+			throw new
+				NotFoundException($"The budget with Id {budget.Id} could not be retrieved after saving.");
+
+		return new BudgetResponse
+		{
+			Id = savedBudget.Id,
+			Category = new CategoryResponse
+			{
+				Id = savedBudget.Category.Id,
+				Name = savedBudget.Category.Name
+			},
+			BudgetType = new BudgetTypeResponse
+			{
+				Id = savedBudget.BudgetType.Id,
+				Name = savedBudget.BudgetType.Name
+			},
+			Amount = savedBudget.Amount,
+			CreatedDate = savedBudget.CreatedDate
+		};
 	}
 
-	public async Task Update(int id, UpdateBudgetRequest budgetRequest)
+	public async Task Update(int id, UpdateBudgetRequest updateBudgetRequest)
 	{
 		var budget = await _budgetRepository.GetByIdAsync(id);
 		if (budget == null) throw new NotFoundException($"Budget Id: {id} not found");
+
+		budget.BudgetTypeId = updateBudgetRequest.BudgetTypeId;
+		budget.CategoryId = updateBudgetRequest.CategoryId;
+		budget.Amount = updateBudgetRequest.Amount;
 
 		await _unitOfWork.SaveAsync();
 	}
@@ -48,7 +74,8 @@ public class BudgetDomain
 	public async Task DeleteAsync(int id)
 	{
 		var budget = await _budgetRepository.GetByIdAsync(id);
-		if(budget == null) throw new NotFoundException($"Budget Id: {id} not found");
+		if (budget == null) throw new NotFoundException($"Budget Id: {id} not found");
+
 		await _budgetRepository.DeleteAsync(id);
 		await _unitOfWork.SaveAsync();
 	}

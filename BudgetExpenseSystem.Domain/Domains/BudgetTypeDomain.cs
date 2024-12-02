@@ -1,5 +1,4 @@
 using BudgetExpenseSystem.Domain.Exceptions;
-using BudgetExpenseSystem.Domain.Interfaces;
 using BudgetExpenseSystem.Model.Dto.Requests;
 using BudgetExpenseSystem.Model.Models;
 using BudgetExpenseSystem.Repository.Interfaces;
@@ -9,12 +8,12 @@ namespace BudgetExpenseSystem.Domain.Domains;
 public class BudgetTypeDomain
 {
 	private readonly IUnitOfWork _unitOfWork;
-	private readonly IGenericRepository<BudgetType> _budgetTypeRepository;
+	private readonly IBudgetTypeRepository _budgetTypeRepository;
 
-	public BudgetTypeDomain(IUnitOfWork unitOfWork)
+	public BudgetTypeDomain(IUnitOfWork unitOfWork, IBudgetTypeRepository budgetTypeRepository)
 	{
 		_unitOfWork = unitOfWork;
-		_budgetTypeRepository = _unitOfWork.GetRepository<BudgetType>();
+		_budgetTypeRepository = budgetTypeRepository;
 	}
 
 	public async Task<List<BudgetType>> GetAllAsync()

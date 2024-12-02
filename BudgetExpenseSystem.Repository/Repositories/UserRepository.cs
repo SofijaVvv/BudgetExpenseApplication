@@ -1,9 +1,10 @@
 using BudgetExpenseSystem.Model.Models;
+using BudgetExpenseSystem.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace BudgetExpenseSystem.Repository.Repositories;
 
-public class UserRepository : GenericRepository<User>
+public class UserRepository : GenericRepository<User>, IUserRepository
 {
 	private readonly ApplicationDbContext _context;
 
@@ -12,18 +13,28 @@ public class UserRepository : GenericRepository<User>
 		_context = context;
 	}
 
-	public override async Task<List<User>> GetAllAsync()
+	public async Task<List<User>> GetAllUsersAsync()
 	{
 		return await _context.Users
 			.Include(u => u.Role)
 			.ToListAsync();
 	}
 
-
-	public override async Task<User?> GetByIdAsync(int id)
+	public async Task<User?> GetUserByIdAsync(int id)
 	{
 		return await _context.Users
 			.Include(u => u.Role)
 			.FirstOrDefaultAsync(u => u.Id == id);
+	}
+
+	public override async Task<List<User>> GetAllAsync()
+	{
+		return await GetAllUsersAsync();
+	}
+
+
+	public override async Task<User?> GetByIdAsync(int id)
+	{
+		return await GetUserByIdAsync(id);
 	}
 }

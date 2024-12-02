@@ -1,9 +1,10 @@
 using BudgetExpenseSystem.Model.Models;
+using BudgetExpenseSystem.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace BudgetExpenseSystem.Repository.Repositories;
 
-public class NotificationRepository : GenericRepository<Notification>
+public class NotificationRepository : GenericRepository<Notification>, INotificationRepository
 {
 	private readonly ApplicationDbContext _context;
 
@@ -12,18 +13,28 @@ public class NotificationRepository : GenericRepository<Notification>
 		_context = context;
 	}
 
-	public override async Task<List<Notification>> GetAllAsync()
+	public async Task<List<Notification>> GetAllNotificationsAsync()
 	{
 		return await _context.Notifications
 			.Include(n => n.User)
 			.ToListAsync();
 	}
 
-
-	public override async Task<Notification?> GetByIdAsync(int id)
+	public async Task<Notification?> GetNotificationByIdAsync(int id)
 	{
 		return await _context.Notifications
 			.Include(n => n.User)
 			.FirstOrDefaultAsync(u => u.Id == id);
+	}
+
+	public override async Task<List<Notification>> GetAllAsync()
+	{
+		return await GetAllNotificationsAsync();
+	}
+
+
+	public override async Task<Notification?> GetByIdAsync(int id)
+	{
+		return await GetNotificationByIdAsync(id);
 	}
 }
