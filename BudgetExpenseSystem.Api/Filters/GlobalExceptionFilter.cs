@@ -24,7 +24,30 @@ public class GlobalExceptionFilter : IExceptionFilter
 					StatusCode = StatusCodes.Status404NotFound
 				};
 				break;
-
+			case NotActiveException notActiveException:
+				errorModel = new ErrorModel
+				{
+					StatusCode = StatusCodes.Status409Conflict,
+					Message = notActiveException.Message,
+					Details = context.Exception.StackTrace
+				};
+				context.Result = new JsonResult(errorModel)
+				{
+					StatusCode = StatusCodes.Status409Conflict
+				};
+				break;
+			case InsufficientFundsException insufficientFundsException:
+				errorModel = new ErrorModel
+				{
+					StatusCode = StatusCodes.Status400BadRequest,
+					Message = insufficientFundsException.Message,
+					Details = context.Exception.StackTrace
+				};
+				context.Result = new JsonResult(errorModel)
+				{
+					StatusCode = StatusCodes.Status400BadRequest
+				};
+				break;
 			default:
 				errorModel = new ErrorModel
 				{

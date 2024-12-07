@@ -31,7 +31,7 @@ namespace BudgetExpenseSystem.Repository.Migrations
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<decimal>("Balance")
-                        .HasColumnType("decimal(65,30)");
+                        .HasColumnType("decimal(18, 2)");
 
                     b.Property<DateOnly>("CreatedDate")
                         .HasColumnType("date");
@@ -159,6 +159,43 @@ namespace BudgetExpenseSystem.Repository.Migrations
                     b.ToTable("Roles");
                 });
 
+            modelBuilder.Entity("BudgetExpenseSystem.Model.Models.ScheduledTransaction", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AccountId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<int>("BudgetId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsRecurring")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<DateTime>("ScheduledDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccountId");
+
+                    b.HasIndex("BudgetId");
+
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("ScheduledTransactions");
+                });
+
             modelBuilder.Entity("BudgetExpenseSystem.Model.Models.Transaction", b =>
                 {
                     b.Property<int>("Id")
@@ -171,7 +208,7 @@ namespace BudgetExpenseSystem.Repository.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(65,30)");
+                        .HasColumnType("decimal(18, 2)");
 
                     b.Property<int>("BudgetId")
                         .HasColumnType("int");
@@ -254,6 +291,33 @@ namespace BudgetExpenseSystem.Repository.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("BudgetExpenseSystem.Model.Models.ScheduledTransaction", b =>
+                {
+                    b.HasOne("BudgetExpenseSystem.Model.Models.Account", "Account")
+                        .WithMany()
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BudgetExpenseSystem.Model.Models.Budget", "Budget")
+                        .WithMany()
+                        .HasForeignKey("BudgetId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BudgetExpenseSystem.Model.Models.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Account");
+
+                    b.Navigation("Budget");
+
+                    b.Navigation("Category");
                 });
 
             modelBuilder.Entity("BudgetExpenseSystem.Model.Models.Transaction", b =>

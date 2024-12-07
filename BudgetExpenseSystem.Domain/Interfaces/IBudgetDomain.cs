@@ -8,7 +8,7 @@ public interface IBudgetDomain
 {
 	Task<List<Budget>> GetAllAsync();
 	Task<Budget> GetByIdAsync(int id);
-	Task<BudgetResponse> AddAsync(Budget budget);
+	Task<Budget> AddAsync(Budget budget);
 	Task Update(int budgetId, UpdateBudgetRequest updateBudgetRequest);
 	Task DeleteAsync(int id);
 }

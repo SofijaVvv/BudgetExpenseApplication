@@ -1,4 +1,4 @@
-using BudgetExpenseSystem.Domain.Domains;
+using BudgetExpenseSystem.Domain.Interfaces;
 using BudgetExpenseSystem.Model.Dto.Requests;
 using BudgetExpenseSystem.Model.Dto.Response;
 using BudgetExpenseSystem.Model.Extentions;
@@ -11,9 +11,9 @@ namespace BudgetExpenseSystem.Api.Controllers;
 [ApiController]
 public class TransactionController : ControllerBase
 {
-	private readonly TransactionDomain _transactionDomain;
+	private readonly ITransactionDomain _transactionDomain;
 
-	public TransactionController(TransactionDomain transactionDomain)
+	public TransactionController(ITransactionDomain transactionDomain)
 	{
 		_transactionDomain = transactionDomain;
 	}
@@ -23,8 +23,8 @@ public class TransactionController : ControllerBase
 	public async Task<ActionResult<List<Transaction>>> GetAllTransactions()
 	{
 		var transactions = await _transactionDomain.GetAllAsync();
-
 		var result = transactions.ToResponse();
+
 		return Ok(result);
 	}
 
@@ -33,8 +33,8 @@ public class TransactionController : ControllerBase
 	public async Task<ActionResult> GetTransactionById([FromRoute] int id)
 	{
 		var transaction = await _transactionDomain.GetByIdAsync(id);
-
 		var result = transaction.ToResponse();
+
 		return Ok(result);
 	}
 
@@ -45,7 +45,7 @@ public class TransactionController : ControllerBase
 		var result = transactionRequest.ToTransaction();
 		await _transactionDomain.AddAsync(result);
 
-		return CreatedAtAction(nameof(GetTransactionById), new { id = result.Id }, result);
+		return CreatedAtAction(nameof(GetTransactionById), new { id = result.Id }, result.ToResponse());
 	}
 
 	[HttpPut("{id}")]

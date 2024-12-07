@@ -1,10 +1,11 @@
 using BudgetExpenseSystem.Domain.Exceptions;
+using BudgetExpenseSystem.Domain.Interfaces;
 using BudgetExpenseSystem.Model.Models;
 using BudgetExpenseSystem.Repository.Interfaces;
 
 namespace BudgetExpenseSystem.Domain.Domains;
 
-public class UserDomain
+public class UserDomain : IUserDomain
 {
 	private readonly IUnitOfWork _unitOfWork;
 	private readonly IUserRepository _userRepository;
@@ -34,13 +35,6 @@ public class UserDomain
 
 		await _unitOfWork.SaveAsync();
 		return user;
-	}
-
-	public async Task Update(User user)
-	{
-		_userRepository.Update(user);
-
-		await _unitOfWork.SaveAsync();
 	}
 
 	public async Task DeleteAsync(int id)

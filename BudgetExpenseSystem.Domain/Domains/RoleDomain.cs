@@ -1,11 +1,12 @@
 using BudgetExpenseSystem.Domain.Exceptions;
+using BudgetExpenseSystem.Domain.Interfaces;
 using BudgetExpenseSystem.Model.Dto.Requests;
 using BudgetExpenseSystem.Model.Models;
 using BudgetExpenseSystem.Repository.Interfaces;
 
 namespace BudgetExpenseSystem.Domain.Domains;
 
-public class RoleDomain
+public class RoleDomain : IRoleDomain
 {
 	private readonly IUnitOfWork _unitOfWork;
 	private readonly IRoleRepository _roleRepository;

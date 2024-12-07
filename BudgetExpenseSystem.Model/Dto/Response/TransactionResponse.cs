@@ -4,7 +4,7 @@ public class TransactionResponse
 {
 	public int Id { get; set; }
 
-	public int AccountId { get; set; }
+	public AccountResponse Account { get; set; }
 
 	public CategoryResponse Category { get; set; }
 

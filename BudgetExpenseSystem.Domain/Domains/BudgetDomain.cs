@@ -2,6 +2,7 @@ using BudgetExpenseSystem.Domain.Exceptions;
 using BudgetExpenseSystem.Domain.Interfaces;
 using BudgetExpenseSystem.Model.Dto.Requests;
 using BudgetExpenseSystem.Model.Dto.Response;
+using BudgetExpenseSystem.Model.Extentions;
 using BudgetExpenseSystem.Model.Models;
 using BudgetExpenseSystem.Repository.Interfaces;
 
@@ -31,32 +32,16 @@ public class BudgetDomain : IBudgetDomain
 		return budget;
 	}
 
-	public async Task<BudgetResponse> AddAsync(Budget budget)
+	public async Task<Budget> AddAsync(Budget budget)
 	{
 		_budgetRepository.AddAsync(budget);
 		await _unitOfWork.SaveAsync();
 
 		var savedBudget = await _budgetRepository.GetBudgetByIdAsync(budget.Id);
 		if (savedBudget == null)
-			throw new
-				NotFoundException($"The budget with Id {budget.Id} could not be retrieved after saving.");
+			throw new NotFoundException($"The budget with Id {budget.Id} could not be retrieved after saving.");
 
-		return new BudgetResponse
-		{
-			Id = savedBudget.Id,
-			Category = new CategoryResponse
-			{
-				Id = savedBudget.Category.Id,
-				Name = savedBudget.Category.Name
-			},
-			BudgetType = new BudgetTypeResponse
-			{
-				Id = savedBudget.BudgetType.Id,
-				Name = savedBudget.BudgetType.Name
-			},
-			Amount = savedBudget.Amount,
-			CreatedDate = savedBudget.CreatedDate
-		};
+		return savedBudget;
 	}
 
 	public async Task Update(int id, UpdateBudgetRequest updateBudgetRequest)

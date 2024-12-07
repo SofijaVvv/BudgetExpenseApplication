@@ -1,4 +1,5 @@
 using BudgetExpenseSystem.Domain.Domains;
+using BudgetExpenseSystem.Domain.Interfaces;
 using BudgetExpenseSystem.Model.Dto.Requests;
 using BudgetExpenseSystem.Model.Dto.Response;
 using BudgetExpenseSystem.Model.Extentions;
@@ -11,9 +12,9 @@ namespace BudgetExpenseSystem.Api.Controllers;
 [ApiController]
 public class RoleController : ControllerBase
 {
-	private readonly RoleDomain _roleDomain;
+	private readonly IRoleDomain _roleDomain;
 
-	public RoleController(RoleDomain roleDomain)
+	public RoleController(IRoleDomain roleDomain)
 	{
 		_roleDomain = roleDomain;
 	}

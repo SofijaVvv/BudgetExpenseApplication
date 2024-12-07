@@ -18,6 +18,7 @@ public class ApplicationDbContext : DbContext
 	public DbSet<Budget> Budgets { get; set; }
 	public DbSet<Transaction> Transactions { get; set; }
 	public DbSet<Notification> Notifications { get; set; }
+	public DbSet<ScheduledTransaction> ScheduledTransactions { get; set; }
 
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -30,6 +31,12 @@ public class ApplicationDbContext : DbContext
 				.WithMany()
 				.HasForeignKey(u => u.RoleId)
 				.IsRequired();
+		});
+
+		modelBuilder.Entity<Account>(entity =>
+		{
+			entity.Property(a => a.Balance)
+				.HasColumnType("decimal(18, 2)");
 		});
 
 
@@ -52,6 +59,9 @@ public class ApplicationDbContext : DbContext
 
 		modelBuilder.Entity<Transaction>(entity =>
 		{
+			entity.Property(t => t.Amount)
+				.HasColumnType("decimal(18, 2)");
+
 			entity.HasOne(t => t.Account)
 				.WithMany()
 				.HasForeignKey(t => t.AccountId)
@@ -68,6 +78,26 @@ public class ApplicationDbContext : DbContext
 				.IsRequired();
 		});
 
+		modelBuilder.Entity<ScheduledTransaction>(entity =>
+		{
+			entity.Property(t => t.Amount)
+				.HasColumnType("decimal(18, 2)");
+
+			entity.HasOne(t => t.Account)
+				.WithMany()
+				.HasForeignKey(t => t.AccountId)
+				.IsRequired();
+
+			entity.HasOne(t => t.Category)
+				.WithMany()
+				.HasForeignKey(t => t.CategoryId)
+				.IsRequired();
+
+			entity.HasOne(t => t.Budget)
+				.WithMany()
+				.HasForeignKey(t => t.BudgetId)
+				.IsRequired();
+		});
 
 		modelBuilder.Entity<Notification>(entity =>
 		{

@@ -1,11 +1,14 @@
 using BudgetExpenseSystem.Domain.Exceptions;
+using BudgetExpenseSystem.Domain.Interfaces;
 using BudgetExpenseSystem.Model.Dto.Requests;
+using BudgetExpenseSystem.Model.Dto.Response;
+using BudgetExpenseSystem.Model.Extentions;
 using BudgetExpenseSystem.Model.Models;
 using BudgetExpenseSystem.Repository.Interfaces;
 
 namespace BudgetExpenseSystem.Domain.Domains;
 
-public class TransactionDomain
+public class TransactionDomain : ITransactionDomain
 {
 	private readonly IUnitOfWork _unitOfWork;
 	private readonly ITransactionRepository _transactionRepository;
@@ -33,9 +36,13 @@ public class TransactionDomain
 	public async Task<Transaction> AddAsync(Transaction transaction)
 	{
 		_transactionRepository.AddAsync(transaction);
-
 		await _unitOfWork.SaveAsync();
-		return transaction;
+
+		var savedTransaction = await _transactionRepository.GetTransactionById(transaction.Id);
+		if (savedTransaction == null)
+			throw new NotFoundException($"The budget with Id {transaction.Id} could not be retrieved after saving.");
+
+		return savedTransaction;
 	}
 
 	public async Task Update(int transactionId, UpdateTransactionRequest updateTransactionRequest)

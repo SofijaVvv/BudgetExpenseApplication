@@ -1,11 +1,12 @@
 using BudgetExpenseSystem.Domain.Exceptions;
+using BudgetExpenseSystem.Domain.Interfaces;
 using BudgetExpenseSystem.Model.Dto.Requests;
 using BudgetExpenseSystem.Model.Models;
 using BudgetExpenseSystem.Repository.Interfaces;
 
 namespace BudgetExpenseSystem.Domain.Domains;
 
-public class NotificationDomain
+public class NotificationDomain : INotificationDomain
 {
 	private readonly IUnitOfWork _unitOfWork;
 	private readonly INotificationRepository _notificationRepository;

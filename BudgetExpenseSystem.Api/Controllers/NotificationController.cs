@@ -1,4 +1,5 @@
 using BudgetExpenseSystem.Domain.Domains;
+using BudgetExpenseSystem.Domain.Interfaces;
 using BudgetExpenseSystem.Model.Dto.Requests;
 using BudgetExpenseSystem.Model.Dto.Response;
 using BudgetExpenseSystem.Model.Extentions;
@@ -11,9 +12,9 @@ namespace BudgetExpenseSystem.Api.Controllers;
 [ApiController]
 public class NotificationController : ControllerBase
 {
-	private readonly NotificationDomain _notificationDomain;
+	private readonly INotificationDomain _notificationDomain;
 
-	public NotificationController(NotificationDomain notificationDomain)
+	public NotificationController(INotificationDomain notificationDomain)
 	{
 		_notificationDomain = notificationDomain;
 	}

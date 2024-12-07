@@ -1,4 +1,5 @@
 using BudgetExpenseSystem.Domain.Domains;
+using BudgetExpenseSystem.Domain.Interfaces;
 using BudgetExpenseSystem.Model.Dto.Requests;
 using BudgetExpenseSystem.Model.Dto.Response;
 using BudgetExpenseSystem.Model.Extentions;
@@ -11,9 +12,9 @@ namespace BudgetExpenseSystem.Api.Controllers;
 [ApiController]
 public class CategoryController : ControllerBase
 {
-	private readonly CategoryDomain _categoryDomain;
+	private readonly ICategoryDomain _categoryDomain;
 
-	public CategoryController(CategoryDomain categoryDomain)
+	public CategoryController(ICategoryDomain categoryDomain)
 	{
 		_categoryDomain = categoryDomain;
 	}
@@ -45,7 +46,7 @@ public class CategoryController : ControllerBase
 		var result = categoryRequest.ToCategory();
 		await _categoryDomain.AddAsync(result);
 
-		return CreatedAtAction(nameof(GetCategoryById), new { id = result.Id }, result);
+		return CreatedAtAction(nameof(GetCategoryById), new { id = result.Id }, result.ToResponse());
 	}
 
 	[HttpPut("{id}")]

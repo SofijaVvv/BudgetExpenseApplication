@@ -45,7 +45,7 @@ public class AccountController : ControllerBase
 		var result = account.ToAccount();
 		await _accountDomain.AddAsync(result);
 
-		return CreatedAtAction(nameof(GetAccountById), new { id = result.Id }, result);
+		return CreatedAtAction(nameof(GetAccountById), new { id = result.Id }, result.ToResponse());
 	}
 
 	[HttpPut("{id}")]

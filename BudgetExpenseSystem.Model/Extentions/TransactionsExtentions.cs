@@ -24,11 +24,16 @@ public static class TransactionsExtentions
 		return new TransactionResponse
 		{
 			Id = response.Id,
-			AccountId = response.AccountId,
+			Account = new AccountResponse
+			{
+				Id = response.Account.Id,
+				Balance = response.Account.Balance
+			},
 			Category = new CategoryResponse
 			{
 				Id = response.Category.Id,
-				Name = response.Category.Name
+				Name = response.Category.Name,
+				Description = response.Category.Description
 			},
 			BudgetId = response.BudgetId,
 			Amount = response.Amount,
@@ -39,6 +44,6 @@ public static class TransactionsExtentions
 	public static List<TransactionResponse> ToResponse(this List<Transaction
 	> response)
 	{
-		return response.Select(notification => notification.ToResponse()).ToList();
+		return response.Select(transaction => transaction.ToResponse()).ToList();
 	}
 }

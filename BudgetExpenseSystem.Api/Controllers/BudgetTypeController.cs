@@ -1,4 +1,5 @@
 using BudgetExpenseSystem.Domain.Domains;
+using BudgetExpenseSystem.Domain.Interfaces;
 using BudgetExpenseSystem.Model.Dto.Requests;
 using BudgetExpenseSystem.Model.Dto.Response;
 using BudgetExpenseSystem.Model.Extentions;
@@ -11,9 +12,9 @@ namespace BudgetExpenseSystem.Api.Controllers;
 [ApiController]
 public class BudgetTypeController : ControllerBase
 {
-	private readonly BudgetTypeDomain _budgetTypeDomain;
+	private readonly IBudgetTypeDomain _budgetTypeDomain;
 
-	public BudgetTypeController(BudgetTypeDomain budgetTypeDomain)
+	public BudgetTypeController(IBudgetTypeDomain budgetTypeDomain)
 	{
 		_budgetTypeDomain = budgetTypeDomain;
 	}
@@ -23,8 +24,8 @@ public class BudgetTypeController : ControllerBase
 	public async Task<ActionResult<List<BudgetType>>> GetAllBudgetTypes()
 	{
 		var budgetTypes = await _budgetTypeDomain.GetAllAsync();
-
 		var result = budgetTypes.ToResponse();
+
 		return Ok(result);
 	}
 
@@ -33,8 +34,8 @@ public class BudgetTypeController : ControllerBase
 	public async Task<ActionResult> GetBudgetTypeById([FromRoute] int id)
 	{
 		var budgetType = await _budgetTypeDomain.GetByIdAsync(id);
-
 		var result = budgetType.ToResponse();
+
 		return Ok(result);
 	}
 
@@ -45,7 +46,7 @@ public class BudgetTypeController : ControllerBase
 		var result = budgetTypeRequest.ToBudgetType();
 		await _budgetTypeDomain.AddAsync(result);
 
-		return CreatedAtAction(nameof(GetBudgetTypeById), new { id = result.Id }, result);
+		return CreatedAtAction(nameof(GetBudgetTypeById), new { id = result.Id }, result.ToResponse());
 	}
 
 	[HttpPut("{id}")]

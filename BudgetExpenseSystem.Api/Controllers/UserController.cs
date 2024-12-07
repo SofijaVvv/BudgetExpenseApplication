@@ -1,4 +1,5 @@
 using BudgetExpenseSystem.Domain.Domains;
+using BudgetExpenseSystem.Domain.Interfaces;
 using BudgetExpenseSystem.Model.Dto.Requests;
 using BudgetExpenseSystem.Model.Dto.Response;
 using BudgetExpenseSystem.Model.Extentions;
@@ -11,9 +12,9 @@ namespace BudgetExpenseSystem.Api.Controllers;
 [ApiController]
 public class UserController : ControllerBase
 {
-	private readonly UserDomain _userDomain;
+	private readonly IUserDomain _userDomain;
 
-	public UserController(UserDomain userDomain)
+	public UserController(IUserDomain userDomain)
 	{
 		_userDomain = userDomain;
 	}

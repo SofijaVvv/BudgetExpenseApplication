@@ -27,6 +27,6 @@ public static class RoleExtentions
 
 	public static List<RoleResponse> ToResponse(this List<Role> response)
 	{
-		return response.Select(notification => notification.ToResponse()).ToList();
+		return response.Select(role => role.ToResponse()).ToList();
 	}
 }

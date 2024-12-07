@@ -23,8 +23,8 @@ public class BudgetController : ControllerBase
 	public async Task<ActionResult<List<Budget>>> GetAllBudgets()
 	{
 		var budgets = await _budgetDomain.GetAllAsync();
-
 		var result = budgets.ToResponse();
+
 		return Ok(result);
 	}
 
@@ -33,8 +33,8 @@ public class BudgetController : ControllerBase
 	public async Task<ActionResult> GetBudgetById([FromRoute] int id)
 	{
 		var budget = await _budgetDomain.GetByIdAsync(id);
-
 		var result = budget.ToResponse();
+
 		return Ok(result);
 	}
 
@@ -42,10 +42,10 @@ public class BudgetController : ControllerBase
 	[ProducesResponseType(StatusCodes.Status201Created, Type = typeof(BudgetResponse))]
 	public async Task<ActionResult> AddBudget([FromBody] BudgetRequest budgetRequest)
 	{
-		var budget = budgetRequest.ToBudget();
-		var result = await _budgetDomain.AddAsync(budget);
+		var result = budgetRequest.ToBudget();
+		await _budgetDomain.AddAsync(result);
 
-		return CreatedAtAction(nameof(GetBudgetById), new { id = result.Id }, result);
+		return CreatedAtAction(nameof(GetBudgetById), new { id = result.Id }, result.ToResponse());
 	}
 
 	[HttpPut("{id}")]
