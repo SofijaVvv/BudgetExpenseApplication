@@ -4,6 +4,7 @@ using BudgetExpenseSystem.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BudgetExpenseSystem.Repository.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241217130931_FixTables")]
+    partial class FixTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -192,9 +195,6 @@ namespace BudgetExpenseSystem.Repository.Migrations
                     b.Property<bool>("IsRecurring")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<string>("JobId")
-                        .HasColumnType("longtext");
-
                     b.Property<DateTime>("ScheduledDate")
                         .HasColumnType("datetime(6)");
 
@@ -254,6 +254,10 @@ namespace BudgetExpenseSystem.Repository.Migrations
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("varchar(255)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()

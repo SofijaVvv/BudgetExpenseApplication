@@ -1,6 +1,5 @@
+using BudgetExpenseSystem.Api.Extentions;
 using BudgetExpenseSystem.Api.Filters;
-using BudgetExpenseSystem.Background;
-using BudgetExpenseSystem.Background.Interface;
 using BudgetExpenseSystem.Domain.Domains;
 using BudgetExpenseSystem.Domain.Interfaces;
 using BudgetExpenseSystem.Repository;
@@ -39,11 +38,9 @@ builder.Services.AddScoped<IBudgetTypeRepository, BudgetTypeRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IScheduledTransactionDomain, ScheduledTransactionDomain>();
 builder.Services.AddScoped<IScheduledTransactionRepository, ScheduledTransactionRepository>();
-builder.Services.AddScoped<IScheduledTransactionService, ScheduledTransactionService>();
+builder.Services.AddScoped<IScheduledTransactionDomain, ScheduledTransactionDomain>();
 builder.Services.AddLogging();
-
 
 var connectionString = builder.Configuration.GetConnectionString("ConnectionDefault")
                        ?? throw new Exception("Connection string 'ConnectionDefault' is not configured or is missing.");
@@ -67,6 +64,17 @@ builder.Services.AddHangfire(config =>
 		}));
 });
 builder.Services.AddHangfireServer();
+builder.Services.AddSwaggerWithJwtAuth();
+
+
+var secretKey = builder.Configuration["JwtSettings:SecretKey"]
+                ?? throw new Exception("JwtSettings:SecretKey not found in configuration");
+builder.Services.AddJwtAuthentication(secretKey);
+
+builder.Services.AddAuthorization(
+	options => options.AddPolicies()
+);
+
 
 var app = builder.Build();
 
@@ -74,9 +82,8 @@ if (app.Environment.IsDevelopment())
 {
 	app.UseSwagger();
 	app.UseSwaggerUI();
+	app.UseHangfireDashboard();
 }
-
-app.UseHangfireDashboard("/hangfire");
 
 app.UseHttpsRedirection();
 

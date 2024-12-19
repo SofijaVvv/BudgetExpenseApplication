@@ -1,9 +1,9 @@
-using BudgetExpenseSystem.Domain.Domains;
 using BudgetExpenseSystem.Domain.Interfaces;
 using BudgetExpenseSystem.Model.Dto.Requests;
 using BudgetExpenseSystem.Model.Dto.Response;
 using BudgetExpenseSystem.Model.Extentions;
 using BudgetExpenseSystem.Model.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BudgetExpenseSystem.Api.Controllers;
@@ -20,6 +20,7 @@ public class UserController : ControllerBase
 	}
 
 	[HttpGet]
+	[Authorize(Policy = "AdminOnly")]
 	[ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<UserResponse>))]
 	public async Task<ActionResult<List<User>>> GetAllUsers()
 	{
@@ -30,6 +31,7 @@ public class UserController : ControllerBase
 	}
 
 	[HttpGet("{id}")]
+	[Authorize(Policy = "AdminOnly")]
 	[ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserResponse))]
 	public async Task<IActionResult> GetUserById([FromRoute] int id)
 	{
@@ -39,17 +41,24 @@ public class UserController : ControllerBase
 		return Ok(result);
 	}
 
-	[HttpPost]
+	[HttpPost("Register")]
 	[ProducesResponseType(StatusCodes.Status201Created, Type = typeof(UserResponse))]
-	public async Task<ActionResult> AddUser([FromBody] UserRequest userRequest)
+	public async Task<ActionResult> RegisterUser([FromBody] UserRequest userRequest)
 	{
-		var result = userRequest.ToUser();
+		await _userDomain.RegisterUserAsync(userRequest);
+		return Ok("User registered successfully.");
+	}
 
-		await _userDomain.AddAsync(result);
-		return CreatedAtAction(nameof(GetUserById), new { id = result.Id }, result);
+	[HttpPost("Login")]
+	public async Task<IActionResult> LoginUser([FromBody] UserRequest userRequest)
+	{
+		var token = await _userDomain.LoginUserAsync(userRequest.Email, userRequest.Password);
+
+		return Ok(new TokenResponse { Token = token.Token });
 	}
 
 	[HttpDelete("{id}")]
+	[Authorize(Policy = "AdminOnly")]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
 	public async Task<ActionResult> DeleteUser([FromRoute] int id)
 	{

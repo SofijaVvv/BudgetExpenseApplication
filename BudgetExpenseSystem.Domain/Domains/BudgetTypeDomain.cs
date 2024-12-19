@@ -1,8 +1,6 @@
 using BudgetExpenseSystem.Domain.Exceptions;
 using BudgetExpenseSystem.Domain.Interfaces;
 using BudgetExpenseSystem.Model.Dto.Requests;
-using BudgetExpenseSystem.Model.Dto.Response;
-using BudgetExpenseSystem.Model.Extentions;
 using BudgetExpenseSystem.Model.Models;
 using BudgetExpenseSystem.Repository.Interfaces;
 

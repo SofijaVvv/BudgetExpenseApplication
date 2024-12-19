@@ -1,24 +1,22 @@
-using BudgetExpenseSystem.Background.Interface;
 using BudgetExpenseSystem.Domain.Interfaces;
 using BudgetExpenseSystem.Model.Dto.Requests;
 using BudgetExpenseSystem.Model.Dto.Response;
 using BudgetExpenseSystem.Model.Extentions;
 using BudgetExpenseSystem.Model.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BudgetExpenseSystem.Api.Controllers;
 
+[Authorize(Policy = "UserOnly")]
 [Route("api/[controller]s")]
 [ApiController]
 public class ScheduledTransactionController : ControllerBase
 {
-	private readonly IScheduledTransactionService _scheduledTransactionService;
 	private readonly IScheduledTransactionDomain _scheduledTransactionDomain;
 
-	public ScheduledTransactionController(IScheduledTransactionService scheduledTransactionService,
-		IScheduledTransactionDomain scheduledTransactionDomain)
+	public ScheduledTransactionController(IScheduledTransactionDomain scheduledTransactionDomain)
 	{
-		_scheduledTransactionService = scheduledTransactionService;
 		_scheduledTransactionDomain = scheduledTransactionDomain;
 	}
 
@@ -50,7 +48,7 @@ public class ScheduledTransactionController : ControllerBase
 		[FromBody] ScheduleTransactionRequest scheduleTransactionRequest)
 	{
 		var result = scheduleTransactionRequest.ToScheduledTransaction();
-		await _scheduledTransactionService.ScheduleTransactionAsync(result);
+		await _scheduledTransactionDomain.ScheduleTransactionAsync(result);
 
 		return CreatedAtAction(nameof(GetScheduledTransactionById), new { id = result.Id }, result.ToResponse());
 	}
@@ -61,7 +59,7 @@ public class ScheduledTransactionController : ControllerBase
 		[FromRoute] int id,
 		[FromBody] UpdateScheduleTransactionRequest updateScheduleTransactionRequest)
 	{
-		await _scheduledTransactionService.UpdateScheduledTransactionAsync(id, updateScheduleTransactionRequest);
+		await _scheduledTransactionDomain.UpdateScheduledTransactionAsync(id, updateScheduleTransactionRequest);
 
 		return NoContent();
 	}
@@ -70,7 +68,7 @@ public class ScheduledTransactionController : ControllerBase
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
 	public async Task<ActionResult> DeleteScheduledTransaction([FromRoute] int id)
 	{
-		await _scheduledTransactionService.DeleteScheduledTransactionAsync(id);
+		await _scheduledTransactionDomain.DeleteScheduledTransactionAsync(id);
 		return NoContent();
 	}
 }

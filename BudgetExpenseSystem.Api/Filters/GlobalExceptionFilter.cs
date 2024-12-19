@@ -24,7 +24,7 @@ public class GlobalExceptionFilter : IExceptionFilter
 					StatusCode = StatusCodes.Status404NotFound
 				};
 				break;
-			case NotActiveException notActiveException:
+			case BadRequestException notActiveException:
 				errorModel = new ErrorModel
 				{
 					StatusCode = StatusCodes.Status409Conflict,

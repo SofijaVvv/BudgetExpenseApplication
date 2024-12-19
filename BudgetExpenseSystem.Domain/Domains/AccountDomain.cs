@@ -32,12 +32,14 @@ public class AccountDomain : IAccountDomain
 	}
 
 
-	public async Task<Account> AddAsync(Account account)
+	public async Task<Account?> AddAsync(Account account)
 	{
 		_accountRepository.AddAsync(account);
-
 		await _unitOfWork.SaveAsync();
-		return account;
+
+		var savedAccount = await _accountRepository.GetByIdAsync(account.Id);
+
+		return savedAccount;
 	}
 
 

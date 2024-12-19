@@ -1,7 +1,15 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
 using BudgetExpenseSystem.Domain.Exceptions;
 using BudgetExpenseSystem.Domain.Interfaces;
+using BudgetExpenseSystem.Model.Dto.Requests;
+using BudgetExpenseSystem.Model.Dto.Response;
 using BudgetExpenseSystem.Model.Models;
 using BudgetExpenseSystem.Repository.Interfaces;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 
 namespace BudgetExpenseSystem.Domain.Domains;
 
@@ -9,11 +17,17 @@ public class UserDomain : IUserDomain
 {
 	private readonly IUnitOfWork _unitOfWork;
 	private readonly IUserRepository _userRepository;
+	private readonly IRoleRepository _roleRepository;
+	private readonly string _jwtSecretKey;
 
-	public UserDomain(IUnitOfWork unitOfWork, IUserRepository userRepository)
+	public UserDomain(IUnitOfWork unitOfWork, IUserRepository userRepository, IConfiguration configuration,
+		IRoleRepository roleRepository)
 	{
 		_unitOfWork = unitOfWork;
+		_roleRepository = roleRepository;
 		_userRepository = userRepository;
+		_jwtSecretKey = configuration["JwtSettings:SecretKey"]
+		                ?? throw new Exception("JwtSettings:SecretKey not found in configuration");
 	}
 
 	public async Task<List<User>> GetAllAsync()
@@ -29,12 +43,51 @@ public class UserDomain : IUserDomain
 		return user;
 	}
 
-	public async Task<User> AddAsync(User user)
+	public async Task<User> RegisterUserAsync(UserRequest userRequest)
 	{
-		_userRepository.AddAsync(user);
+		_ = await _userRepository.GetUserEmailAsync(userRequest.Email) ??
+		    throw new Exception($"User with email {userRequest.Email} already exists.");
 
+		var salt = GenerateSalt();
+		var passwordHash = HashPassword(userRequest.Password, salt);
+
+		var role = await _roleRepository.GetByIdAsync(userRequest.RoleId);
+		if (role == null) throw new NotFoundException($"Role with Id {userRequest.RoleId} not found");
+
+		var user = new User
+		{
+			Email = userRequest.Email,
+			PasswordHash = passwordHash,
+			PasswordSalt = salt,
+			Role = role
+		};
+
+
+		_userRepository.AddAsync(user);
 		await _unitOfWork.SaveAsync();
+
 		return user;
+	}
+
+	public async Task<UserResponse?> LoginUserAsync(string email, string password)
+	{
+		var user = await _userRepository.GetUserEmailAsync(email);
+		if (user == null) throw new NotFoundException("User doesn't exist");
+
+		var role = await _roleRepository.GetByIdAsync(user.RoleId);
+		if (role == null) throw new NotFoundException($"Role Id: {user.RoleId} not found");
+
+		var hashedPassword = HashPassword(password, user.PasswordSalt);
+		if (hashedPassword != user.PasswordHash) throw new BadRequestException("Invalid password");
+
+		var token = GenerateJwtToken(user);
+
+		return new UserResponse
+		{
+			Token = token,
+			Email = email,
+			RoleId = role.Id
+		};
 	}
 
 	public async Task DeleteAsync(int id)
@@ -44,5 +97,44 @@ public class UserDomain : IUserDomain
 
 		await _userRepository.DeleteAsync(id);
 		await _unitOfWork.SaveAsync();
+	}
+
+	private static string GenerateSalt()
+	{
+		var salt = new byte[16];
+		RandomNumberGenerator.Fill(salt);
+		return Convert.ToBase64String(salt);
+	}
+
+	private string GenerateJwtToken(User user)
+	{
+		var claims = new List<Claim>
+		{
+			new("sub", user.Id.ToString()),
+			new("email", user.Email),
+			new("role", user.Role.Name)
+		};
+
+		var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSecretKey));
+		var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+		var token = new JwtSecurityToken(
+			null,
+			null,
+			claims,
+			expires: DateTime.Now.AddHours(5),
+			signingCredentials: creds);
+
+		return new JwtSecurityTokenHandler().WriteToken(token);
+	}
+
+	private static string HashPassword(string password, string salt)
+	{
+		using (var hmac = new HMACSHA512(Convert.FromBase64String(salt)))
+		{
+			var passwordBytes = Encoding.UTF8.GetBytes(password);
+			var hash = hmac.ComputeHash(passwordBytes);
+			return Convert.ToBase64String(hash);
+		}
 	}
 }

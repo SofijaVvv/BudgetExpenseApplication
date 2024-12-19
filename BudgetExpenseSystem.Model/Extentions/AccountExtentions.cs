@@ -10,6 +10,7 @@ public static class AccountExtentions
 	{
 		return new Account
 		{
+			UserId = request.UserId,
 			Balance = request.Balance,
 			CreatedDate = request.CreatedDate
 		};
@@ -20,6 +21,7 @@ public static class AccountExtentions
 		return new AccountResponse
 		{
 			Id = response.Id,
+			UserId = response.UserId,
 			Balance = response.Balance,
 			CreatedDate = response.CreatedDate
 		};

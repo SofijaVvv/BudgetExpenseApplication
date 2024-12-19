@@ -3,10 +3,12 @@ using BudgetExpenseSystem.Model.Dto.Requests;
 using BudgetExpenseSystem.Model.Dto.Response;
 using BudgetExpenseSystem.Model.Extentions;
 using BudgetExpenseSystem.Model.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BudgetExpenseSystem.Api.Controllers;
 
+[Authorize(Policy = "UserOnly")]
 [Route("api/[controller]s")]
 [ApiController]
 public class TransactionController : ControllerBase

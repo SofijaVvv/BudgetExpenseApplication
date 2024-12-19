@@ -9,6 +9,7 @@
     <ItemGroup>
         <PackageReference Include="Hangfire" Version="1.8.17"/>
         <PackageReference Include="Hangfire.MySqlStorage" Version="2.0.3"/>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.10"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.10">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -19,7 +20,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\BudgetExpenseSystem.BackgroundService\BudgetExpenseSystem.BackgroundService.csproj"/>
         <ProjectReference Include="..\BudgetExpenseSystem.Domain\BudgetExpenseSystem.Domain.csproj"/>
         <ProjectReference Include="..\BudgetExpenseSystem.Model\BudgetExpenseSystem.Model.csproj"/>
         <ProjectReference Include="..\BudgetExpenseSystem.Repository\BudgetExpenseSystem.Repository.csproj"/>

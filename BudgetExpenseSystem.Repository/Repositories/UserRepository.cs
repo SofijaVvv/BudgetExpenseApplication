@@ -32,6 +32,11 @@ public class UserRepository : GenericRepository<User>, IUserRepository
 		return await GetAllUsersAsync();
 	}
 
+	public async Task<User?> GetUserEmailAsync(string email)
+	{
+		return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+	}
+
 
 	public override async Task<User?> GetByIdAsync(int id)
 	{

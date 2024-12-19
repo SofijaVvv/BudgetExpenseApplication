@@ -6,11 +6,11 @@ public class Transaction
 {
 	[Key] public int Id { get; set; }
 
-	public int AccountId { get; set; }
+	[Required] public int AccountId { get; set; }
 
-	public int CategoryId { get; set; }
+	[Required] public int CategoryId { get; set; }
 
-	public int BudgetId { get; set; }
+	[Required] public int BudgetId { get; set; }
 
 	[Required] public decimal Amount { get; set; }
 

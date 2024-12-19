@@ -1,5 +1,4 @@
 using BudgetExpenseSystem.Model.Dto.Requests;
-using BudgetExpenseSystem.Model.Dto.Response;
 using BudgetExpenseSystem.Model.Models;
 
 namespace BudgetExpenseSystem.Domain.Interfaces;

@@ -21,6 +21,7 @@ public class BudgetRepository : GenericRepository<Budget>, IBudgetRepository
 		var budget = await _context.Budgets
 			.Include(b => b.Category)
 			.Include(b => b.BudgetType)
+			.Include(b => b.User)
 			.ToListAsync();
 
 		_logger.LogInformation("Fetched {count} budgets", budget.Count);
@@ -33,6 +34,7 @@ public class BudgetRepository : GenericRepository<Budget>, IBudgetRepository
 		var budget = await _context.Budgets
 			.Include(b => b.Category)
 			.Include(b => b.BudgetType)
+			.Include(b => b.User)
 			.FirstOrDefaultAsync(b => b.Id == id);
 
 		return budget;

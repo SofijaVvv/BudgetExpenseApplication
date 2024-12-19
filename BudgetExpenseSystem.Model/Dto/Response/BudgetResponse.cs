@@ -4,6 +4,7 @@ public class BudgetResponse
 {
 	public int Id { get; set; }
 
+	public int UserId { get; set; }
 	public CategoryResponse Category { get; set; }
 
 	public BudgetTypeResponse BudgetType { get; set; }

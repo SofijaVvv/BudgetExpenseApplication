@@ -6,7 +6,7 @@ public class Budget
 {
 	[Key] public int Id { get; set; }
 
-	//TODO Add UserId column
+	public int UserId { get; set; }
 
 	[Required] public int CategoryId { get; set; }
 
@@ -18,4 +18,6 @@ public class Budget
 
 	public virtual Category Category { get; set; }
 	public virtual BudgetType BudgetType { get; set; }
+
+	public virtual User User { get; set; }
 }

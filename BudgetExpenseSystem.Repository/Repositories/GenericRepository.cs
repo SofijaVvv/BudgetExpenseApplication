@@ -5,13 +5,11 @@ namespace BudgetExpenseSystem.Repository.Repositories;
 
 public class GenericRepository<T> : IGenericRepository<T> where T : class
 {
-	private readonly ApplicationDbContext _context;
 	private readonly DbSet<T> _dbSet;
 
 	public GenericRepository(ApplicationDbContext context)
 	{
-		_context = context;
-		_dbSet = _context.Set<T>();
+		_dbSet = context.Set<T>();
 	}
 
 
