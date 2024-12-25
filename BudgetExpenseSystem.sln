@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BudgetExpenseSystem.Model",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BudgetExpenseSystem.Repository", "BudgetExpenseSystem.Repository\BudgetExpenseSystem.Repository.csproj", "{F6495DEB-760B-451A-BA01-F2CB6122AFEF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BudgetExpenseSystem.WebSocket", "BudgetExpenseSystem.WebSocket\BudgetExpenseSystem.WebSocket.csproj", "{F69B2FAD-1A09-4EF3-A0AA-C0EB94BE18B5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{F6495DEB-760B-451A-BA01-F2CB6122AFEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F6495DEB-760B-451A-BA01-F2CB6122AFEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F6495DEB-760B-451A-BA01-F2CB6122AFEF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F69B2FAD-1A09-4EF3-A0AA-C0EB94BE18B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F69B2FAD-1A09-4EF3-A0AA-C0EB94BE18B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F69B2FAD-1A09-4EF3-A0AA-C0EB94BE18B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F69B2FAD-1A09-4EF3-A0AA-C0EB94BE18B5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -14,10 +14,13 @@ namespace BudgetExpenseSystem.Api.Controllers;
 public class ScheduledTransactionController : ControllerBase
 {
 	private readonly IScheduledTransactionDomain _scheduledTransactionDomain;
+	private readonly IScheduledTransactionHandlerDomain _scheduledTransactionHandlerDomain;
 
-	public ScheduledTransactionController(IScheduledTransactionDomain scheduledTransactionDomain)
+	public ScheduledTransactionController(IScheduledTransactionDomain scheduledTransactionDomain,
+		IScheduledTransactionHandlerDomain scheduledTransactionHandlerDomain)
 	{
 		_scheduledTransactionDomain = scheduledTransactionDomain;
+		_scheduledTransactionHandlerDomain = scheduledTransactionHandlerDomain;
 	}
 
 	[HttpGet]
@@ -48,7 +51,7 @@ public class ScheduledTransactionController : ControllerBase
 		[FromBody] ScheduleTransactionRequest scheduleTransactionRequest)
 	{
 		var result = scheduleTransactionRequest.ToScheduledTransaction();
-		await _scheduledTransactionDomain.ScheduleTransactionAsync(result);
+		await _scheduledTransactionHandlerDomain.ScheduleTransactionAsync(result);
 
 		return CreatedAtAction(nameof(GetScheduledTransactionById), new { id = result.Id }, result.ToResponse());
 	}
@@ -59,7 +62,7 @@ public class ScheduledTransactionController : ControllerBase
 		[FromRoute] int id,
 		[FromBody] UpdateScheduleTransactionRequest updateScheduleTransactionRequest)
 	{
-		await _scheduledTransactionDomain.UpdateScheduledTransactionAsync(id, updateScheduleTransactionRequest);
+		await _scheduledTransactionHandlerDomain.UpdateScheduledTransactionAsync(id, updateScheduleTransactionRequest);
 
 		return NoContent();
 	}
@@ -68,7 +71,7 @@ public class ScheduledTransactionController : ControllerBase
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
 	public async Task<ActionResult> DeleteScheduledTransaction([FromRoute] int id)
 	{
-		await _scheduledTransactionDomain.DeleteScheduledTransactionAsync(id);
+		await _scheduledTransactionHandlerDomain.DeleteScheduledTransactionAsync(id);
 		return NoContent();
 	}
 }

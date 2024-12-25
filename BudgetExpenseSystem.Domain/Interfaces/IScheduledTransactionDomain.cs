@@ -10,9 +10,4 @@ public interface IScheduledTransactionDomain
 	Task<ScheduledTransaction> GetByIdAsync(int id);
 	Task Update(int scheduledTransactionId, UpdateScheduleTransactionRequest updateScheduleTransactionRequest);
 	Task DeleteAsync(int id);
-	Task ScheduleTransactionAsync(ScheduledTransaction transaction);
-	Task DeleteScheduledTransactionAsync(int scheduledTransactionId);
-
-	Task UpdateScheduledTransactionAsync(int scheduledTransactionId,
-		UpdateScheduleTransactionRequest updateScheduleTransaction);
 }

@@ -25,4 +25,8 @@
         <ProjectReference Include="..\BudgetExpenseSystem.Repository\BudgetExpenseSystem.Repository.csproj"/>
     </ItemGroup>
 
+    <ItemGroup>
+        <None Include="wwwroot\test.html"/>
+    </ItemGroup>
+
 </Project>

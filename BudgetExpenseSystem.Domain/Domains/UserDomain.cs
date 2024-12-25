@@ -45,8 +45,8 @@ public class UserDomain : IUserDomain
 
 	public async Task<User> RegisterUserAsync(UserRequest userRequest)
 	{
-		_ = await _userRepository.GetUserEmailAsync(userRequest.Email) ??
-		    throw new Exception($"User with email {userRequest.Email} already exists.");
+		var existingUser = await _userRepository.GetUserEmailAsync(userRequest.Email);
+		if (existingUser is not null) throw new Exception($"User with email {userRequest.Email} already exists.");
 
 		var salt = GenerateSalt();
 		var passwordHash = HashPassword(userRequest.Password, salt);
@@ -54,7 +54,7 @@ public class UserDomain : IUserDomain
 		var role = await _roleRepository.GetByIdAsync(userRequest.RoleId);
 		if (role == null) throw new NotFoundException($"Role with Id {userRequest.RoleId} not found");
 
-		var user = new User
+		var newUser = new User
 		{
 			Email = userRequest.Email,
 			PasswordHash = passwordHash,
@@ -63,10 +63,10 @@ public class UserDomain : IUserDomain
 		};
 
 
-		_userRepository.AddAsync(user);
+		_userRepository.AddAsync(newUser);
 		await _unitOfWork.SaveAsync();
 
-		return user;
+		return newUser;
 	}
 
 	public async Task<UserResponse?> LoginUserAsync(string email, string password)
@@ -110,9 +110,9 @@ public class UserDomain : IUserDomain
 	{
 		var claims = new List<Claim>
 		{
-			new("sub", user.Id.ToString()),
+			new(ClaimTypes.NameIdentifier, user.Id.ToString()),
 			new("email", user.Email),
-			new("role", user.Role.Name)
+			new(ClaimTypes.Role, user.Role.Name)
 		};
 
 		var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSecretKey));

@@ -3,6 +3,8 @@ using BudgetExpenseSystem.Domain.Interfaces;
 using BudgetExpenseSystem.Model.Dto.Requests;
 using BudgetExpenseSystem.Model.Models;
 using BudgetExpenseSystem.Repository.Interfaces;
+using BudgetExpenseSystem.WebSocket.Hub;
+using Microsoft.AspNetCore.SignalR;
 
 namespace BudgetExpenseSystem.Domain.Domains;
 
@@ -10,11 +12,14 @@ public class NotificationDomain : INotificationDomain
 {
 	private readonly IUnitOfWork _unitOfWork;
 	private readonly INotificationRepository _notificationRepository;
+	private readonly IHubContext<NotificationHub> _hubContext;
 
-	public NotificationDomain(IUnitOfWork unitOfWork, INotificationRepository notificationRepository)
+	public NotificationDomain(IUnitOfWork unitOfWork, INotificationRepository notificationRepository,
+		IHubContext<NotificationHub> hubContext)
 	{
 		_unitOfWork = unitOfWork;
 		_notificationRepository = notificationRepository;
+		_hubContext = hubContext;
 	}
 
 	public async Task<List<Notification>> GetAllAsync()
@@ -35,8 +40,10 @@ public class NotificationDomain : INotificationDomain
 	public async Task<Notification> AddAsync(Notification notification)
 	{
 		_notificationRepository.AddAsync(notification);
-
 		await _unitOfWork.SaveAsync();
+
+		await _hubContext.Clients.User(notification.UserId.ToString())
+			.SendAsync("ReceiveTransactionNotification", notification.Message);
 		return notification;
 	}
 

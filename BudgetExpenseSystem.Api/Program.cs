@@ -5,8 +5,11 @@ using BudgetExpenseSystem.Domain.Interfaces;
 using BudgetExpenseSystem.Repository;
 using BudgetExpenseSystem.Repository.Interfaces;
 using BudgetExpenseSystem.Repository.Repositories;
+using BudgetExpenseSystem.WebSocket;
+using BudgetExpenseSystem.WebSocket.Hub;
 using Hangfire;
 using Hangfire.MySql;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -40,6 +43,8 @@ builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IScheduledTransactionRepository, ScheduledTransactionRepository>();
 builder.Services.AddScoped<IScheduledTransactionDomain, ScheduledTransactionDomain>();
+builder.Services.AddScoped<IScheduledTransactionHandlerDomain, ScheduledTransactionHandlerDomain>();
+
 builder.Services.AddLogging();
 
 var connectionString = builder.Configuration.GetConnectionString("ConnectionDefault")
@@ -76,7 +81,33 @@ builder.Services.AddAuthorization(
 );
 
 
+builder.Services.AddCors(options =>
+{
+	options.AddPolicy("AllowSpecificOrigin", corsPolicyBuilder =>
+	{
+		corsPolicyBuilder.WithOrigins("http://localhost:63342")
+			.AllowAnyMethod()
+			.AllowAnyHeader()
+			.AllowCredentials();
+	});
+});
+
+builder.Services.AddSignalR();
+builder.Services.AddHttpContextAccessor();
+
 var app = builder.Build();
+
+app.UseCors("AllowSpecificOrigin");
+
+app.MapHub<NotificationHub>("/notificationHub", options =>
+{
+	options.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransportType.WebSockets |
+	                     Microsoft.AspNetCore.Http.Connections.HttpTransportType.ServerSentEvents |
+	                     Microsoft.AspNetCore.Http.Connections.HttpTransportType.LongPolling;
+});
+
+app.UseStaticFiles();
+
 
 if (app.Environment.IsDevelopment())
 {
@@ -85,7 +116,8 @@ if (app.Environment.IsDevelopment())
 	app.UseHangfireDashboard();
 }
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
+app.UseAuthentication();
 
 app.UseAuthorization();
 

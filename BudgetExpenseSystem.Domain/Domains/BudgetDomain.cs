@@ -15,7 +15,8 @@ public class BudgetDomain : IBudgetDomain
 	private readonly IAccountDomain _accountDomain;
 
 	public BudgetDomain(IUnitOfWork unitOfWork, IBudgetRepository budgetRepository,
-		ICategoryRepository categoryRepository, IBudgetTypeRepository budgetTypeRepository, IAccountDomain accountDomain)
+		ICategoryRepository categoryRepository, IBudgetTypeRepository budgetTypeRepository,
+		IAccountDomain accountDomain)
 	{
 		_unitOfWork = unitOfWork;
 		_budgetRepository = budgetRepository;
@@ -46,11 +47,12 @@ public class BudgetDomain : IBudgetDomain
 			throw new BadRequestException(
 				$"The category of the transaction does not match the category of the budget.");
 
-		if (budget.Amount < amount)
-			throw new InsufficientFundsException(
-				$"Budget with Id: {budgetId} does not have enough funds for the transaction.");
+		if (amount < 0)
+			if (budget.Amount < Math.Abs(amount))
+				throw new InsufficientFundsException(
+					$"Budget with Id: {budgetId} does not have enough funds for the transaction.");
 
-		budget.Amount -= amount;
+		budget.Amount += amount;
 		_budgetRepository.Update(budget);
 		await _unitOfWork.SaveAsync();
 	}

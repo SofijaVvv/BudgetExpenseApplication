@@ -3,6 +3,9 @@ using BudgetExpenseSystem.Domain.Interfaces;
 using BudgetExpenseSystem.Model.Dto.Requests;
 using BudgetExpenseSystem.Model.Models;
 using BudgetExpenseSystem.Repository.Interfaces;
+using BudgetExpenseSystem.WebSocket.Hub;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Logging;
 
 namespace BudgetExpenseSystem.Domain.Domains;
 
@@ -13,19 +16,27 @@ public class TransactionDomain : ITransactionDomain
 	private readonly IAccountRepository _accountRepository;
 	private readonly ICategoryRepository _categoryRepository;
 	private readonly IBudgetDomain _budgetDomain;
+	private readonly IHubContext<NotificationHub> _hubContext;
+	private readonly ILogger<TransactionDomain> _logger;
 
-
-	public TransactionDomain(IUnitOfWork unitOfWork, ITransactionRepository transactionRepository,
-		IAccountRepository accountRepository, ICategoryRepository categoryRepository,
-		IBudgetDomain budgetDomain)
+	public TransactionDomain(
+		IUnitOfWork unitOfWork,
+		ITransactionRepository transactionRepository,
+		IAccountRepository accountRepository,
+		ICategoryRepository categoryRepository,
+		IBudgetDomain budgetDomain,
+		IHubContext<NotificationHub> hubContext,
+		ILogger<TransactionDomain> logger
+	)
 	{
 		_unitOfWork = unitOfWork;
 		_transactionRepository = transactionRepository;
 		_accountRepository = accountRepository;
 		_categoryRepository = categoryRepository;
 		_budgetDomain = budgetDomain;
+		_hubContext = hubContext;
+		_logger = logger;
 	}
-
 
 	public async Task<List<Transaction>> GetAllAsync()
 	{
@@ -40,7 +51,6 @@ public class TransactionDomain : ITransactionDomain
 		return transaction;
 	}
 
-
 	public async Task<Transaction?> AddAsync(Transaction transaction)
 	{
 		var account = await _accountRepository.GetByIdAsync(transaction.AccountId);
@@ -49,24 +59,43 @@ public class TransactionDomain : ITransactionDomain
 		var category = await _categoryRepository.GetByIdAsync(transaction.CategoryId);
 		if (category == null) throw new NotFoundException($"Category Id: {transaction.CategoryId}");
 
-		var budget = await _budgetDomain.GetByIdAsync(transaction.BudgetId);
-		if (budget == null) throw new NotFoundException($"Budget Id: {transaction.BudgetId} not found");
+		string message;
 
-		await _budgetDomain.UpdateBudgetFundsAsync(transaction.BudgetId, transaction.Amount, transaction.CategoryId);
+		if (transaction.Amount < 0)
+		{
+			await _budgetDomain.UpdateBudgetFundsAsync(transaction.BudgetId, transaction.Amount,
+				transaction.CategoryId);
 
-		if (account.Balance < transaction.Amount)
-			throw new InsufficientFundsException("Account does not have enough funds for this transaction.");
+			if (account.Balance < Math.Abs(transaction.Amount))
+				throw new InsufficientFundsException("Account does not have enough funds for this transaction.");
 
-		account.Balance -= transaction.Amount;
-		_accountRepository.Update(account);
+			account.Balance += transaction.Amount;
+
+			message =
+				$"You just recorded an expense of {transaction.Amount} for '{category.Name}'. Your remaining budget is {account.Balance}.";
+		}
+		else
+		{
+			account.Balance += transaction.Amount;
+			message =
+				$"You just recorded an income of {transaction.Amount} for '{category.Name}'. Your account balance is {account.Balance}.";
+		}
 
 		_transactionRepository.AddAsync(transaction);
 		await _unitOfWork.SaveAsync();
+
+		await _hubContext.Clients.User(account.UserId.ToString())
+			.SendAsync("SendTransactionNotification", message);
+
+
+		_logger.LogInformation($"Sending notification to UserId: {account.UserId}");
+
 
 		var savedTransaction = await _transactionRepository.GetByIdAsync(transaction.Id);
 
 		return savedTransaction;
 	}
+
 
 	public async Task Update(int transactionId, UpdateTransactionRequest updateTransactionRequest)
 	{
