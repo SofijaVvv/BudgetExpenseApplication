@@ -7,6 +7,16 @@ namespace BudgetExpenseSystem.WebSocket.Hub;
 [Authorize]
 public class NotificationHub : Microsoft.AspNetCore.SignalR.Hub
 {
+	public override Task OnConnectedAsync()
+	{
+		var userId = Context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+		var role = Context.User?.FindFirst(ClaimTypes.Role)?.Value;
+
+		if (userId == null) throw new Exception("User identifier not found.");
+		Console.WriteLine($"User connected with ID: {userId}, Role: {role}");
+		return base.OnConnectedAsync();
+	}
+
 	public async Task SendTransactionNotification(string message)
 	{
 		var userId = Context.UserIdentifier;
@@ -21,21 +31,5 @@ public class NotificationHub : Microsoft.AspNetCore.SignalR.Hub
 		{
 			Console.WriteLine("User identifier is not available.");
 		}
-	}
-
-	public override Task OnConnectedAsync()
-	{
-		var userId = Context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-		var role = Context.User?.FindFirst(ClaimTypes.Role)?.Value;
-
-		if (userId == null)
-		{
-			Console.WriteLine("User not authenticated.");
-			throw new Exception("User identifier not found.");
-		}
-
-		if (userId == null) throw new Exception("User identifier not found.");
-		Console.WriteLine($"User connected with ID: {userId}, Role: {role}");
-		return base.OnConnectedAsync();
 	}
 }

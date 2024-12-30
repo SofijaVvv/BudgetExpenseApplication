@@ -3,8 +3,10 @@ using BudgetExpenseSystem.Domain.Interfaces;
 using BudgetExpenseSystem.Model.Dto.Requests;
 using BudgetExpenseSystem.Model.Models;
 using BudgetExpenseSystem.Repository.Interfaces;
+using BudgetExpenseSystem.WebSocket.Hub;
 using Hangfire;
 using Hangfire.Storage;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 
 namespace BudgetExpenseSystem.Domain.Domains;
@@ -15,15 +17,31 @@ public class ScheduledTransactionHandlerDomain : IScheduledTransactionHandlerDom
 	private readonly ILogger<ScheduledTransactionHandlerDomain> _logger;
 	private readonly IUnitOfWork _unitOfWork;
 	private readonly ITransactionDomain _transactionDomain;
+	private readonly IAccountDomain _accountDomain;
+	private readonly IHubContext<NotificationHub> _hubContext;
 
 	public ScheduledTransactionHandlerDomain(IScheduledTransactionDomain scheduledTransactionDomain,
-		ILogger<ScheduledTransactionHandlerDomain> logger, IUnitOfWork unitOfWork, ITransactionDomain transactionDomain)
+		ILogger<ScheduledTransactionHandlerDomain> logger, IUnitOfWork unitOfWork, ITransactionDomain transactionDomain,
+		IAccountDomain accountDomain, IHubContext<NotificationHub> hubContext)
 	{
 		_scheduledTransactionDomain = scheduledTransactionDomain;
 		_logger = logger;
 		_unitOfWork = unitOfWork;
 		_transactionDomain = transactionDomain;
+		_accountDomain = accountDomain;
+		_hubContext = hubContext;
 	}
+
+
+	public async Task NotifyUserAboutTransaction(ScheduledTransaction transaction)
+	{
+		var account = await _accountDomain.GetByIdAsync(transaction.AccountId);
+		var userId = account.UserId;
+
+		await _hubContext.Clients.User(userId.ToString()).SendAsync("ReceiveTransactionNotification",
+			$"Your scheduled recurring transaction of {transaction.Amount:C} in the category '{transaction.Category.Name}' will be processed in 24 hours.");
+	}
+
 
 	public async Task DeleteScheduledTransactionAsync(int scheduledTransactionId)
 	{
@@ -75,6 +93,13 @@ public class ScheduledTransactionHandlerDomain : IScheduledTransactionHandlerDom
 
 		_logger.LogInformation(
 			$"Processing scheduled transaction ID {transactionId} for amount {scheduledTransaction.Amount}.");
+
+		if (scheduledTransaction.IsRecurring && scheduledTransaction.ScheduledDate > DateTime.UtcNow &&
+		    scheduledTransaction.ScheduledDate <= DateTime.UtcNow.AddMinutes(5))
+		{
+			await NotifyUserAboutTransaction(scheduledTransaction);
+		}
+
 
 		await ProcessTransaction(scheduledTransaction);
 

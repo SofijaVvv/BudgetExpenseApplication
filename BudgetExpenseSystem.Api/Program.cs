@@ -80,7 +80,6 @@ builder.Services.AddAuthorization(
 	options => options.AddPolicies()
 );
 
-
 builder.Services.AddCors(options =>
 {
 	options.AddPolicy("AllowSpecificOrigin", corsPolicyBuilder =>
@@ -93,21 +92,15 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddSignalR();
-builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
 app.UseCors("AllowSpecificOrigin");
 
-app.MapHub<NotificationHub>("/notificationHub", options =>
-{
-	options.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransportType.WebSockets |
-	                     Microsoft.AspNetCore.Http.Connections.HttpTransportType.ServerSentEvents |
-	                     Microsoft.AspNetCore.Http.Connections.HttpTransportType.LongPolling;
-});
+
+app.MapHub<NotificationHub>("/notificationHub");
 
 app.UseStaticFiles();
-
 
 if (app.Environment.IsDevelopment())
 {

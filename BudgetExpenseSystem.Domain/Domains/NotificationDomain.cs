@@ -41,9 +41,6 @@ public class NotificationDomain : INotificationDomain
 	{
 		_notificationRepository.AddAsync(notification);
 		await _unitOfWork.SaveAsync();
-
-		await _hubContext.Clients.User(notification.UserId.ToString())
-			.SendAsync("ReceiveTransactionNotification", notification.Message);
 		return notification;
 	}
 

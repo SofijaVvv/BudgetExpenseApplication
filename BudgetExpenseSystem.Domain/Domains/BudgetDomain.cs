@@ -12,17 +12,16 @@ public class BudgetDomain : IBudgetDomain
 	private readonly IBudgetRepository _budgetRepository;
 	private readonly ICategoryRepository _categoryRepository;
 	private readonly IBudgetTypeRepository _budgetTypeRepository;
-	private readonly IAccountDomain _accountDomain;
 
-	public BudgetDomain(IUnitOfWork unitOfWork, IBudgetRepository budgetRepository,
-		ICategoryRepository categoryRepository, IBudgetTypeRepository budgetTypeRepository,
-		IAccountDomain accountDomain)
+	public BudgetDomain(
+		IUnitOfWork unitOfWork, IBudgetRepository budgetRepository,
+		ICategoryRepository categoryRepository, IBudgetTypeRepository budgetTypeRepository
+	)
 	{
 		_unitOfWork = unitOfWork;
 		_budgetRepository = budgetRepository;
 		_categoryRepository = categoryRepository;
 		_budgetTypeRepository = budgetTypeRepository;
-		_accountDomain = accountDomain;
 	}
 
 	public async Task<List<Budget>> GetAllAsync()
@@ -42,6 +41,7 @@ public class BudgetDomain : IBudgetDomain
 	{
 		var budget = await _budgetRepository.GetByIdAsync(budgetId);
 		if (budget == null) throw new NotFoundException($"Budget Id: {budgetId} not found");
+
 
 		if (budget.CategoryId != categoryId)
 			throw new BadRequestException(

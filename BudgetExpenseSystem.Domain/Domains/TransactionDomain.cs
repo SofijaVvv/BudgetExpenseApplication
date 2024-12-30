@@ -59,8 +59,26 @@ public class TransactionDomain : ITransactionDomain
 		var category = await _categoryRepository.GetByIdAsync(transaction.CategoryId);
 		if (category == null) throw new NotFoundException($"Category Id: {transaction.CategoryId}");
 
-		string message;
+		var message = await ProcessTransaction(transaction, account, category);
 
+		_transactionRepository.AddAsync(transaction);
+		await _unitOfWork.SaveAsync();
+
+		await _hubContext.Clients.User(account.UserId.ToString())
+			.SendAsync("ReceiveTransactionNotification", message);
+
+		_logger.LogInformation($"Message being sent: {message}");
+		_logger.LogInformation($"Sending notification to UserId: {account.UserId}");
+
+
+		var savedTransaction = await _transactionRepository.GetByIdAsync(transaction.Id);
+
+		return savedTransaction;
+	}
+
+
+	private async Task<string> ProcessTransaction(Transaction transaction, Account account, Category category)
+	{
 		if (transaction.Amount < 0)
 		{
 			await _budgetDomain.UpdateBudgetFundsAsync(transaction.BudgetId, transaction.Amount,
@@ -70,32 +88,14 @@ public class TransactionDomain : ITransactionDomain
 				throw new InsufficientFundsException("Account does not have enough funds for this transaction.");
 
 			account.Balance += transaction.Amount;
-
-			message =
+			return
 				$"You just recorded an expense of {transaction.Amount} for '{category.Name}'. Your remaining budget is {account.Balance}.";
 		}
-		else
-		{
-			account.Balance += transaction.Amount;
-			message =
-				$"You just recorded an income of {transaction.Amount} for '{category.Name}'. Your account balance is {account.Balance}.";
-		}
 
-		_transactionRepository.AddAsync(transaction);
-		await _unitOfWork.SaveAsync();
-
-		await _hubContext.Clients.User(account.UserId.ToString())
-			.SendAsync("SendTransactionNotification", message);
-
-
-		_logger.LogInformation($"Sending notification to UserId: {account.UserId}");
-
-
-		var savedTransaction = await _transactionRepository.GetByIdAsync(transaction.Id);
-
-		return savedTransaction;
+		account.Balance += transaction.Amount;
+		return
+			$"You just recorded an income of {transaction.Amount} for '{category.Name}'. Your account balance is {account.Balance}.";
 	}
-
 
 	public async Task Update(int transactionId, UpdateTransactionRequest updateTransactionRequest)
 	{
@@ -110,6 +110,7 @@ public class TransactionDomain : ITransactionDomain
 		_transactionRepository.Update(transaction);
 		await _unitOfWork.SaveAsync();
 	}
+
 
 	public async Task DeleteAsync(int id)
 	{

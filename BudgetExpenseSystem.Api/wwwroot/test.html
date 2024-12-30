@@ -41,46 +41,49 @@
             localStorage.setItem('authToken', data.token);
             console.log('Token stored:', data.token);
             alert('Login successful! Token stored.');
+
+            const authToken = localStorage.getItem("authToken");
+            console.log("Token:", authToken);
+
+            if (!authToken) {
+                console.error("Token not found");
+            } else {
+                const connection = new signalR.HubConnectionBuilder()
+                    .withUrl("http://localhost:5112/notificationHub", {
+
+                        headers: {
+                            "Authorization": `Bearer ${authToken}` // Use headers to pass the token
+                        },
+                        transport: signalR.HttpTransportType.LongPolling
+                    })
+                    .build();
+
+                connection.start()
+                    .then(() => {
+                        console.log("SignalR connection established.");
+                        console.log("Connection ID:", connection.connectionId);
+
+                        connection.on("ReceiveTransactionNotification", (message) => {
+                            console.log("Notification received:", message);
+                            const notificationArea = document.getElementById("notificationArea");
+                            const messageElement = document.createElement("p");
+                            messageElement.textContent = `Notification : ${message}`;
+                            notificationArea.appendChild(messageElement);
+                        });
+                    })
+                    .catch(err => {
+                        console.error("SignalR connection error: ", err);
+                        setTimeout(() => connection.start(), 5000);  // Retry after 5 seconds
+                    });
+            }
+
         } catch (error) {
             console.error('Error during login:', error);
             alert('Login failed');
         }
     });
 
-    const authToken = localStorage.getItem("authToken");
-    console.log("Token:", authToken);
 
-    if (!authToken) {
-        console.error("Token not found");
-    } else {
-        const connection = new signalR.HubConnectionBuilder()
-            .withUrl("http://localhost:5112/notificationHub", {
-
-                headers: {
-                    "Authorization": `Bearer ${authToken}` // Use headers to pass the token
-                },
-                transport: signalR.HttpTransportType.WebSockets
-            })
-            .build();
-
-        connection.start()
-            .then(() => {
-                console.log("SignalR connection established.");
-                console.log("Connection ID:", connection.connectionId);
-
-                connection.on("ReceiveTransactionNotification", (userId, message) => {
-                    console.log("Notification received:", message);
-                    const notificationArea = document.getElementById("notificationArea");
-                    const messageElement = document.createElement("p");
-                    messageElement.textContent = `User ${userId}: ${message}`;
-                    notificationArea.appendChild(messageElement);
-                });
-            })
-            .catch(err => {
-                console.error("SignalR connection error: ", err);
-                setTimeout(() => connection.start(), 5000);  // Retry after 5 seconds
-            });
-    }
 </script>
 </body>
 </html>
