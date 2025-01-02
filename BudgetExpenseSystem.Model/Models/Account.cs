@@ -10,6 +10,8 @@ public class Account
 
 	[Required] public decimal Balance { get; set; }
 
+	[Required] [MaxLength(3)] public string Currency { get; set; } = "EUR";
+
 	public DateOnly CreatedDate { get; set; }
 
 	public virtual User User { get; set; }

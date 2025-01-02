@@ -9,6 +9,7 @@
     <ItemGroup>
         <ProjectReference Include="..\BudgetExpenseSystem.Model\BudgetExpenseSystem.Model.csproj"/>
         <ProjectReference Include="..\BudgetExpenseSystem.Repository\BudgetExpenseSystem.Repository.csproj"/>
+        <ProjectReference Include="..\BudgetExpenseSystem.Service\BudgetExpenseSystem.Service.csproj"/>
         <ProjectReference Include="..\BudgetExpenseSystem.WebSocket\BudgetExpenseSystem.WebSocket.csproj"/>
     </ItemGroup>
     <ItemGroup>

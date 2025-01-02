@@ -12,6 +12,8 @@ public class Transaction
 
 	[Required] public int BudgetId { get; set; }
 
+	[Required] [MaxLength(3)]  public string Currency { get; set; } = "EUR";
+
 	[Required] public decimal Amount { get; set; }
 
 	public DateOnly TransactionDate { get; set; }

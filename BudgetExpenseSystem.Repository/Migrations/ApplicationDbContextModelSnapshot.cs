@@ -36,6 +36,11 @@ namespace BudgetExpenseSystem.Repository.Migrations
                     b.Property<DateOnly>("CreatedDate")
                         .HasColumnType("date");
 
+                    b.Property<string>("Currency")
+                        .IsRequired()
+                        .HasMaxLength(3)
+                        .HasColumnType("varchar(3)");
+
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
@@ -228,6 +233,11 @@ namespace BudgetExpenseSystem.Repository.Migrations
 
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Currency")
+                        .IsRequired()
+                        .HasMaxLength(3)
+                        .HasColumnType("varchar(3)");
 
                     b.Property<DateOnly>("TransactionDate")
                         .HasColumnType("date");

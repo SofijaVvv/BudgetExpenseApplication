@@ -10,6 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BudgetExpenseSystem.Reposit
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BudgetExpenseSystem.WebSocket", "BudgetExpenseSystem.WebSocket\BudgetExpenseSystem.WebSocket.csproj", "{F69B2FAD-1A09-4EF3-A0AA-C0EB94BE18B5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BudgetExpenseSystem.Service", "BudgetExpenseSystem.Service\BudgetExpenseSystem.Service.csproj", "{FFB6B1B2-EC88-4A42-9001-13777AF1EEA0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +38,9 @@ Global
 		{F69B2FAD-1A09-4EF3-A0AA-C0EB94BE18B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F69B2FAD-1A09-4EF3-A0AA-C0EB94BE18B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F69B2FAD-1A09-4EF3-A0AA-C0EB94BE18B5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FFB6B1B2-EC88-4A42-9001-13777AF1EEA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FFB6B1B2-EC88-4A42-9001-13777AF1EEA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FFB6B1B2-EC88-4A42-9001-13777AF1EEA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FFB6B1B2-EC88-4A42-9001-13777AF1EEA0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

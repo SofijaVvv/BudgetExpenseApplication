@@ -42,6 +42,7 @@ public class UserController : ControllerBase
 	}
 
 	[HttpPost("Register")]
+	[AllowAnonymous]
 	[ProducesResponseType(StatusCodes.Status201Created, Type = typeof(UserResponse))]
 	public async Task<ActionResult> RegisterUser([FromBody] UserRequest userRequest)
 	{

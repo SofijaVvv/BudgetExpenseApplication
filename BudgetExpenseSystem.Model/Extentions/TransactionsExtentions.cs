@@ -13,6 +13,7 @@ public static class TransactionsExtentions
 			AccountId = request.AccountId,
 			CategoryId = request.CategoryId,
 			BudgetId = request.BudgetId,
+			Currency = request.Currency,
 			Amount = request.Amount,
 			TransactionDate = request.TransactionDate
 		};
@@ -27,7 +28,7 @@ public static class TransactionsExtentions
 			Account = new AccountResponse
 			{
 				Id = response.Account.Id,
-				Balance = response.Account.Balance
+				Balance = Math.Round(response.Account.Balance, 2)
 			},
 			Category = new CategoryResponse
 			{
@@ -35,8 +36,9 @@ public static class TransactionsExtentions
 				Name = response.Category.Name,
 				Description = response.Category.Description
 			},
+			Currency = response.Currency,
 			BudgetId = response.BudgetId,
-			Amount = response.Amount,
+			Amount = Math.Round(response.Amount, 2),
 			TransactionDate = response.TransactionDate
 		};
 	}

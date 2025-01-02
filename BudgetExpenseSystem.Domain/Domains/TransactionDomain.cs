@@ -3,6 +3,7 @@ using BudgetExpenseSystem.Domain.Interfaces;
 using BudgetExpenseSystem.Model.Dto.Requests;
 using BudgetExpenseSystem.Model.Models;
 using BudgetExpenseSystem.Repository.Interfaces;
+using BudgetExpenseSystem.Service.Interfaces;
 using BudgetExpenseSystem.WebSocket.Hub;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
@@ -18,6 +19,8 @@ public class TransactionDomain : ITransactionDomain
 	private readonly IBudgetDomain _budgetDomain;
 	private readonly IHubContext<NotificationHub> _hubContext;
 	private readonly ILogger<TransactionDomain> _logger;
+	private readonly ICurrencyConversionService _currencyConversionService;
+
 
 	public TransactionDomain(
 		IUnitOfWork unitOfWork,
@@ -26,7 +29,8 @@ public class TransactionDomain : ITransactionDomain
 		ICategoryRepository categoryRepository,
 		IBudgetDomain budgetDomain,
 		IHubContext<NotificationHub> hubContext,
-		ILogger<TransactionDomain> logger
+		ILogger<TransactionDomain> logger,
+		ICurrencyConversionService currencyConversionService
 	)
 	{
 		_unitOfWork = unitOfWork;
@@ -36,6 +40,7 @@ public class TransactionDomain : ITransactionDomain
 		_budgetDomain = budgetDomain;
 		_hubContext = hubContext;
 		_logger = logger;
+		_currencyConversionService = currencyConversionService;
 	}
 
 	public async Task<List<Transaction>> GetAllAsync()
@@ -58,6 +63,28 @@ public class TransactionDomain : ITransactionDomain
 
 		var category = await _categoryRepository.GetByIdAsync(transaction.CategoryId);
 		if (category == null) throw new NotFoundException($"Category Id: {transaction.CategoryId}");
+
+		if (!string.Equals(account.Currency, transaction.Currency))
+			try
+			{
+				var convertedAmount =
+					await _currencyConversionService.GetExchangeRateAsync(transaction.Currency, account.Currency);
+
+
+				// _logger.LogInformation($"Received Exchange Rate: {convertedAmount} for {transaction.Currency} to {account.Currency}");
+				// _logger.LogInformation($"Rounded Rate: {roundedRate}");
+
+				transaction.Amount *= convertedAmount;
+				_logger.LogInformation($"Converted amount: {transaction.Amount}");
+				transaction.Currency = account.Currency;
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(
+					$"Currency conversion failed for {transaction.Currency} to {account.Currency}: {ex.Message}");
+				throw new Exception("Currency conversion failed.");
+			}
+
 
 		var message = await ProcessTransaction(transaction, account, category);
 

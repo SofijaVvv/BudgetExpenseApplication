@@ -5,6 +5,8 @@ using BudgetExpenseSystem.Domain.Interfaces;
 using BudgetExpenseSystem.Repository;
 using BudgetExpenseSystem.Repository.Interfaces;
 using BudgetExpenseSystem.Repository.Repositories;
+using BudgetExpenseSystem.Service;
+using BudgetExpenseSystem.Service.Interfaces;
 using BudgetExpenseSystem.WebSocket;
 using BudgetExpenseSystem.WebSocket.Hub;
 using Hangfire;
@@ -44,6 +46,8 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IScheduledTransactionRepository, ScheduledTransactionRepository>();
 builder.Services.AddScoped<IScheduledTransactionDomain, ScheduledTransactionDomain>();
 builder.Services.AddScoped<IScheduledTransactionHandlerDomain, ScheduledTransactionHandlerDomain>();
+builder.Services.AddHttpClient<ICurrencyConversionService, CurrencyConversionService>();
+
 
 builder.Services.AddLogging();
 

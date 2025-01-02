@@ -8,6 +8,8 @@ public class TransactionResponse
 
 	public CategoryResponse Category { get; set; }
 
+	public string Currency { get; set; }
+
 	public int BudgetId { get; set; }
 
 	public decimal Amount { get; set; }
