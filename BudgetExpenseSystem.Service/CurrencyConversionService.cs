@@ -1,4 +1,5 @@
 using System.Text.Json;
+using BudgetExpenseSystem.Service.Dto;
 using BudgetExpenseSystem.Service.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -35,12 +36,11 @@ public class CurrencyConversionService : ICurrencyConversionService
 
 		var options = new JsonSerializerOptions
 		{
-			PropertyNameCaseInsensitive = true,
+			PropertyNameCaseInsensitive = true // this might be the default anyway
 		};
 
 		var exchangeRates = JsonSerializer.Deserialize<ExchangeRatesResponse>(jsonResponse, options);
 		_logger.LogInformation($"API exchange rates: {JsonSerializer.Serialize(exchangeRates)}");
-
 
 		if (exchangeRates == null || !exchangeRates.Rates.ContainsKey(fromCurrency) ||
 		    !exchangeRates.Rates.ContainsKey(toCurrency)) throw new Exception("Invalid currency codes.");
@@ -49,22 +49,6 @@ public class CurrencyConversionService : ICurrencyConversionService
 		var rateFrom = exchangeRates.Rates[fromCurrency];
 		var rateTo = exchangeRates.Rates[toCurrency];
 
-		_logger.LogInformation($"Rate From: {rateFrom}, Rate To: {rateTo}");
-
-		var result = rateTo / rateFrom;
-
-		_logger.LogInformation($"rateFrom devided with rateTo result {result}");
-		return result;
+		return rateTo / rateFrom;
 	}
-
-
-	private class ExchangeRatesResponse
-	{
-		public bool Success { get; set; }
-		public int Timestamp { get; set; }
-		public string Base { get; set; }
-		public string Date { get; set; }
-		public Dictionary<string, decimal> Rates { get; set; }
-	}
-
 }

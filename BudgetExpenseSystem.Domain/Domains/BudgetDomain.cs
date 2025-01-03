@@ -57,7 +57,7 @@ public class BudgetDomain : IBudgetDomain
 		await _unitOfWork.SaveAsync();
 	}
 
-	public async Task<Budget?> AddAsync(Budget budget)
+	public async Task<Budget> AddAsync(Budget budget)
 	{
 		var category = await _categoryRepository.GetByIdAsync(budget.CategoryId);
 		if (category == null)
@@ -70,7 +70,8 @@ public class BudgetDomain : IBudgetDomain
 		_budgetRepository.AddAsync(budget);
 		await _unitOfWork.SaveAsync();
 
-		var savedBudget = await _budgetRepository.GetByIdAsync(budget.Id);
+		var savedBudget = await _budgetRepository.GetByIdAsync(budget.Id) ?? throw new Exception(
+			"Something went wrong after saving scheduled transaction");
 
 		return savedBudget;
 	}

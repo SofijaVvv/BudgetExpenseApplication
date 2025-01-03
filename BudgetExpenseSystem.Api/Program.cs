@@ -46,10 +46,15 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IScheduledTransactionRepository, ScheduledTransactionRepository>();
 builder.Services.AddScoped<IScheduledTransactionDomain, ScheduledTransactionDomain>();
 builder.Services.AddScoped<IScheduledTransactionHandlerDomain, ScheduledTransactionHandlerDomain>();
-builder.Services.AddHttpClient<ICurrencyConversionService, CurrencyConversionService>();
-
-
 builder.Services.AddLogging();
+builder.Services.AddHttpClient();
+
+if (builder.Environment.IsDevelopment())
+	builder.Services.AddScoped<ICurrencyConversionService, MockCurrencyConversionService>();
+else
+	builder.Services
+		.AddScoped<ICurrencyConversionService, CurrencyConversionService>();
+
 
 var connectionString = builder.Configuration.GetConnectionString("ConnectionDefault")
                        ?? throw new Exception("Connection string 'ConnectionDefault' is not configured or is missing.");
@@ -72,6 +77,7 @@ builder.Services.AddHangfire(config =>
 			TransactionTimeout = TimeSpan.FromMinutes(1)
 		}));
 });
+
 builder.Services.AddHangfireServer();
 builder.Services.AddSwaggerWithJwtAuth();
 

@@ -32,12 +32,13 @@ public class AccountDomain : IAccountDomain
 	}
 
 
-	public async Task<Account?> AddAsync(Account account)
+	public async Task<Account> AddAsync(Account account)
 	{
 		_accountRepository.AddAsync(account);
 		await _unitOfWork.SaveAsync();
 
-		var savedAccount = await _accountRepository.GetByIdAsync(account.Id);
+		var savedAccount = await _accountRepository.GetByIdAsync(account.Id) ?? throw new Exception(
+			"Something went wrong after saving scheduled transaction");
 
 		return savedAccount;
 	}

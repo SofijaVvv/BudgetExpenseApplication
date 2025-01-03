@@ -21,7 +21,6 @@ public class TransactionDomain : ITransactionDomain
 	private readonly ILogger<TransactionDomain> _logger;
 	private readonly ICurrencyConversionService _currencyConversionService;
 
-
 	public TransactionDomain(
 		IUnitOfWork unitOfWork,
 		ITransactionRepository transactionRepository,
@@ -56,7 +55,7 @@ public class TransactionDomain : ITransactionDomain
 		return transaction;
 	}
 
-	public async Task<Transaction?> AddAsync(Transaction transaction)
+	public async Task<Transaction> AddAsync(Transaction transaction) // ovo nikad ne vrace null
 	{
 		var account = await _accountRepository.GetByIdAsync(transaction.AccountId);
 		if (account == null) throw new NotFoundException($"Account Id: {transaction.AccountId}");
@@ -67,14 +66,10 @@ public class TransactionDomain : ITransactionDomain
 		if (!string.Equals(account.Currency, transaction.Currency))
 			try
 			{
-				var convertedAmount =
+				var exchangeRates =
 					await _currencyConversionService.GetExchangeRateAsync(transaction.Currency, account.Currency);
 
-
-				// _logger.LogInformation($"Received Exchange Rate: {convertedAmount} for {transaction.Currency} to {account.Currency}");
-				// _logger.LogInformation($"Rounded Rate: {roundedRate}");
-
-				transaction.Amount *= convertedAmount;
+				transaction.Amount *= exchangeRates;
 				_logger.LogInformation($"Converted amount: {transaction.Amount}");
 				transaction.Currency = account.Currency;
 			}
@@ -97,8 +92,8 @@ public class TransactionDomain : ITransactionDomain
 		_logger.LogInformation($"Message being sent: {message}");
 		_logger.LogInformation($"Sending notification to UserId: {account.UserId}");
 
-
-		var savedTransaction = await _transactionRepository.GetByIdAsync(transaction.Id);
+		var savedTransaction = await _transactionRepository.GetByIdAsync(transaction.Id) ?? throw new Exception(
+			"Something went wrong after saving scheduled transaction");
 
 		return savedTransaction;
 	}

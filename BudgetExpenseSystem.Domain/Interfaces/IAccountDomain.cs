@@ -7,7 +7,7 @@ public interface IAccountDomain
 {
 	Task<List<Account>> GetAllAsync();
 	Task<Account> GetByIdAsync(int id);
-	Task<Account?> AddAsync(Account account);
+	Task<Account> AddAsync(Account account);
 	Task Update(int accountId, UpdateAccountRequest updateAccountRequest);
 	Task DeleteAsync(int id);
 }
