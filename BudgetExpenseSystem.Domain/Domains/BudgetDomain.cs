@@ -71,7 +71,7 @@ public class BudgetDomain : IBudgetDomain
 		await _unitOfWork.SaveAsync();
 
 		var savedBudget = await _budgetRepository.GetByIdAsync(budget.Id) ?? throw new Exception(
-			"Something went wrong after saving scheduled transaction");
+			"Something went wrong after saving budget");
 
 		return savedBudget;
 	}

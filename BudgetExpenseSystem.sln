@@ -12,6 +12,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BudgetExpenseSystem.WebSock
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BudgetExpenseSystem.Service", "BudgetExpenseSystem.Service\BudgetExpenseSystem.Service.csproj", "{FFB6B1B2-EC88-4A42-9001-13777AF1EEA0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BudgetExpenseSystem.Tests", "BudgetExpenseSystem.Tests\BudgetExpenseSystem.Tests.csproj", "{F52FBFCB-B416-4B24-BBFC-C353866FDBD5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,5 +44,9 @@ Global
 		{FFB6B1B2-EC88-4A42-9001-13777AF1EEA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FFB6B1B2-EC88-4A42-9001-13777AF1EEA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FFB6B1B2-EC88-4A42-9001-13777AF1EEA0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F52FBFCB-B416-4B24-BBFC-C353866FDBD5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F52FBFCB-B416-4B24-BBFC-C353866FDBD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F52FBFCB-B416-4B24-BBFC-C353866FDBD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F52FBFCB-B416-4B24-BBFC-C353866FDBD5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

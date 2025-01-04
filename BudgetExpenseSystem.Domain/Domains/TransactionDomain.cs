@@ -93,7 +93,7 @@ public class TransactionDomain : ITransactionDomain
 		_logger.LogInformation($"Sending notification to UserId: {account.UserId}");
 
 		var savedTransaction = await _transactionRepository.GetByIdAsync(transaction.Id) ?? throw new Exception(
-			"Something went wrong after saving scheduled transaction");
+			"Something went wrong after saving  transaction");
 
 		return savedTransaction;
 	}

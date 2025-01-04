@@ -38,7 +38,7 @@ public class AccountDomain : IAccountDomain
 		await _unitOfWork.SaveAsync();
 
 		var savedAccount = await _accountRepository.GetByIdAsync(account.Id) ?? throw new Exception(
-			"Something went wrong after saving scheduled transaction");
+			"Something went wrong after saving account");
 
 		return savedAccount;
 	}
