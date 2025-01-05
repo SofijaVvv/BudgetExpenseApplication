@@ -12,6 +12,7 @@ public static class AccountExtentions
 		{
 			UserId = request.UserId,
 			Balance = request.Balance,
+			Currency = request.Currency,
 			CreatedDate = request.CreatedDate
 		};
 	}

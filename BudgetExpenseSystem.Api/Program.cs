@@ -7,11 +7,9 @@ using BudgetExpenseSystem.Repository.Interfaces;
 using BudgetExpenseSystem.Repository.Repositories;
 using BudgetExpenseSystem.Service;
 using BudgetExpenseSystem.Service.Interfaces;
-using BudgetExpenseSystem.WebSocket;
 using BudgetExpenseSystem.WebSocket.Hub;
 using Hangfire;
 using Hangfire.MySql;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

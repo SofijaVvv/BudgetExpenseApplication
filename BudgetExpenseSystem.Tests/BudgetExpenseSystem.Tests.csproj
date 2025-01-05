@@ -23,10 +23,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Controllers\"/>
-    </ItemGroup>
-
-    <ItemGroup>
+        <ProjectReference Include="..\BudgetExpenseSystem.Api\BudgetExpenseSystem.Api.csproj"/>
         <ProjectReference Include="..\BudgetExpenseSystem.Domain\BudgetExpenseSystem.Domain.csproj"/>
         <ProjectReference Include="..\BudgetExpenseSystem.Model\BudgetExpenseSystem.Model.csproj"/>
         <ProjectReference Include="..\BudgetExpenseSystem.Repository\BudgetExpenseSystem.Repository.csproj"/>

@@ -6,5 +6,7 @@ public class AccountRequest
 
 	public int UserId { get; set; }
 
+	public string Currency { get; set; }
+
 	public DateOnly CreatedDate { get; set; }
 }

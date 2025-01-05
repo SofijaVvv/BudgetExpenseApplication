@@ -3,9 +3,6 @@ using BudgetExpenseSystem.Domain.Interfaces;
 using BudgetExpenseSystem.Model.Dto.Requests;
 using BudgetExpenseSystem.Model.Models;
 using BudgetExpenseSystem.Repository.Interfaces;
-using Hangfire;
-using Hangfire.Storage;
-using Microsoft.Extensions.Logging;
 
 namespace BudgetExpenseSystem.Domain.Domains;
 
@@ -16,10 +13,8 @@ public class ScheduledTransactionDomain : IScheduledTransactionDomain
 	private readonly IAccountRepository _accountRepository;
 	private readonly ICategoryRepository _categoryRepository;
 	private readonly IBudgetRepository _budgetRepository;
-	private readonly ILogger<ScheduledTransactionDomain> _logger;
 
 	public ScheduledTransactionDomain(
-		ILogger<ScheduledTransactionDomain> logger,
 		IUnitOfWork unitOfWork,
 		IScheduledTransactionRepository scheduledTransactionRepository,
 		IAccountRepository accountRepository,
@@ -27,7 +22,6 @@ public class ScheduledTransactionDomain : IScheduledTransactionDomain
 		IBudgetRepository budgetRepository
 	)
 	{
-		_logger = logger;
 		_unitOfWork = unitOfWork;
 		_scheduledTransactionRepository = scheduledTransactionRepository;
 		_accountRepository = accountRepository;

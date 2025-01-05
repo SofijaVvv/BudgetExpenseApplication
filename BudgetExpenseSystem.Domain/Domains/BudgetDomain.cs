@@ -14,8 +14,10 @@ public class BudgetDomain : IBudgetDomain
 	private readonly IBudgetTypeRepository _budgetTypeRepository;
 
 	public BudgetDomain(
-		IUnitOfWork unitOfWork, IBudgetRepository budgetRepository,
-		ICategoryRepository categoryRepository, IBudgetTypeRepository budgetTypeRepository
+		IUnitOfWork unitOfWork,
+		IBudgetRepository budgetRepository,
+		ICategoryRepository categoryRepository,
+		IBudgetTypeRepository budgetTypeRepository
 	)
 	{
 		_unitOfWork = unitOfWork;

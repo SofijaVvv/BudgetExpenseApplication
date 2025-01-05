@@ -1,4 +1,5 @@
 using System.Text.Json;
+using BudgetExpenseSystem.Model.Enum;
 using BudgetExpenseSystem.Service.Dto;
 using BudgetExpenseSystem.Service.Interfaces;
 using Microsoft.Extensions.Configuration;
@@ -25,7 +26,7 @@ public class CurrencyConversionService : ICurrencyConversionService
 		_logger = logger;
 	}
 
-	public async Task<decimal> GetExchangeRateAsync(string fromCurrency, string toCurrency)
+	public async Task<decimal> GetExchangeRateAsync(CurrencyCode fromCurrency, CurrencyCode toCurrency)
 	{
 		var response = await _httpClient.GetAsync($"{_apiUrl}?access_key={_apiKey}");
 		_logger.LogInformation($"Received HTTP response with status code: {response.StatusCode}");
@@ -42,12 +43,12 @@ public class CurrencyConversionService : ICurrencyConversionService
 		var exchangeRates = JsonSerializer.Deserialize<ExchangeRatesResponse>(jsonResponse, options);
 		_logger.LogInformation($"API exchange rates: {JsonSerializer.Serialize(exchangeRates)}");
 
-		if (exchangeRates == null || !exchangeRates.Rates.ContainsKey(fromCurrency) ||
-		    !exchangeRates.Rates.ContainsKey(toCurrency)) throw new Exception("Invalid currency codes.");
+		if (exchangeRates == null || !exchangeRates.Rates.ContainsKey(fromCurrency.ToString()) ||
+		    !exchangeRates.Rates.ContainsKey(toCurrency.ToString())) throw new Exception("Invalid currency codes.");
 
 
-		var rateFrom = exchangeRates.Rates[fromCurrency];
-		var rateTo = exchangeRates.Rates[toCurrency];
+		var rateFrom = exchangeRates.Rates[fromCurrency.ToString()];
+		var rateTo = exchangeRates.Rates[toCurrency.ToString()];
 
 		return rateTo / rateFrom;
 	}

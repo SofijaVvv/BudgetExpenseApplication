@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore.Design;
-using BudgetExpenseSystem.Repository;
 
 namespace BudgetExpenseSystem.Repository;
 

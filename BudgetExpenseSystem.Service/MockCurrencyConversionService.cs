@@ -1,3 +1,4 @@
+using BudgetExpenseSystem.Model.Enum;
 using BudgetExpenseSystem.Service.Interfaces;
 using Microsoft.Extensions.Logging;
 
@@ -12,7 +13,7 @@ public class MockCurrencyConversionService : ICurrencyConversionService
 		_logger = logger;
 	}
 
-	public Task<decimal> GetExchangeRateAsync(string fromCurrency, string toCurrency)
+	public Task<decimal> GetExchangeRateAsync(CurrencyCode fromCurrency, CurrencyCode toCurrency)
 	{
 		var mockRates = new Dictionary<string, decimal>
 		{
@@ -21,11 +22,11 @@ public class MockCurrencyConversionService : ICurrencyConversionService
 			{ "GBP", 0.81m }
 		};
 
-		if (!mockRates.ContainsKey(fromCurrency) || !mockRates.ContainsKey(toCurrency))
+		if (!mockRates.ContainsKey(fromCurrency.ToString()) || !mockRates.ContainsKey(toCurrency.ToString()))
 			throw new Exception("Invalid currency codes.");
 
-		var rateFrom = mockRates[fromCurrency];
-		var rateTo = mockRates[toCurrency];
+		var rateFrom = mockRates[fromCurrency.ToString()];
+		var rateTo = mockRates[toCurrency.ToString()];
 		var exchangeRate = rateTo / rateFrom;
 
 		_logger.LogInformation($"Mocked exchange rate: {exchangeRate} from {fromCurrency} to {toCurrency}");

@@ -1,3 +1,4 @@
+
 namespace BudgetExpenseSystem.Model.Dto.Response;
 
 public class TransactionResponse

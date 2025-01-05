@@ -1,6 +1,7 @@
 using BudgetExpenseSystem.Domain.Exceptions;
 using BudgetExpenseSystem.Domain.Interfaces;
 using BudgetExpenseSystem.Model.Dto.Requests;
+using BudgetExpenseSystem.Model.Enum;
 using BudgetExpenseSystem.Model.Models;
 using BudgetExpenseSystem.Repository.Interfaces;
 using BudgetExpenseSystem.Service.Interfaces;
@@ -66,12 +67,19 @@ public class TransactionDomain : ITransactionDomain
 		if (!string.Equals(account.Currency, transaction.Currency))
 			try
 			{
-				var exchangeRates =
-					await _currencyConversionService.GetExchangeRateAsync(transaction.Currency, account.Currency);
+				if (Enum.TryParse(transaction.Currency, true, out CurrencyCode fromCurrency) &&
+				    Enum.TryParse(account.Currency, true, out CurrencyCode toCurrency))
+				{
+					var exchangeRates = await _currencyConversionService.GetExchangeRateAsync(fromCurrency, toCurrency);
 
-				transaction.Amount *= exchangeRates;
-				_logger.LogInformation($"Converted amount: {transaction.Amount}");
-				transaction.Currency = account.Currency;
+					transaction.Amount *= exchangeRates;
+					_logger.LogInformation($"Converted amount: {transaction.Amount}");
+					transaction.Currency = account.Currency;
+				}
+				else
+				{
+					throw new Exception("Invalid currency code provided.");
+				}
 			}
 			catch (Exception ex)
 			{

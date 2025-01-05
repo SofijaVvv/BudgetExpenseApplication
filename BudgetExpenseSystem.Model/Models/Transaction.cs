@@ -12,7 +12,7 @@ public class Transaction
 
 	[Required] public int BudgetId { get; set; }
 
-	[Required] [MaxLength(3)]  public string Currency { get; set; } = "EUR";
+	[Required] [MaxLength(3)] public string Currency { get; set; }
 
 	[Required] public decimal Amount { get; set; }
 

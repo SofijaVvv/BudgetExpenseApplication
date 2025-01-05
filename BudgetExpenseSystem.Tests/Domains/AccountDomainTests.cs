@@ -24,16 +24,18 @@ public class AccountDomainTests
 	[Test]
 	public async Task GetAllAsync_ShouldReturnAccounts()
 	{
+		// Arrange
 		var accounts = new List<Account>
 		{
 			new() { Id = 1, UserId = 8, Balance = 100 },
 			new() { Id = 2, UserId = 4, Balance = 1000 }
 		};
-
 		_mockAccountRepository.Setup(repo => repo.GetAllAsync()).ReturnsAsync(accounts);
 
+		// Act
 		var result = await _accountDomain.GetAllAsync();
 
+		// Assert
 		Assert.That(result.Count, Is.EqualTo(2));
 		Assert.That(result[0].Balance, Is.EqualTo(100));
 		Assert.That(result[1].Balance, Is.EqualTo(1000));
@@ -61,6 +63,7 @@ public class AccountDomainTests
 
 		Assert.ThrowsAsync<NotFoundException>(() => _accountDomain.GetByIdAsync(accountId));
 	}
+
 
 	[Test]
 	public async Task AddAsync_ShouldAddNewAccount()
