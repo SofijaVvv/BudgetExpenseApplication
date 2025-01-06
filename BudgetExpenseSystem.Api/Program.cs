@@ -1,10 +1,6 @@
 using BudgetExpenseSystem.Api.Extentions;
 using BudgetExpenseSystem.Api.Filters;
-using BudgetExpenseSystem.Domain.Domains;
-using BudgetExpenseSystem.Domain.Interfaces;
 using BudgetExpenseSystem.Repository;
-using BudgetExpenseSystem.Repository.Interfaces;
-using BudgetExpenseSystem.Repository.Repositories;
 using BudgetExpenseSystem.Service;
 using BudgetExpenseSystem.Service.Interfaces;
 using BudgetExpenseSystem.WebSocket.Hub;
@@ -21,29 +17,10 @@ builder.Services.AddControllers(options =>
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-//builder.Services.AddDomains();
-//builder.Services.AddRepositories();
-builder.Services.AddScoped<IRoleDomain, RoleDomain>();
-builder.Services.AddScoped<IAccountDomain, AccountDomain>();
-builder.Services.AddScoped<IUserDomain, UserDomain>();
-builder.Services.AddScoped<IBudgetDomain, BudgetDomain>();
-builder.Services.AddScoped<IBudgetTypeDomain, BudgetTypeDomain>();
-builder.Services.AddScoped<ICategoryDomain, CategoryDomain>();
-builder.Services.AddScoped<INotificationDomain, NotificationDomain>();
-builder.Services.AddScoped<ITransactionDomain, TransactionDomain>();
-builder.Services.AddScoped<IBudgetRepository, BudgetRepository>();
-builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
-builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
-builder.Services.AddScoped<IAccountRepository, AccountRepository>();
-builder.Services.AddScoped<IBudgetTypeRepository, BudgetTypeRepository>();
-builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-builder.Services.AddScoped<IRoleRepository, RoleRepository>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IScheduledTransactionRepository, ScheduledTransactionRepository>();
-builder.Services.AddScoped<IScheduledTransactionDomain, ScheduledTransactionDomain>();
-builder.Services.AddScoped<IScheduledTransactionHandlerDomain, ScheduledTransactionHandlerDomain>();
+
+builder.Services.AddDomains();
+builder.Services.AddRepositories();
+
 builder.Services.AddLogging();
 builder.Services.AddHttpClient();
 
@@ -57,6 +34,7 @@ else
 var connectionString = builder.Configuration.GetConnectionString("ConnectionDefault")
                        ?? throw new Exception("Connection string 'ConnectionDefault' is not configured or is missing.");
 var mySqlVersion = ServerVersion.Parse("10.4.28-mariadb");
+
 builder.Services.AddDbContext<ApplicationDbContext>(options => { options.UseMySql(connectionString, mySqlVersion); });
 
 builder.Services.AddHangfire(config =>
@@ -82,6 +60,7 @@ builder.Services.AddSwaggerWithJwtAuth();
 
 var secretKey = builder.Configuration["JwtSettings:SecretKey"]
                 ?? throw new Exception("JwtSettings:SecretKey not found in configuration");
+
 builder.Services.AddJwtAuthentication(secretKey);
 
 builder.Services.AddAuthorization(
@@ -116,6 +95,16 @@ if (app.Environment.IsDevelopment())
 	app.UseSwaggerUI();
 	app.UseHangfireDashboard();
 }
+
+RecurringJob.AddOrUpdate(
+	"database-backup-job",
+	() => DatabaseBackup.BackupMySqlDatabase(),
+	Cron.Daily,
+	new RecurringJobOptions
+	{
+		TimeZone = TimeZoneInfo.Utc
+	}
+);
 
 // app.UseHttpsRedirection();
 app.UseAuthentication();
