@@ -6,10 +6,10 @@ namespace BudgetExpenseSystem.Repository
 	{
 		public static void BackupMySqlDatabase()
 		{
-			var backupFolder = "backup_folder";
-			var databaseName = "db_name";
+			var backupFolder = "/Users/sofijavujosevic/backups";
+			var databaseName = "budget_expense_system";
 			var user = "user";
-			var password = "password";
+			var password = "mujo";
 			var backupFile = Path.Combine(backupFolder, $"backup_{DateTime.Now:yyyyMMdd_HHmmss}.sql");
 
 			if (!Directory.Exists(backupFolder)) Directory.CreateDirectory(backupFolder);

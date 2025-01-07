@@ -1,20 +1,23 @@
-version: '3.8'
-
 services:
-  web:
-    image: budgetexpensesystem:latest
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - "8080:80"
-    depends_on:
-      - db
-
   db:
-    image: mcr.microsoft.com/mssql/server:2019-latest
+    image: mysql:8.0
     environment:
-      SA_PASSWORD: "Your_password123"
-      ACCEPT_EULA: "Y"
+      MYSQL_ROOT_PASSWORD: Your_password123
+      MYSQL_DATABASE: BudgetExpenseSystem
     ports:
-      - "1433:1433"
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "--password=Your_password123"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+  web:
+    build: .
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__ConnectionDefault=Server=db;Database=BudgetExpenseSystem;User=root;Password=Your_password123;
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy

@@ -1,6 +1,7 @@
 using BudgetExpenseSystem.Api.Extentions;
 using BudgetExpenseSystem.Api.Filters;
 using BudgetExpenseSystem.Repository;
+using BudgetExpenseSystem.Repository.Seeder;
 using BudgetExpenseSystem.Service;
 using BudgetExpenseSystem.Service.Interfaces;
 using BudgetExpenseSystem.WebSocket.Hub;
@@ -33,7 +34,7 @@ else
 
 var connectionString = builder.Configuration.GetConnectionString("ConnectionDefault")
                        ?? throw new Exception("Connection string 'ConnectionDefault' is not configured or is missing.");
-var mySqlVersion = ServerVersion.Parse("10.4.28-mariadb");
+var mySqlVersion = ServerVersion.AutoDetect(connectionString);
 
 builder.Services.AddDbContext<ApplicationDbContext>(options => { options.UseMySql(connectionString, mySqlVersion); });
 
@@ -81,6 +82,12 @@ builder.Services.AddCors(options =>
 builder.Services.AddSignalR();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+	var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+	DbSeeder.Seed(context);
+}
 
 app.UseCors("AllowSpecificOrigin");
 
