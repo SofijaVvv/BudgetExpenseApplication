@@ -15,7 +15,7 @@ services:
     build: .
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__ConnectionDefault=Server=db;Database=BudgetExpenseSystem;User=root;Password=Your_password123;
+      - ConnectionStrings__ConnectionDefault=Server=db;Database=BudgetExpenseSystem;User=root;Password=Your_password123;Allow User Variables=true
     ports:
       - "8080:8080"
     depends_on:
