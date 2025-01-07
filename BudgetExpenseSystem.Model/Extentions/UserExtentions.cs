@@ -11,7 +11,6 @@ public static class UserExtentions
 		return new User
 		{
 			Email = request.Email,
-			RoleId = request.RoleId
 		};
 	}
 
@@ -19,6 +18,7 @@ public static class UserExtentions
 	{
 		return new UserResponse
 		{
+			Id = response.Id,
 			Email = response.Email,
 			RoleId = response.RoleId
 		};

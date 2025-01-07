@@ -4,6 +4,7 @@ using System.Security.Cryptography;
 using System.Text;
 using BudgetExpenseSystem.Domain.Exceptions;
 using BudgetExpenseSystem.Domain.Interfaces;
+using BudgetExpenseSystem.Model.Constants;
 using BudgetExpenseSystem.Model.Dto.Requests;
 using BudgetExpenseSystem.Model.Dto.Response;
 using BudgetExpenseSystem.Model.Models;
@@ -51,8 +52,8 @@ public class UserDomain : IUserDomain
 		var salt = GenerateSalt();
 		var passwordHash = HashPassword(userRequest.Password, salt);
 
-		var role = await _roleRepository.GetByIdAsync(userRequest.RoleId);
-		if (role == null) throw new NotFoundException($"Role with Id {userRequest.RoleId} not found");
+		var role = await _roleRepository.GetByIdAsync(RoleConstants.UserId);
+		if (role == null) throw new NotFoundException($"Role with Id {role} not found");
 
 		var newUser = new User
 		{

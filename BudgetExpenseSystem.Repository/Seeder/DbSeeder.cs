@@ -1,3 +1,4 @@
+using BudgetExpenseSystem.Model.Constants;
 using BudgetExpenseSystem.Model.Models;
 
 namespace BudgetExpenseSystem.Repository.Seeder;
@@ -17,8 +18,8 @@ public static class DbSeeder
 	{
 		var roles = new List<Role>
 		{
-			new Role { Name = "Admin", CreatedDate = DateOnly.FromDateTime(DateTime.UtcNow) },
-			new Role { Name = "User", CreatedDate = DateOnly.FromDateTime(DateTime.UtcNow) }
+			new Role {Id = RoleConstants.AdminId, Name = RoleConstants.AdminName, CreatedDate = DateOnly.FromDateTime(DateTime.UtcNow) },
+			new Role {Id= RoleConstants.UserId,  Name = RoleConstants.UserName, CreatedDate = DateOnly.FromDateTime(DateTime.UtcNow) }
 		};
 
 		context.Roles.AddRange(roles);

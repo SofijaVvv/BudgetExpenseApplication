@@ -51,9 +51,9 @@ public class UserController : ControllerBase
 	}
 
 	[HttpPost("Login")]
-	public async Task<IActionResult> LoginUser([FromBody] UserRequest userRequest)
+	public async Task<IActionResult> LoginUser([FromBody] LoginRequest loginRequest)
 	{
-		var token = await _userDomain.LoginUserAsync(userRequest.Email, userRequest.Password);
+		var token = await _userDomain.LoginUserAsync(loginRequest.Email, loginRequest.Password);
 
 		return Ok(new TokenResponse { Token = token.Token });
 	}
