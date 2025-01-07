@@ -69,7 +69,7 @@ public class UserDomain : IUserDomain
 		return newUser;
 	}
 
-	public async Task<UserResponse> LoginUserAsync(string email, string password)
+	public async Task<TokenResponse> LoginUserAsync(string email, string password)
 	{
 		var user = await _userRepository.GetUserEmailAsync(email);
 		if (user == null) throw new NotFoundException("User doesn't exist");
@@ -82,11 +82,9 @@ public class UserDomain : IUserDomain
 
 		var token = GenerateJwtToken(user);
 
-		return new UserResponse
+		return new TokenResponse
 		{
 			Token = token,
-			Email = email,
-			RoleId = role.Id
 		};
 	}
 

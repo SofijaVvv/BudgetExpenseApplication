@@ -6,6 +6,8 @@ public class ScheduleTransactionResponse
 	public AccountResponse Account { get; set; }
 	public CategoryResponse Category { get; set; }
 	public int BudgetId { get; set; }
+
+	public string Currency { get; set; }
 	public decimal Amount { get; set; }
 	public DateTime ScheduledDate { get; set; }
 	public bool IsRecurring { get; set; }

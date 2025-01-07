@@ -13,6 +13,7 @@ public static class ScheduleTransactionExtention
 			AccountId = request.AccountId,
 			CategoryId = request.CategoryId,
 			BudgetId = request.BudgetId,
+			Currency = request.Currency,
 			Amount = request.Amount,
 			ScheduledDate = request.ScheduledDate,
 			IsRecurring = request.IsRecurring
@@ -37,6 +38,7 @@ public static class ScheduleTransactionExtention
 				Description = response.Category.Description
 			},
 			BudgetId = response.BudgetId,
+			Currency = response.Currency,
 			Amount = response.Amount,
 			ScheduledDate = response.ScheduledDate,
 			IsRecurring = response.IsRecurring

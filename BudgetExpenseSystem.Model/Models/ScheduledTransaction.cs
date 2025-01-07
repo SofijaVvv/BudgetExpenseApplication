@@ -10,6 +10,8 @@ public class ScheduledTransaction
 	[Required] public int CategoryId { get; set; }
 	[Required] public int BudgetId { get; set; }
 
+	[Required] [MaxLength(3)] public string Currency { get; set; }
+
 	public string? JobId { get; set; }
 
 	[Required] public decimal Amount { get; set; }
