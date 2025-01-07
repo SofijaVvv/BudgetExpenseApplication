@@ -5,10 +5,8 @@ public static class DbSeeder
 {
 	public static void Seed(ApplicationDbContext context)
 	{
-		// Ensure database is created
 		context.Database.EnsureCreated();
 
-		// Check if data exists in the database to avoid seeding multiple times
 		if (!context.Roles.Any())
 		{
 			SeedRoles(context);
