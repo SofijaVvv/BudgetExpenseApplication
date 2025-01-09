@@ -13,7 +13,6 @@ public static class ServiceExtensions
         services.AddScoped<IAccountDomain, AccountDomain>();
         services.AddScoped<IUserDomain, UserDomain>();
         services.AddScoped<IBudgetDomain, BudgetDomain>();
-        services.AddScoped<IBudgetTypeDomain, BudgetTypeDomain>();
         services.AddScoped<ICategoryDomain, CategoryDomain>();
         services.AddScoped<INotificationDomain, NotificationDomain>();
         services.AddScoped<ITransactionDomain, TransactionDomain>();
@@ -29,7 +28,6 @@ public static class ServiceExtensions
         services.AddScoped<INotificationRepository, NotificationRepository>();
         services.AddScoped<ITransactionRepository, TransactionRepository>();
         services.AddScoped<IAccountRepository, AccountRepository>();
-        services.AddScoped<IBudgetTypeRepository, BudgetTypeRepository>();
         services.AddScoped<ICategoryRepository, CategoryRepository>();
         services.AddScoped<IRoleRepository, RoleRepository>();
         services.AddScoped<IUserRepository, UserRepository>();

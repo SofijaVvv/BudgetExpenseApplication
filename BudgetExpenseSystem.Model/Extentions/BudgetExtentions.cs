@@ -12,9 +12,7 @@ public static class BudgetExtentions
 		{
 			UserId = request.UserId,
 			CategoryId = request.CategoryId,
-			BudgetTypeId = request.BudgetTypeId,
 			Amount = request.Amount,
-			CreatedDate = request.CreatedDate
 		};
 	}
 
@@ -29,13 +27,8 @@ public static class BudgetExtentions
 				Id = response.Category.Id,
 				Name = response.Category.Name
 			},
-			BudgetType = new BudgetTypeResponse
-			{
-				Id = response.BudgetType.Id,
-				Name = response.BudgetType.Name
-			},
 			Amount = response.Amount,
-			CreatedDate = response.CreatedDate
+			CreatedAt = response.CreatedAt
 		};
 	}
 

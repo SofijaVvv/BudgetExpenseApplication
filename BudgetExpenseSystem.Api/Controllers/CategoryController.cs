@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BudgetExpenseSystem.Api.Controllers;
 
-[Authorize(Policy = "UserOnly")]
+
 [Route("api/[controller]s")]
 [ApiController]
 public class CategoryController : ControllerBase
@@ -40,6 +40,7 @@ public class CategoryController : ControllerBase
 		return Ok(result);
 	}
 
+	[Authorize(Policy = "AdminOnly")]
 	[HttpPost]
 	[ProducesResponseType(StatusCodes.Status201Created, Type = typeof(CategoryResponse))]
 	public async Task<ActionResult> AddCategory([FromBody] CategoryRequest categoryRequest)
@@ -50,6 +51,7 @@ public class CategoryController : ControllerBase
 		return CreatedAtAction(nameof(GetCategoryById), new { id = result.Id }, result.ToResponse());
 	}
 
+	[Authorize(Policy = "AdminOnly")]
 	[HttpPut("{id}")]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
 	public async Task<ActionResult> UpdateCategory(
@@ -61,6 +63,7 @@ public class CategoryController : ControllerBase
 		return NoContent();
 	}
 
+	[Authorize(Policy = "AdminOnly")]
 	[HttpDelete("{id}")]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
 	public async Task<ActionResult> DeleteCategory([FromRoute] int id)

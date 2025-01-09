@@ -13,7 +13,6 @@ public class BudgetDomainTests
 	private readonly Mock<IUnitOfWork> _mockUnitOfWork;
 	private readonly Mock<IBudgetRepository> _mockBudgetRepository;
 	private readonly Mock<ICategoryRepository> _mockCategoryRepository;
-	private readonly Mock<IBudgetTypeRepository> _mockBudgetTypeRepository;
 	private readonly BudgetDomain _budgetDomain;
 
 	public BudgetDomainTests()
@@ -21,13 +20,11 @@ public class BudgetDomainTests
 		_mockUnitOfWork = new Mock<IUnitOfWork>();
 		_mockBudgetRepository = new Mock<IBudgetRepository>();
 		_mockCategoryRepository = new Mock<ICategoryRepository>();
-		_mockBudgetTypeRepository = new Mock<IBudgetTypeRepository>();
 		_budgetDomain = new BudgetDomain
 		(
 			_mockUnitOfWork.Object,
 			_mockBudgetRepository.Object,
-			_mockCategoryRepository.Object,
-			_mockBudgetTypeRepository.Object
+			_mockCategoryRepository.Object
 		);
 	}
 
@@ -37,8 +34,8 @@ public class BudgetDomainTests
 		// Arrange
 		var budgets = new List<Budget>
 		{
-			new() { Id = 1, UserId = 8, CategoryId = 1, BudgetTypeId = 2, Amount = 200 },
-			new() { Id = 2, UserId = 2, CategoryId = 3, BudgetTypeId = 7, Amount = 300 }
+			new() { Id = 1, UserId = 8, CategoryId = 1,  Amount = 200 },
+			new() { Id = 2, UserId = 2, CategoryId = 3,  Amount = 300 }
 		};
 		_mockBudgetRepository.Setup(repo => repo.GetAllAsync()).ReturnsAsync(budgets);
 
@@ -53,7 +50,7 @@ public class BudgetDomainTests
 	public async Task GetByIdAsync_ShouldReturnBudgetById()
 	{
 		// Arrange
-		var budget = new Budget { Id = 1, UserId = 8, CategoryId = 1, BudgetTypeId = 2, Amount = 200 };
+		var budget = new Budget { Id = 1, UserId = 8, CategoryId = 1, Amount = 200 };
 
 		_mockBudgetRepository.Setup(repo => repo.GetByIdAsync(1)).ReturnsAsync(budget);
 
@@ -118,12 +115,10 @@ public class BudgetDomainTests
 	public async Task AddAsync_ShouldAddNewBudget()
 	{
 		// Arrange
-		var budget = new Budget { Id = 1, UserId = 8, CategoryId = 2, BudgetTypeId = 2, Amount = 200 };
+		var budget = new Budget { Id = 1, UserId = 8, CategoryId = 2,  Amount = 200 };
 		var category = new Category { Id = 2, Name = "Test Category" };
-		var budgetType = new BudgetType { Id = 2, Name = "Test Budget Type" };
 
 		_mockCategoryRepository.Setup(repo => repo.GetByIdAsync(budget.CategoryId)).ReturnsAsync(category);
-		_mockBudgetTypeRepository.Setup(repo => repo.GetByIdAsync(budget.BudgetTypeId)).ReturnsAsync(budgetType);
 
 		_mockBudgetRepository.Setup(repo => repo.AddAsync(budget));
 		_mockUnitOfWork.Setup(repo => repo.SaveAsync()).Returns(Task.CompletedTask);
@@ -144,7 +139,6 @@ public class BudgetDomainTests
 		_mockUnitOfWork.Verify(uow => uow.SaveAsync(), Times.Once);
 		_mockBudgetRepository.Verify(repo => repo.GetByIdAsync(budget.Id), Times.Once);
 		_mockCategoryRepository.Verify(repo => repo.GetByIdAsync(budget.CategoryId), Times.Once);
-		_mockBudgetTypeRepository.Verify(repo => repo.GetByIdAsync(budget.BudgetTypeId), Times.Once);
 	}
 
 
@@ -163,8 +157,7 @@ public class BudgetDomainTests
 	public void AddAsync_ShouldThrowNotFoundException_WhenBudgetTypeDoesNotExist()
 	{
 		// Arrange
-		var budget = new Budget { Id = 1, CategoryId = 1, BudgetTypeId = 2, Amount = 50 };
-		_mockBudgetTypeRepository.Setup(repo => repo.GetByIdAsync(budget.CategoryId)).ReturnsAsync((BudgetType?)null);
+		var budget = new Budget { Id = 1, CategoryId = 1,  Amount = 50 };
 
 		// Assert
 		Assert.ThrowsAsync<NotFoundException>(() => _budgetDomain.AddAsync(budget));
@@ -174,7 +167,7 @@ public class BudgetDomainTests
 	public void Update_ShouldThrowNotFoundException_WhenBudgetDoesNotExist()
 	{
 		// Arrange
-		var updateRequest = new UpdateBudgetRequest { CategoryId = 1, BudgetTypeId = 2, Amount = 200 };
+		var updateRequest = new UpdateBudgetRequest { CategoryId = 1,  Amount = 200 };
 		_mockBudgetRepository.Setup(repo => repo.GetByIdAsync(It.IsAny<int>())).ReturnsAsync((Budget?)null);
 
 		// Assert
@@ -185,7 +178,7 @@ public class BudgetDomainTests
 	public void Update_ShouldThrowNotFoundException_WhenCategoryDoesNotExist()
 	{
 		// Arrange
-		var updateRequest = new UpdateBudgetRequest { CategoryId = 1, BudgetTypeId = 2, Amount = 200 };
+		var updateRequest = new UpdateBudgetRequest { CategoryId = 1,  Amount = 200 };
 		_mockCategoryRepository.Setup(repo => repo.GetByIdAsync(updateRequest.CategoryId))
 			.ReturnsAsync((Category?)null);
 
@@ -197,9 +190,7 @@ public class BudgetDomainTests
 	public void Update_ShouldThrowNotFoundException_WhenBudgetTypeDoesNotExist()
 	{
 		// Arrange
-		var updateRequest = new UpdateBudgetRequest { CategoryId = 1, BudgetTypeId = 2, Amount = 200 };
-		_mockBudgetTypeRepository.Setup(repo => repo.GetByIdAsync(updateRequest.BudgetTypeId))
-			.ReturnsAsync((BudgetType?)null);
+		var updateRequest = new UpdateBudgetRequest { CategoryId = 1,  Amount = 200 };
 
 		// Assert
 		Assert.ThrowsAsync<NotFoundException>(() => _budgetDomain.Update(1, updateRequest));
@@ -212,31 +203,25 @@ public class BudgetDomainTests
 		var updateBudgetRequest = new UpdateBudgetRequest
 		{
 			CategoryId = 1,
-			BudgetTypeId = 1,
 			Amount = 100
 		};
 
-		var existingBudget = new Budget { Id = 1, CategoryId = 2, BudgetTypeId = 2, Amount = 50 };
+		var existingBudget = new Budget { Id = 1, CategoryId = 2,  Amount = 50 };
 		var category = new Category { Id = 1, Name = "Test Category" };
-		var budgetType = new BudgetType { Id = 1, Name = "Test BudgetType" };
 
 		_mockBudgetRepository.Setup(repo => repo.GetByIdAsync(1)).ReturnsAsync(existingBudget);
 		_mockCategoryRepository.Setup(repo => repo.GetByIdAsync(updateBudgetRequest.CategoryId)).ReturnsAsync(category);
-		_mockBudgetTypeRepository.Setup(repo => repo.GetByIdAsync(updateBudgetRequest.BudgetTypeId))
-			.ReturnsAsync(budgetType);
 		_mockUnitOfWork.Setup(uow => uow.SaveAsync()).Returns(Task.CompletedTask);
 
 		await _budgetDomain.Update(1, updateBudgetRequest);
 
 		// Assert
 		Assert.That(existingBudget.CategoryId, Is.EqualTo(updateBudgetRequest.CategoryId));
-		Assert.That(existingBudget.BudgetTypeId, Is.EqualTo(updateBudgetRequest.BudgetTypeId));
 		Assert.That(existingBudget.Amount, Is.EqualTo(updateBudgetRequest.Amount));
 
 		// Verify
 		_mockBudgetRepository.Verify(repo => repo.GetByIdAsync(1), Times.Once);
 		_mockCategoryRepository.Verify(repo => repo.GetByIdAsync(updateBudgetRequest.CategoryId), Times.Once);
-		_mockBudgetTypeRepository.Verify(repo => repo.GetByIdAsync(updateBudgetRequest.BudgetTypeId), Times.Once);
 		_mockUnitOfWork.Verify(uow => uow.SaveAsync(), Times.Once);
 	}
 
@@ -244,7 +229,7 @@ public class BudgetDomainTests
 	public void Delete_ShouldThrowNotFoundException_WhenBudgetDoesNotExist()
 	{
 		// Arrange
-		var budget = new Budget { Id = 2, CategoryId = 1, BudgetTypeId = 2, Amount = 200 };
+		var budget = new Budget { Id = 2, CategoryId = 1,  Amount = 200 };
 		_mockBudgetRepository.Setup(repo => repo.GetByIdAsync(It.IsAny<int>())).ReturnsAsync((Budget?)null);
 
 		// Assert
@@ -255,7 +240,7 @@ public class BudgetDomainTests
 	public async Task Delete_ShouldDeleteAccount()
 	{
 		// Arrange
-		var budget = new Budget { Id = 2, CategoryId = 1, BudgetTypeId = 2, Amount = 200 };
+		var budget = new Budget { Id = 2, CategoryId = 1,  Amount = 200 };
 
 		_mockBudgetRepository.Setup(repo => repo.GetByIdAsync(budget.Id)).ReturnsAsync(budget);
 		_mockBudgetRepository.Setup(repo => repo.DeleteAsync(budget.Id));

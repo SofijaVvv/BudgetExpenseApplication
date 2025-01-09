@@ -11,5 +11,5 @@ public class BudgetResponse
 
 	public decimal Amount { get; set; }
 
-	public DateOnly CreatedDate { get; set; }
+	public DateTime CreatedAt { get; set; }
 }

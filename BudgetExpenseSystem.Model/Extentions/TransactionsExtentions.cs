@@ -15,7 +15,6 @@ public static class TransactionsExtentions
 			BudgetId = request.BudgetId,
 			Currency = request.Currency,
 			Amount = request.Amount,
-			TransactionDate = request.TransactionDate
 		};
 	}
 
@@ -39,7 +38,7 @@ public static class TransactionsExtentions
 			Currency = response.Currency,
 			BudgetId = response.BudgetId,
 			Amount = Math.Round(response.Amount, 2),
-			TransactionDate = response.TransactionDate
+			CreatedAt = response.CreatedAt
 		};
 	}
 

@@ -8,5 +8,4 @@ public class AccountRequest
 
 	public string Currency { get; set; }
 
-	public DateOnly CreatedDate { get; set; }
 }

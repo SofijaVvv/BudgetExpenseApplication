@@ -135,7 +135,7 @@ public class ScheduledTransactionHandlerDomain : IScheduledTransactionHandlerDom
 			CategoryId = scheduledTransaction.CategoryId,
 			BudgetId = scheduledTransaction.BudgetId,
 			Amount = scheduledTransaction.Amount,
-			TransactionDate = DateOnly.FromDateTime(DateTime.UtcNow) // DateTime
+			CreatedAt = DateTime.UtcNow // DateTime
 		};
 
 		await _transactionDomain.AddAsync(transaction);

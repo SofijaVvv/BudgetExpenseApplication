@@ -13,7 +13,6 @@ public static class AccountExtentions
 			UserId = request.UserId,
 			Balance = request.Balance,
 			Currency = request.Currency,
-			CreatedDate = request.CreatedDate
 		};
 	}
 
@@ -24,7 +23,7 @@ public static class AccountExtentions
 			Id = response.Id,
 			UserId = response.UserId,
 			Balance = response.Balance,
-			CreatedDate = response.CreatedDate
+			CreatedDate = response.CreatedAt
 		};
 	}
 

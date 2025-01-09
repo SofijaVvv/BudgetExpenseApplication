@@ -20,7 +20,6 @@ public class BudgetRepository : GenericRepository<Budget>, IBudgetRepository
 	{
 		var budget = await _context.Budgets
 			.Include(b => b.Category)
-			.Include(b => b.BudgetType)
 			.Include(b => b.User)
 			.ToListAsync();
 
@@ -33,7 +32,6 @@ public class BudgetRepository : GenericRepository<Budget>, IBudgetRepository
 	{
 		var budget = await _context.Budgets
 			.Include(b => b.Category)
-			.Include(b => b.BudgetType)
 			.Include(b => b.User)
 			.FirstOrDefaultAsync(b => b.Id == id);
 

@@ -22,9 +22,6 @@ public class NotificationHub : Microsoft.AspNetCore.SignalR.Hub
 		var userId = Context.UserIdentifier;
 		if (userId != null)
 		{
-			var role = Context.User?.FindFirst("role")?.Value; // If role is required for filtering
-			Console.WriteLine($"Sending notification to User: {userId}, Role: {role}");
-
 			await Clients.User(userId).SendAsync("ReceiveTransactionNotification", message);
 		}
 		else

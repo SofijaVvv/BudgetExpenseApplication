@@ -1,43 +1,127 @@
-using System.Diagnostics;
+using Microsoft.EntityFrameworkCore;
+using System.Text;
+using System.Runtime.CompilerServices;
 
 namespace BudgetExpenseSystem.Repository
 {
-	public class DatabaseBackup
-	{
-		public static void BackupMySqlDatabase()
-		{
-			var backupFolder = "/Users/sofijavujosevic/backups";
-			var databaseName = "budget_expense_system";
-			var user = "user";
-			var password = "mujo";
-			var backupFile = Path.Combine(backupFolder, $"backup_{DateTime.Now:yyyyMMdd_HHmmss}.sql");
+    public class DatabaseBackup
+    {
+        private readonly DbContext _context;
+        private readonly string _databaseName;
 
-			if (!Directory.Exists(backupFolder)) Directory.CreateDirectory(backupFolder);
+        public DatabaseBackup(DbContext context)
+        {
+            _context = context;
+            _databaseName = GetDatabaseName();
+            LogConnectionString();
+        }
 
-			var command = $"mysqldump -u {user} -p{password} {databaseName} > \"{backupFile}\"";
+        private void LogConnectionString()
+        {
+            var connectionString = _context.Database.GetDbConnection().ConnectionString;
+            Console.WriteLine($"Using connection string: {connectionString}");
+        }
 
-			var processStartInfo = new ProcessStartInfo
-			{
-				FileName = "/bin/bash",
-				Arguments = $"-c \"{command}\"",
-				RedirectStandardInput = true,
-				RedirectStandardOutput = true,
-				CreateNoWindow = true,
-				UseShellExecute = false
-			};
+        private string GetDatabaseName()
+        {
+            var connectionString = _context.Database.GetDbConnection().ConnectionString;
+            var builder = new MySqlConnector.MySqlConnectionStringBuilder(connectionString);
+            return builder.Database;
+        }
 
-			try
-			{
-				var process = new Process { StartInfo = processStartInfo };
-				process.Start();
-				process.WaitForExit();
+        public async Task BackupDatabaseToFileAsync()
+        {
+            var backupFolder = "../DbBackup";
+            string backupFile = Path.Combine(backupFolder, $"backup_{DateTime.Now:yyyyMMdd_HHmmss}.sql");
+            var sb = new StringBuilder();
+            var databaseName = _databaseName;
 
-				Console.WriteLine($"Backup completed: {backupFile}");
-			}
-			catch (Exception ex)
-			{
-				Console.WriteLine($"Error during backup: {ex.Message}");
-			}
-		}
-	}
+            var tables = await GetTableNamesAsync();
+
+            if (!Directory.Exists(backupFolder))
+            {
+                Directory.CreateDirectory(backupFolder);
+            }
+
+            foreach (var table in tables)
+            {
+                sb.AppendLine($"-- Table: {databaseName}.{table}");
+
+                var columnNames = await GetColumnNamesAsync(table);
+                sb.AppendLine($"CREATE TABLE IF NOT EXISTS {databaseName}.{table} ({string.Join(", ", columnNames)});");
+
+                var data = await GetTableDataAsync(table);
+
+                foreach (var row in data)
+                {
+                    var values = string.Join(", ", row.Select(value => value is string ? $"\"{value}\"" : value.ToString()));
+                    sb.AppendLine($"INSERT INTO {databaseName}.{table} ({string.Join(", ", columnNames)}) VALUES ({values});");
+                }
+            }
+
+            await File.WriteAllTextAsync(backupFile, sb.ToString());
+            File.SetAttributes(backupFile, FileAttributes.Normal);
+            Console.WriteLine($"Backup completed: {backupFile}");
+        }
+
+        private async Task<List<string>> GetTableNamesAsync()
+        {
+            var query = $"SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '{_databaseName}' AND TABLE_TYPE = 'BASE TABLE'";
+            var formattableQuery = FormattableStringFactory.Create(query);
+
+            var tableNames = await _context.Database
+                .SqlQuery<string>(formattableQuery)
+                .ToListAsync();
+
+            return tableNames;
+        }
+
+        private async Task<List<string>> GetColumnNamesAsync(string tableName)
+        {
+            var query = $"SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{tableName}'";
+            var formattableQuery = FormattableStringFactory.Create(query);
+
+            var columnNames = await _context.Database
+                .SqlQuery<string>(formattableQuery)
+                .ToListAsync();
+
+            return columnNames;
+        }
+
+        private async Task<List<List<object>>> GetTableDataAsync(string tableName)
+        {
+            var query = $"SELECT * FROM `{tableName}`";
+            var rows = new List<List<object>>();
+
+            try
+            {
+                using (var command = _context.Database.GetDbConnection().CreateCommand())
+                {
+                    command.CommandText = query;
+                    _context.Database.OpenConnection();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var row = new List<object>();
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                row.Add(reader.GetValue(i));
+                            }
+                            rows.Add(row);
+                        }
+                    }
+
+                    _context.Database.CloseConnection();
+                }
+            }
+            catch (MySqlConnector.MySqlException ex) when (ex.Message.Contains("doesn't exist"))
+            {
+                Console.WriteLine($"Table '{tableName}' does not exist. Skipping...");
+            }
+
+            return rows;
+        }
+    }
 }

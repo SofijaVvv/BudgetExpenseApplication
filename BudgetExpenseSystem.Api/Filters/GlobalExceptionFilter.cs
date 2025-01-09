@@ -27,13 +27,13 @@ public class GlobalExceptionFilter : IExceptionFilter
 			case BadRequestException notActiveException:
 				errorModel = new ErrorModel
 				{
-					StatusCode = StatusCodes.Status409Conflict,
+					StatusCode = StatusCodes.Status400BadRequest,
 					Message = notActiveException.Message,
 					Details = context.Exception.StackTrace
 				};
 				context.Result = new JsonResult(errorModel)
 				{
-					StatusCode = StatusCodes.Status409Conflict
+					StatusCode = StatusCodes.Status400BadRequest
 				};
 				break;
 			case InsufficientFundsException insufficientFundsException:

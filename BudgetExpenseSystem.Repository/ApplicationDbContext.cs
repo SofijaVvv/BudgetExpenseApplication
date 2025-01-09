@@ -12,7 +12,6 @@ public class ApplicationDbContext : DbContext
 
 	public DbSet<Role> Roles { get; set; }
 	public DbSet<User> Users { get; set; }
-	public DbSet<BudgetType> BudgetTypes { get; set; }
 	public DbSet<Category> Categories { get; set; }
 	public DbSet<Account> Accounts { get; set; }
 	public DbSet<Budget> Budgets { get; set; }
@@ -55,10 +54,6 @@ public class ApplicationDbContext : DbContext
 				.HasForeignKey(b => b.UserId)
 				.IsRequired();
 
-			entity.HasOne(b => b.BudgetType)
-				.WithMany()
-				.HasForeignKey(b => b.BudgetTypeId)
-				.IsRequired();
 		});
 
 

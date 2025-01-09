@@ -6,5 +6,5 @@ public class RoleResponse
 
 	public string Name { get; set; }
 
-	public DateOnly CreatedDate { get; set; }
+	public DateTime CreatedDate { get; set; }
 }

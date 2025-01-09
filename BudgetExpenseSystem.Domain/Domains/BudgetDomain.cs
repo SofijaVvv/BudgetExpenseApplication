@@ -11,19 +11,16 @@ public class BudgetDomain : IBudgetDomain
 	private readonly IUnitOfWork _unitOfWork;
 	private readonly IBudgetRepository _budgetRepository;
 	private readonly ICategoryRepository _categoryRepository;
-	private readonly IBudgetTypeRepository _budgetTypeRepository;
 
 	public BudgetDomain(
 		IUnitOfWork unitOfWork,
 		IBudgetRepository budgetRepository,
-		ICategoryRepository categoryRepository,
-		IBudgetTypeRepository budgetTypeRepository
+		ICategoryRepository categoryRepository
 	)
 	{
 		_unitOfWork = unitOfWork;
 		_budgetRepository = budgetRepository;
 		_categoryRepository = categoryRepository;
-		_budgetTypeRepository = budgetTypeRepository;
 	}
 
 	public async Task<List<Budget>> GetAllAsync()
@@ -65,10 +62,6 @@ public class BudgetDomain : IBudgetDomain
 		if (category == null)
 			throw new NotFoundException($"Category Id: {budget.CategoryId} not found");
 
-		var budgetType = await _budgetTypeRepository.GetByIdAsync(budget.BudgetTypeId);
-		if (budgetType == null)
-			throw new NotFoundException($"budgetType Id: {budget.CategoryId} not found");
-
 		_budgetRepository.AddAsync(budget);
 		await _unitOfWork.SaveAsync();
 
@@ -86,11 +79,6 @@ public class BudgetDomain : IBudgetDomain
 		var category = await _categoryRepository.GetByIdAsync(updateBudgetRequest.CategoryId);
 		if (category == null) throw new NotFoundException($"Category Id: {updateBudgetRequest.CategoryId} not found");
 
-		var budgetType = await _budgetTypeRepository.GetByIdAsync(updateBudgetRequest.BudgetTypeId);
-		if (budgetType == null)
-			throw new NotFoundException($"budgetType Id: {updateBudgetRequest.BudgetTypeId} not found");
-
-		budget.BudgetTypeId = updateBudgetRequest.BudgetTypeId;
 		budget.CategoryId = updateBudgetRequest.CategoryId;
 		budget.Amount = updateBudgetRequest.Amount;
 

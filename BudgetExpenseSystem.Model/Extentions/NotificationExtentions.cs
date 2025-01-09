@@ -13,8 +13,6 @@ public static class NotificationExtentions
 			UserId = request.UserId,
 			Name = request.Name,
 			Message = request.Message,
-			CreatedDate = request.CreatedDate,
-			ReadAt = request.ReadAt
 		};
 	}
 
@@ -26,7 +24,7 @@ public static class NotificationExtentions
 			UserId = response.UserId,
 			Name = response.Name,
 			Message = response.Message,
-			CreatedDate = response.CreatedDate,
+			CreatedDate = response.CreatedAt,
 			ReadAt = response.ReadAt
 		};
 	}
