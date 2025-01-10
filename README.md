@@ -36,7 +36,7 @@ Make sure that docker, docker-compose has been installed in your host.
 #### Native build:
 1. Clone the repository:
     ```sh
-    git clone https://github.com/yourusername/budget-expense-system.git
+    git clone https://github.com/SofijaVvv/BudgetExpenseSystem.git
     ```
 - Navigate to the project root directory
 
