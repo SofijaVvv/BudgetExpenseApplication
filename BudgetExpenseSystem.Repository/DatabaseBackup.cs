@@ -13,13 +13,6 @@ namespace BudgetExpenseSystem.Repository
         {
             _context = context;
             _databaseName = GetDatabaseName();
-            LogConnectionString();
-        }
-
-        private void LogConnectionString()
-        {
-            var connectionString = _context.Database.GetDbConnection().ConnectionString;
-            Console.WriteLine($"Using connection string: {connectionString}");
         }
 
         private string GetDatabaseName()

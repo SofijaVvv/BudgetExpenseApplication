@@ -108,7 +108,6 @@ using (var scope = app.Services.CreateScope())
 {
 	var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 	DatabaseBackup databaseBackup = new DatabaseBackup(context);
-	await databaseBackup.BackupDatabaseToFileAsync();
 	RecurringJob.AddOrUpdate(
 		"database-backup-job",
 		() => databaseBackup.BackupDatabaseToFileAsync(),

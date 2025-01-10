@@ -14,7 +14,6 @@ public static class ServiceExtensions
         services.AddScoped<IUserDomain, UserDomain>();
         services.AddScoped<IBudgetDomain, BudgetDomain>();
         services.AddScoped<ICategoryDomain, CategoryDomain>();
-        services.AddScoped<INotificationDomain, NotificationDomain>();
         services.AddScoped<ITransactionDomain, TransactionDomain>();
         services.AddScoped<IScheduledTransactionDomain, ScheduledTransactionDomain>();
         services.AddScoped<IScheduledTransactionHandlerDomain, ScheduledTransactionHandlerDomain>();
@@ -25,7 +24,6 @@ public static class ServiceExtensions
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IBudgetRepository, BudgetRepository>();
-        services.AddScoped<INotificationRepository, NotificationRepository>();
         services.AddScoped<ITransactionRepository, TransactionRepository>();
         services.AddScoped<IAccountRepository, AccountRepository>();
         services.AddScoped<ICategoryRepository, CategoryRepository>();

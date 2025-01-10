@@ -16,7 +16,6 @@ public class ApplicationDbContext : DbContext
 	public DbSet<Account> Accounts { get; set; }
 	public DbSet<Budget> Budgets { get; set; }
 	public DbSet<Transaction> Transactions { get; set; }
-	public DbSet<Notification> Notifications { get; set; }
 	public DbSet<ScheduledTransaction> ScheduledTransactions { get; set; }
 
 
@@ -96,14 +95,6 @@ public class ApplicationDbContext : DbContext
 			entity.HasOne(t => t.Budget)
 				.WithMany()
 				.HasForeignKey(t => t.BudgetId)
-				.IsRequired();
-		});
-
-		modelBuilder.Entity<Notification>(entity =>
-		{
-			entity.HasOne(n => n.User)
-				.WithMany()
-				.HasForeignKey(n => n.UserId)
 				.IsRequired();
 		});
 

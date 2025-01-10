@@ -37,7 +37,7 @@ public class CurrencyConversionService : ICurrencyConversionService
 
 		var options = new JsonSerializerOptions
 		{
-			PropertyNameCaseInsensitive = true // this might be the default anyway
+			PropertyNameCaseInsensitive = true
 		};
 
 		var exchangeRates = JsonSerializer.Deserialize<ExchangeRatesResponse>(jsonResponse, options);
