@@ -32,7 +32,7 @@ Make sure that docker, docker-compose has been installed in your host.
    ```sh
     docker-compose up --build
     ```
-- After the containers are up, open your browser and go to `localhost:8080` to access the application.
+- After the containers are up, open your browser and go to `localhost:8080/swagger/index.html` to access the application.
 
 #### Native build:
 1. Clone the repository:

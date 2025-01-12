@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <RootNamespace>BudgetExpenseSystem.Domain</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\BudgetExpenseApplication.Model\BudgetExpenseApplication.Model.csproj" />
+        <ProjectReference Include="..\BudgetExpenseApplication.Repository\BudgetExpenseApplication.Repository.csproj" />
+        <ProjectReference Include="..\BudgetExpenseApplication.Service\BudgetExpenseApplication.Service.csproj" />
+        <ProjectReference Include="..\BudgetExpenseApplication.WebSocket\BudgetExpenseApplication.WebSocket.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Hangfire" Version="1.8.17"/>
+        <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.0.0"/>
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.0.0"/>
+    </ItemGroup>
+
+</Project>
