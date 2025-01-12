@@ -62,3 +62,12 @@ Make sure that docker, docker-compose has been installed in your host.
     ```sh
     dotnet build
     ```
+
+## Default Users
+
+You can log in with the following test accounts:
+
+| Role  | Email            | Password          |
+|-------|----------------|------------------|
+| Admin | admin@gmail.com | AdminPassword123! |
+| User  | user@gmail.com  | UserPassword456! |
