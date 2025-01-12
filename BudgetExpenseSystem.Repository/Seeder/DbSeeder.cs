@@ -1,5 +1,8 @@
+using System.Security.Cryptography;
+using System.Text;
 using BudgetExpenseSystem.Model.Constants;
 using BudgetExpenseSystem.Model.Models;
+
 
 namespace BudgetExpenseSystem.Repository.Seeder;
 public static class DbSeeder
@@ -11,6 +14,11 @@ public static class DbSeeder
 		if (!context.Roles.Any())
 		{
 			SeedRoles(context);
+		}
+
+		if (!context.Users.Any())
+		{
+			SeedUsers(context);
 		}
 
 		if (!context.Categories.Any())
@@ -28,6 +36,20 @@ public static class DbSeeder
 		};
 
 		context.Roles.AddRange(roles);
+		context.SaveChanges();
+	}
+
+	private static void SeedUsers(ApplicationDbContext context)
+	{
+		string salt = "your-predefined-base64-salt-here";
+		var users = new List<User>
+		{
+			new() { RoleId = RoleConstants.AdminId, Email = "admin@gmail.com", PasswordSalt = salt,
+				PasswordHash = HashPassword("admin123", salt)},
+			new() { RoleId = RoleConstants.UserId, Email = "user@gmail.com", PasswordSalt = salt, PasswordHash = HashPassword("user123", salt)}
+		};
+
+		context.Users.AddRange(users);
 		context.SaveChanges();
 	}
 
@@ -51,4 +73,15 @@ public static class DbSeeder
 		context.Categories.AddRange(categories);
 		context.SaveChanges();
 	}
+
+	private static string HashPassword(string password, string salt)
+	{
+		using (var hmac = new HMACSHA512(Convert.FromBase64String(salt)))
+		{
+			var passwordBytes = Encoding.UTF8.GetBytes(password);
+			var hash = hmac.ComputeHash(passwordBytes);
+			return Convert.ToBase64String(hash);
+		}
+	}
+
 }
