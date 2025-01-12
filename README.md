@@ -8,15 +8,16 @@ Budget Expense System is an application helping users manage their finances, cre
 ## Features
 
 - Manage accounts, budgets, categories, and transactions
-- Schedule recurring transactions
+- Schedule one-time and recurring transactions
+- Receive real-time notifications
 - Ensure data integrity with unit of work pattern
-- Backup and restore database functionality
+- Daily database backup
 
 ## Technologies
 
 - C#
 - .NET Core
-- Entity Framework Core
+- Entity Framework 
 - MySQL
 - Hangfire
 - SignalR
