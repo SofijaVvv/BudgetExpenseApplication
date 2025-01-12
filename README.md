@@ -1,5 +1,5 @@
 
-# Budget Expense System
+# Budget Expense Application
 
 ## Description
 
