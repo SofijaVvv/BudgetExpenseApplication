@@ -3,7 +3,7 @@
 
 ## Description
 
-Budget Expense System is an application helping users manage their finances, creating budgets, improving organization and reaching their financial goals. Built using .NET 8, SignalR, Hangfire and MySql, it provides a RESTful Web API for data management, real-time updates, and efficient background processing.
+Budget Expense Application helps users manage their finances, creating budgets, improving organization and reaching their financial goals. Built using .NET 8, SignalR, Hangfire and MySql, it provides a RESTful Web API for data management, real-time updates, and efficient background processing.
 
 ## Features
 
