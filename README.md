@@ -67,7 +67,7 @@ Make sure that docker, docker-compose has been installed in your host.
 
 You can log in with the following test accounts:
 
-| Role  | Email            | Password          |
-|-------|----------------|------------------|
-| Admin | admin@gmail.com | AdminPassword123! |
-| User  | user@gmail.com  | UserPassword456! |
+| Role  | Email            | Password |
+|-------|----------------|----------|
+| Admin | admin@gmail.com | admin123 |
+| User  | user@gmail.com  | user123  |
