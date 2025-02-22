@@ -6,11 +6,12 @@ namespace BudgetExpenseSystem.Model.Extentions;
 
 public static class UserExtentions
 {
-	public static User ToUser(this UserRequest request)
+	public static User ToUser(this RegisterRequest request)
 	{
 		return new User
 		{
 			Email = request.Email,
+			FullName = request.FullName
 		};
 	}
 
@@ -19,14 +20,9 @@ public static class UserExtentions
 		return new UserResponse
 		{
 			Id = response.Id,
+			FullName = response.FullName,
 			Email = response.Email,
-			Token = new TokenResponse(),
-			Role = new RoleResponse
-			{
-				Id = response.Role.Id,
-				Name = response.Role.Name,
-				CreatedDate = response.Role.CreatedAt
-			}
+			Role = response.Role.Name
 		};
 	}
 

@@ -44,9 +44,9 @@ public class UserController : ControllerBase
 	[HttpPost("Register")]
 	[AllowAnonymous]
 	[ProducesResponseType(StatusCodes.Status201Created, Type = typeof(UserResponse))]
-	public async Task<ActionResult> RegisterUser([FromBody] UserRequest userRequest)
+	public async Task<ActionResult> RegisterUser([FromBody] RegisterRequest registerRequest)
 	{
-		await _userDomain.RegisterUserAsync(userRequest);
+		await _userDomain.RegisterUserAsync(registerRequest);
 		return Ok("User registered successfully.");
 	}
 

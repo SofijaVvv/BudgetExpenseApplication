@@ -31,8 +31,8 @@ public static class DbSeeder
 	{
 		var roles = new List<Role>
 		{
-			new() {Id = RoleConstants.AdminId, Name = RoleConstants.AdminName, CreatedAt = DateTime.UtcNow },
-			new() {Id= RoleConstants.UserId,  Name = RoleConstants.UserName, CreatedAt = DateTime.UtcNow }
+			new() {Id = RoleConstants.AdminId, Name = RoleConstants.AdminName},
+			new() {Id= RoleConstants.UserId,  Name = RoleConstants.UserName}
 		};
 
 		context.Roles.AddRange(roles);

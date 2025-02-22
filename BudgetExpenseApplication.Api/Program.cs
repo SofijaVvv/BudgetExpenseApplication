@@ -13,6 +13,11 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 
+var connectionString = builder.Configuration.GetConnectionString("ConnectionDefault")
+                       ?? throw new Exception("Connection string 'ConnectionDefault' is not configured or is missing.");
+var mySqlVersion = ServerVersion.AutoDetect(connectionString);
+builder.Services.AddDbContext<ApplicationDbContext>(options => { options.UseMySql(connectionString, mySqlVersion); });
+
 builder.Services.AddControllers(options =>
 	options.Filters.Add<GlobalExceptionFilter>()
 );
@@ -31,13 +36,6 @@ if (builder.Environment.IsDevelopment())
 else
 	builder.Services
 		.AddScoped<ICurrencyConversionService, CurrencyConversionService>();
-
-
-var connectionString = builder.Configuration.GetConnectionString("ConnectionDefault")
-                       ?? throw new Exception("Connection string 'ConnectionDefault' is not configured or is missing.");
-var mySqlVersion = ServerVersion.AutoDetect(connectionString);
-
-builder.Services.AddDbContext<ApplicationDbContext>(options => { options.UseMySql(connectionString, mySqlVersion); });
 
 builder.Services.AddHangfire(config =>
 {

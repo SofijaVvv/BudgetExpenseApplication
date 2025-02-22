@@ -45,25 +45,25 @@ public class UserDomain : IUserDomain
 		return user;
 	}
 
-	public async Task<User> RegisterUserAsync(UserRequest userRequest)
+	public async Task<User> RegisterUserAsync(RegisterRequest registerRequest)
 	{
-		var existingUser = await _userRepository.GetUserEmailAsync(userRequest.Email);
-		if (existingUser is not null) throw new Exception($"User with email {userRequest.Email} already exists.");
+		var existingUser = await _userRepository.GetUserEmailAsync(registerRequest.Email);
+		if (existingUser is not null) throw new Exception($"User with email {registerRequest.Email} already exists.");
 
 		var salt = GenerateSalt();
-		var passwordHash = HashPassword(userRequest.Password, salt);
+		var passwordHash = HashPassword(registerRequest.Password, salt);
 
 		var role = await _roleRepository.GetByIdAsync(RoleConstants.UserId);
 		if (role == null) throw new NotFoundException($"Role with Id {role} not found");
 
 		var newUser = new User
 		{
-			Email = userRequest.Email,
+			Email = registerRequest.Email,
+			FullName = registerRequest.FullName,
 			PasswordHash = passwordHash,
 			PasswordSalt = salt,
 			Role = role
 		};
-
 
 		_userRepository.AddAsync(newUser);
 		await _unitOfWork.SaveAsync();
@@ -85,7 +85,7 @@ public class UserDomain : IUserDomain
 		var token = GenerateJwtToken(user);
 
 		var userResponse = user.ToResponse();
-		userResponse.Token = new TokenResponse { Token = token };
+		userResponse.Token = token;
 
 		return userResponse;
 	}

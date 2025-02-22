@@ -11,6 +11,6 @@ public interface IUserDomain
 
 	Task<UserResponse> LoginUserAsync(string email, string password);
 
-	Task<User> RegisterUserAsync(UserRequest userRequest);
+	Task<User> RegisterUserAsync(RegisterRequest registerRequest);
 	Task DeleteAsync(int id);
 }

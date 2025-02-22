@@ -13,12 +13,12 @@ public class ApplicationDbContextFactory : IDesignTimeDbContextFactory<Applicati
 		var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
 
 		var configuration = new ConfigurationBuilder()
-			.SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "../BudgetExpenseSystem.Api"))
+			.SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "../BudgetExpenseApplication.Api"))
 			.AddJsonFile("appsettings.json", false)
 			.Build();
 
 		var connectionString = configuration.GetConnectionString("ConnectionDefault");
-		var mySqlVersion = ServerVersion.Parse("10.4.28-mariadb");
+		var mySqlVersion = ServerVersion.AutoDetect(connectionString);
 		optionsBuilder.UseMySql(connectionString ?? throw new InvalidOperationException(ErrorMessage), mySqlVersion);
 
 		return new ApplicationDbContext(optionsBuilder.Options);
