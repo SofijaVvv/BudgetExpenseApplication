@@ -56,7 +56,7 @@ public class TransactionDomain : ITransactionDomain
 		return transaction;
 	}
 
-	public async Task<Transaction> AddAsync(Transaction transaction) // ovo nikad ne vrace null
+	public async Task<Transaction> AddAsync(Transaction transaction)
 	{
 		var account = await _accountRepository.GetByIdAsync(transaction.AccountId);
 		if (account == null) throw new NotFoundException($"Account Id: {transaction.AccountId}");

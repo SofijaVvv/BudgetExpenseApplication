@@ -9,6 +9,7 @@ using BudgetExpenseSystem.Model.Dto.Requests;
 using BudgetExpenseSystem.Model.Dto.Response;
 using BudgetExpenseSystem.Model.Models;
 using BudgetExpenseApplication.Repository.Interfaces;
+using BudgetExpenseSystem.Model.Extentions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
@@ -70,7 +71,7 @@ public class UserDomain : IUserDomain
 		return newUser;
 	}
 
-	public async Task<TokenResponse> LoginUserAsync(string email, string password)
+	public async Task<UserResponse> LoginUserAsync(string email, string password)
 	{
 		var user = await _userRepository.GetUserEmailAsync(email);
 		if (user == null) throw new NotFoundException("User doesn't exist");
@@ -83,10 +84,10 @@ public class UserDomain : IUserDomain
 
 		var token = GenerateJwtToken(user);
 
-		return new TokenResponse
-		{
-			Token = token,
-		};
+		var userResponse = user.ToResponse();
+		userResponse.Token = new TokenResponse { Token = token };
+
+		return userResponse;
 	}
 
 	public async Task DeleteAsync(int id)

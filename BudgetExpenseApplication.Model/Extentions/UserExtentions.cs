@@ -20,7 +20,13 @@ public static class UserExtentions
 		{
 			Id = response.Id,
 			Email = response.Email,
-			RoleId = response.RoleId
+			Token = new TokenResponse(),
+			Role = new RoleResponse
+			{
+				Id = response.Role.Id,
+				Name = response.Role.Name,
+				CreatedDate = response.Role.CreatedAt
+			}
 		};
 	}
 

@@ -53,9 +53,9 @@ public class UserController : ControllerBase
 	[HttpPost("Login")]
 	public async Task<IActionResult> LoginUser([FromBody] LoginRequest loginRequest)
 	{
-		var token = await _userDomain.LoginUserAsync(loginRequest.Email, loginRequest.Password);
+		var userResponse = await _userDomain.LoginUserAsync(loginRequest.Email, loginRequest.Password);
 
-		return Ok(new TokenResponse { Token = token.Token });
+		return Ok(userResponse);
 	}
 
 	[HttpDelete("{id}")]
