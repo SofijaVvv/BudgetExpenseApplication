@@ -48,7 +48,7 @@ public class UserDomain : IUserDomain
 	public async Task<User> RegisterUserAsync(RegisterRequest registerRequest)
 	{
 		var existingUser = await _userRepository.GetUserEmailAsync(registerRequest.Email);
-		if (existingUser is not null) throw new Exception($"User with email {registerRequest.Email} already exists.");
+		if (existingUser is not null) throw new BadRequestException($"User with email {registerRequest.Email} already exists.");
 
 		var salt = GenerateSalt();
 		var passwordHash = HashPassword(registerRequest.Password, salt);
@@ -71,7 +71,7 @@ public class UserDomain : IUserDomain
 		return newUser;
 	}
 
-	public async Task<UserResponse> LoginUserAsync(string email, string password)
+	public async Task<LoginResponse> LoginUserAsync(string email, string password)
 	{
 		var user = await _userRepository.GetUserEmailAsync(email);
 		if (user == null) throw new NotFoundException("User doesn't exist");
@@ -85,9 +85,12 @@ public class UserDomain : IUserDomain
 		var token = GenerateJwtToken(user);
 
 		var userResponse = user.ToResponse();
-		userResponse.Token = token;
 
-		return userResponse;
+		return new LoginResponse
+		{
+			User = userResponse,
+			Token = token
+		};
 	}
 
 	public async Task DeleteAsync(int id)

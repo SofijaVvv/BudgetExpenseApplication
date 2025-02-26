@@ -47,7 +47,7 @@ public class UserController : ControllerBase
 	public async Task<ActionResult> RegisterUser([FromBody] RegisterRequest registerRequest)
 	{
 		await _userDomain.RegisterUserAsync(registerRequest);
-		return Ok("User registered successfully.");
+		return Ok(new { message = "User registered successfully." });
 	}
 
 	[HttpPost("Login")]
