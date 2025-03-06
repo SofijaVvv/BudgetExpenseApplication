@@ -6,11 +6,11 @@ namespace BudgetExpenseSystem.Model.Extentions;
 
 public static class TransactionsExtentions
 {
-	public static Transaction ToTransaction(this TransactionRequest request)
+	public static Transaction ToTransaction(this TransactionRequest request, int accountId)
 	{
 		return new Transaction
 		{
-			AccountId = request.AccountId,
+			AccountId = accountId,
 			CategoryId = request.CategoryId,
 			BudgetId = request.BudgetId,
 			Currency = request.Currency,
@@ -27,13 +27,14 @@ public static class TransactionsExtentions
 			Account = new AccountResponse
 			{
 				Id = response.Account.Id,
-				Balance = Math.Round(response.Account.Balance, 2)
+				Balance = Math.Round(response.Account.Balance, 2),
+				Currency = response.Account.Currency,
+				CreatedDate = response.Account.CreatedAt
 			},
 			Category = new CategoryResponse
 			{
 				Id = response.Category.Id,
 				Name = response.Category.Name,
-				Description = response.Category.Description
 			},
 			Currency = response.Currency,
 			BudgetId = response.BudgetId,

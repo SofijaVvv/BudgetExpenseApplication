@@ -35,7 +35,6 @@ public static class ScheduleTransactionExtention
 			{
 				Id = response.Category.Id,
 				Name = response.Category.Name,
-				Description = response.Category.Description
 			},
 			BudgetId = response.BudgetId,
 			Currency = response.Currency,

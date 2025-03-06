@@ -14,7 +14,7 @@ public class Transaction
 	public int CategoryId { get; set; }
 
 	[Required]
-	public int BudgetId { get; set; }
+	public int? BudgetId { get; set; }
 
 	[Required]
 	[MaxLength(3)]

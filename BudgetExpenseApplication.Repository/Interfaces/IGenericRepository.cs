@@ -3,7 +3,7 @@ namespace BudgetExpenseApplication.Repository.Interfaces;
 public interface IGenericRepository<T> where T : class
 {
 	Task<List<T>> GetAllAsync();
-	Task<T?> GetByIdAsync(int id);
+	Task<T?> GetByIdAsync(int? id);
 	void AddAsync(T entity);
 	Task<bool> DeleteAsync(int id);
 	void Update(T entity);

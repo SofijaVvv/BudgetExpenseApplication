@@ -36,7 +36,7 @@ public class BudgetDomain : IBudgetDomain
 		return budget;
 	}
 
-	public async Task UpdateBudgetFundsAsync(int budgetId, decimal amount, int categoryId)
+	public async Task UpdateBudgetFundsAsync(int? budgetId, decimal amount, int categoryId)
 	{
 		var budget = await _budgetRepository.GetByIdAsync(budgetId);
 		if (budget == null) throw new NotFoundException($"Budget Id: {budgetId} not found");

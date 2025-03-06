@@ -21,8 +21,8 @@ public static class AccountExtentions
 		return new AccountResponse
 		{
 			Id = response.Id,
-			UserId = response.UserId,
 			Balance = response.Balance,
+			Currency = response.Currency,
 			CreatedDate = response.CreatedAt
 		};
 	}

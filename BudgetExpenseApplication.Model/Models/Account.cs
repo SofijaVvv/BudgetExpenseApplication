@@ -14,7 +14,7 @@ public class Account
 
 	[Required]
 	[MaxLength(3)]
-	public string Currency { get; set; } = "EUR";
+	public string Currency { get; set; }
 
 	public DateTime CreatedAt { get; set; }
 

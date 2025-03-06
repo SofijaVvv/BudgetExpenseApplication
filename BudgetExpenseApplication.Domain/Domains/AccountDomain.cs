@@ -34,6 +34,8 @@ public class AccountDomain : IAccountDomain
 
 	public async Task<Account> AddAsync(Account account)
 	{
+		account.CreatedAt = DateTime.UtcNow;
+
 		_accountRepository.AddAsync(account);
 		await _unitOfWork.SaveAsync();
 

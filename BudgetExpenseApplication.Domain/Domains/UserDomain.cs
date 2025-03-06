@@ -20,16 +20,25 @@ public class UserDomain : IUserDomain
 	private readonly IUnitOfWork _unitOfWork;
 	private readonly IUserRepository _userRepository;
 	private readonly IRoleRepository _roleRepository;
+	private readonly IAccountRepository _accountRepository;
 	private readonly string _jwtSecretKey;
+	private readonly string _defaultCurrency;
 
-	public UserDomain(IUnitOfWork unitOfWork, IUserRepository userRepository, IConfiguration configuration,
+	public UserDomain(
+		IUnitOfWork unitOfWork,
+		IAccountRepository accountRepository,
+		IUserRepository userRepository,
+		IConfiguration configuration,
 		IRoleRepository roleRepository)
 	{
 		_unitOfWork = unitOfWork;
+		_accountRepository = accountRepository;
 		_roleRepository = roleRepository;
 		_userRepository = userRepository;
 		_jwtSecretKey = configuration["JwtSettings:SecretKey"]
 		                ?? throw new Exception("JwtSettings:SecretKey not found in configuration");
+		_defaultCurrency = configuration["CurrencyConfig:DefaultCurrency"]
+		                   ?? throw new Exception("CurrencyConfig:DefaultCurrency not found in configuration");
 	}
 
 	public async Task<List<User>> GetAllAsync()
@@ -66,6 +75,16 @@ public class UserDomain : IUserDomain
 		};
 
 		_userRepository.AddAsync(newUser);
+		await _unitOfWork.SaveAsync();
+
+		var newAccount = new Account
+		{
+			Balance = 0,
+			UserId = newUser.Id,
+			Currency = _defaultCurrency
+		};
+
+		_accountRepository.AddAsync(newAccount);
 		await _unitOfWork.SaveAsync();
 
 		return newUser;

@@ -74,7 +74,7 @@ public class ApplicationDbContext : DbContext
 			entity.HasOne(t => t.Budget)
 				.WithMany()
 				.HasForeignKey(t => t.BudgetId)
-				.IsRequired();
+				.IsRequired(false);
 		});
 
 		modelBuilder.Entity<ScheduledTransaction>(entity =>

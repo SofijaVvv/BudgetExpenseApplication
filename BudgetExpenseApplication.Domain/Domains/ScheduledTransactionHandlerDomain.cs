@@ -129,13 +129,11 @@ public class ScheduledTransactionHandlerDomain : IScheduledTransactionHandlerDom
 
 	public async Task ProcessTransaction(ScheduledTransaction scheduledTransaction)
 	{
-		var transaction = new Transaction
+		var transaction = new TransactionRequest
 		{
-			AccountId = scheduledTransaction.AccountId,
 			CategoryId = scheduledTransaction.CategoryId,
 			BudgetId = scheduledTransaction.BudgetId,
 			Amount = scheduledTransaction.Amount,
-			CreatedAt = DateTime.UtcNow // DateTime
 		};
 
 		await _transactionDomain.AddAsync(transaction);

@@ -6,6 +6,7 @@ using BudgetExpenseSystem.Model.Models;
 using BudgetExpenseApplication.Repository.Interfaces;
 using BudgetExpenseApplication.Service.Interfaces;
 using BudgetExpenseApplication.WebSocket.Hub;
+using BudgetExpenseSystem.Model.Extentions;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 
@@ -17,6 +18,7 @@ public class TransactionDomain : ITransactionDomain
 	private readonly ITransactionRepository _transactionRepository;
 	private readonly IAccountRepository _accountRepository;
 	private readonly ICategoryRepository _categoryRepository;
+	private readonly IUserRepository _userRepository;
 	private readonly IBudgetDomain _budgetDomain;
 	private readonly IHubContext<NotificationHub> _hubContext;
 	private readonly ILogger<TransactionDomain> _logger;
@@ -24,6 +26,7 @@ public class TransactionDomain : ITransactionDomain
 
 	public TransactionDomain(
 		IUnitOfWork unitOfWork,
+		IUserRepository userRepository,
 		ITransactionRepository transactionRepository,
 		IAccountRepository accountRepository,
 		ICategoryRepository categoryRepository,
@@ -33,6 +36,7 @@ public class TransactionDomain : ITransactionDomain
 		ICurrencyConversionService currencyConversionService
 	)
 	{
+		_userRepository = userRepository;
 		_unitOfWork = unitOfWork;
 		_transactionRepository = transactionRepository;
 		_accountRepository = accountRepository;
@@ -56,13 +60,19 @@ public class TransactionDomain : ITransactionDomain
 		return transaction;
 	}
 
-	public async Task<Transaction> AddAsync(Transaction transaction)
+	public async Task<Transaction> AddAsync(TransactionRequest transactionRequest)
 	{
-		var account = await _accountRepository.GetByIdAsync(transaction.AccountId);
-		if (account == null) throw new NotFoundException($"Account Id: {transaction.AccountId}");
+		var userId = _userRepository.GetCurrentUserId();
+		if (!userId.HasValue) throw new NotFoundException("User ID claim is missing or empty");
 
-		var category = await _categoryRepository.GetByIdAsync(transaction.CategoryId);
-		if (category == null) throw new NotFoundException($"Category Id: {transaction.CategoryId}");
+		var account = await _accountRepository.GetByUserIdAsync(userId.Value);
+		if (account == null) throw new NotFoundException($"Account for User Id: {userId} not found");
+
+		var category = await _categoryRepository.GetByIdAsync(transactionRequest.CategoryId);
+		if (category == null) throw new NotFoundException($"Category Id: {transactionRequest.CategoryId}");
+
+
+		var transaction = transactionRequest.ToTransaction(account.Id);
 
 		if (!string.Equals(account.Currency, transaction.Currency))
 			try
@@ -89,7 +99,8 @@ public class TransactionDomain : ITransactionDomain
 			}
 
 
-		var message = await ProcessTransaction(transaction, account, category);
+		var message = await ProcessTransaction(transactionRequest, account, category);
+		transaction.CreatedAt = DateTime.UtcNow;
 
 		_transactionRepository.AddAsync(transaction);
 		await _unitOfWork.SaveAsync();
@@ -107,25 +118,66 @@ public class TransactionDomain : ITransactionDomain
 	}
 
 
-	private async Task<string> ProcessTransaction(Transaction transaction, Account account, Category category)
-	{
-		if (transaction.Amount < 0)
-		{
-			await _budgetDomain.UpdateBudgetFundsAsync(transaction.BudgetId, transaction.Amount,
-				transaction.CategoryId);
+	private async Task<string> ProcessTransaction(TransactionRequest transactionRequest, Account account, Category category)
+{
+    if (string.IsNullOrEmpty(transactionRequest.TransactionType))
+        throw new Exception("Transaction type must be provided.");
 
-			if (account.Balance < Math.Abs(transaction.Amount))
-				throw new InsufficientFundsException("Account does not have enough funds for this transaction.");
+    if (transactionRequest.TransactionType == "Budget")
+    {
+        if (!transactionRequest.BudgetId.HasValue)
+            throw new Exception("BudgetId must be provided for budget transactions.");
 
-			account.Balance += transaction.Amount;
-			return
-				$"You just recorded an expense of {transaction.Amount} for '{category.Name}'. Your remaining budget is {account.Balance}.";
-		}
+        if (transactionRequest.Amount >= 0)
+	        throw new Exception("You can only add negative amounts to the budget (expenses).");
 
-		account.Balance += transaction.Amount;
-		return
-			$"You just recorded an income of {transaction.Amount} for '{category.Name}'. Your account balance is {account.Balance}.";
-	}
+        var budget = await _budgetDomain.GetByIdAsync(transactionRequest.BudgetId.Value);
+
+        if (budget.Amount < Math.Abs(transactionRequest.Amount))
+            throw new InsufficientFundsException("Budget does not have enough funds for this transaction.");
+
+        var transaction = new Transaction
+        {
+            AccountId = account.Id,
+            CategoryId = category.Id,
+            BudgetId = transactionRequest.BudgetId.Value,
+            Currency = transactionRequest.Currency,
+            Amount = transactionRequest.Amount,
+            CreatedAt = DateTime.Now
+        };
+
+        await _budgetDomain.UpdateBudgetFundsAsync(transactionRequest.BudgetId.Value, transactionRequest.Amount, transactionRequest.CategoryId);
+        account.Balance += transactionRequest.Amount;
+
+         _transactionRepository.AddAsync(transaction);
+
+        return $"You just recorded an expense of {transactionRequest.Amount} for '{category.Name}'. Your remaining account balance is {account.Balance}.";
+    }
+
+    if (transactionRequest.TransactionType == "Account")
+    {
+	    if (transactionRequest.Amount < 0 && account.Balance < Math.Abs(transactionRequest.Amount))
+		    throw new InsufficientFundsException("Account does not have enough funds for this transaction.");
+
+	    var transaction = new Transaction
+	    {
+		    AccountId = account.Id,
+		    CategoryId = category.Id,
+		    BudgetId = null,
+		    Currency = transactionRequest.Currency,
+		    Amount = transactionRequest.Amount,
+		    CreatedAt = DateTime.Now
+	    };
+
+	    account.Balance += transactionRequest.Amount;
+
+	    _transactionRepository.AddAsync(transaction);
+
+	    return $"You just recorded a transaction of {transactionRequest.Amount} for '{category.Name}'. Your account balance is {account.Balance}.";
+    }
+
+    return "Transaction processed successfully.";
+}
 
 	public async Task Update(int transactionId, UpdateTransactionRequest updateTransactionRequest)
 	{

@@ -44,8 +44,7 @@ public class TransactionController : ControllerBase
 	[ProducesResponseType(StatusCodes.Status201Created, Type = typeof(TransactionResponse))]
 	public async Task<ActionResult> AddTransaction([FromBody] TransactionRequest transactionRequest)
 	{
-		var result = transactionRequest.ToTransaction();
-		await _transactionDomain.AddAsync(result);
+		var result = await _transactionDomain.AddAsync(transactionRequest);
 
 		return CreatedAtAction(nameof(GetTransactionById), new { id = result.Id }, result.ToResponse());
 	}

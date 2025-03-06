@@ -21,7 +21,6 @@ public static class CategoryExtentions
 		{
 			Id = response.Id,
 			Name = response.Name,
-			Description = response.Description
 		};
 	}
 
