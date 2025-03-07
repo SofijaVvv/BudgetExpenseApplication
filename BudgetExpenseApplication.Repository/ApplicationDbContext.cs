@@ -66,11 +66,6 @@ public class ApplicationDbContext : DbContext
 				.HasForeignKey(t => t.AccountId)
 				.IsRequired();
 
-			entity.HasOne(t => t.Category)
-				.WithMany()
-				.HasForeignKey(t => t.CategoryId)
-				.IsRequired();
-
 			entity.HasOne(t => t.Budget)
 				.WithMany()
 				.HasForeignKey(t => t.BudgetId)

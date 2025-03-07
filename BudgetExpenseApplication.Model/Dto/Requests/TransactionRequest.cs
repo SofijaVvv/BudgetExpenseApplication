@@ -2,7 +2,6 @@ namespace BudgetExpenseSystem.Model.Dto.Requests;
 
 public class TransactionRequest
 {
-	public int CategoryId { get; set; }
 
 	public string Currency { get; set; }
 

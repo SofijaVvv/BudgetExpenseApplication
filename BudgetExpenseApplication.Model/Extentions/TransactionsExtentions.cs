@@ -11,7 +11,6 @@ public static class TransactionsExtentions
 		return new Transaction
 		{
 			AccountId = accountId,
-			CategoryId = request.CategoryId,
 			BudgetId = request.BudgetId,
 			Currency = request.Currency,
 			Amount = request.Amount,
@@ -31,11 +30,7 @@ public static class TransactionsExtentions
 				Currency = response.Account.Currency,
 				CreatedDate = response.Account.CreatedAt
 			},
-			Category = new CategoryResponse
-			{
-				Id = response.Category.Id,
-				Name = response.Category.Name,
-			},
+
 			Currency = response.Currency,
 			BudgetId = response.BudgetId,
 			Amount = Math.Round(response.Amount, 2),

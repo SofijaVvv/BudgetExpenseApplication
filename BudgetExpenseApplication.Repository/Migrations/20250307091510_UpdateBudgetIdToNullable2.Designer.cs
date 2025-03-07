@@ -4,6 +4,7 @@ using BudgetExpenseApplication.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BudgetExpenseApplication.Repository.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250307091510_UpdateBudgetIdToNullable2")]
+    partial class UpdateBudgetIdToNullable2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -179,6 +182,9 @@ namespace BudgetExpenseApplication.Repository.Migrations
                     b.Property<int?>("BudgetId")
                         .HasColumnType("int");
 
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
 
@@ -192,6 +198,8 @@ namespace BudgetExpenseApplication.Repository.Migrations
                     b.HasIndex("AccountId");
 
                     b.HasIndex("BudgetId");
+
+                    b.HasIndex("CategoryId");
 
                     b.ToTable("Transactions");
                 });
@@ -302,9 +310,17 @@ namespace BudgetExpenseApplication.Repository.Migrations
                         .WithMany()
                         .HasForeignKey("BudgetId");
 
+                    b.HasOne("BudgetExpenseSystem.Model.Models.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Account");
 
                     b.Navigation("Budget");
+
+                    b.Navigation("Category");
                 });
 
             modelBuilder.Entity("BudgetExpenseSystem.Model.Models.User", b =>

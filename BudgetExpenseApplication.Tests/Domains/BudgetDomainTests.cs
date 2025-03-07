@@ -11,6 +11,7 @@ namespace BudgetExpenseApplication.Tests.Domains;
 public class BudgetDomainTests
 {
 	private readonly Mock<IUnitOfWork> _mockUnitOfWork;
+	private readonly Mock<IUserRepository> _mockUserRepository;
 	private readonly Mock<IBudgetRepository> _mockBudgetRepository;
 	private readonly Mock<ICategoryRepository> _mockCategoryRepository;
 	private readonly BudgetDomain _budgetDomain;
@@ -18,11 +19,12 @@ public class BudgetDomainTests
 	public BudgetDomainTests()
 	{
 		_mockUnitOfWork = new Mock<IUnitOfWork>();
+		_mockUserRepository = new Mock<IUserRepository>();
 		_mockBudgetRepository = new Mock<IBudgetRepository>();
 		_mockCategoryRepository = new Mock<ICategoryRepository>();
-		_budgetDomain = new BudgetDomain
-		(
+		_budgetDomain = new BudgetDomain(
 			_mockUnitOfWork.Object,
+			_mockUserRepository.Object,
 			_mockBudgetRepository.Object,
 			_mockCategoryRepository.Object
 		);
@@ -81,7 +83,7 @@ public class BudgetDomainTests
 		_mockBudgetRepository.Setup(repo => repo.GetByIdAsync(1)).ReturnsAsync(budget);
 
 		// Assert
-		Assert.ThrowsAsync<BadRequestException>(() => _budgetDomain.UpdateBudgetFundsAsync(1, 100, 1));
+		Assert.ThrowsAsync<BadRequestException>(() => _budgetDomain.UpdateBudgetFundsAsync(1, 100));
 	}
 
 	[Test]
@@ -93,7 +95,7 @@ public class BudgetDomainTests
 
 		// Assert
 		Assert.ThrowsAsync<InsufficientFundsException>(async () =>
-			await _budgetDomain.UpdateBudgetFundsAsync(1, -100, 1));
+			await _budgetDomain.UpdateBudgetFundsAsync(1, -100));
 	}
 
 	[Test]
@@ -104,7 +106,7 @@ public class BudgetDomainTests
 		_mockBudgetRepository.Setup(repo => repo.GetByIdAsync(1)).ReturnsAsync(budget);
 
 		//Act
-		await _budgetDomain.UpdateBudgetFundsAsync(1, 100, 1);
+		await _budgetDomain.UpdateBudgetFundsAsync(1, 100);
 
 		//Verify
 		_mockBudgetRepository.Verify(repo => repo.Update(It.IsAny<Budget>()), Times.Once);

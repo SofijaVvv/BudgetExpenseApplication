@@ -7,7 +7,6 @@ public class TransactionResponse
 
 	public AccountResponse Account { get; set; }
 
-	public CategoryResponse Category { get; set; }
 
 	public string Currency { get; set; }
 

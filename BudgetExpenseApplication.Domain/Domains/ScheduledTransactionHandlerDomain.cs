@@ -131,7 +131,6 @@ public class ScheduledTransactionHandlerDomain : IScheduledTransactionHandlerDom
 	{
 		var transaction = new TransactionRequest
 		{
-			CategoryId = scheduledTransaction.CategoryId,
 			BudgetId = scheduledTransaction.BudgetId,
 			Amount = scheduledTransaction.Amount,
 		};

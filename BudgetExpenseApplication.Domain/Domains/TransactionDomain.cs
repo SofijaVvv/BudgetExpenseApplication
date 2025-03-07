@@ -17,7 +17,6 @@ public class TransactionDomain : ITransactionDomain
 	private readonly IUnitOfWork _unitOfWork;
 	private readonly ITransactionRepository _transactionRepository;
 	private readonly IAccountRepository _accountRepository;
-	private readonly ICategoryRepository _categoryRepository;
 	private readonly IUserRepository _userRepository;
 	private readonly IBudgetDomain _budgetDomain;
 	private readonly IHubContext<NotificationHub> _hubContext;
@@ -29,7 +28,6 @@ public class TransactionDomain : ITransactionDomain
 		IUserRepository userRepository,
 		ITransactionRepository transactionRepository,
 		IAccountRepository accountRepository,
-		ICategoryRepository categoryRepository,
 		IBudgetDomain budgetDomain,
 		IHubContext<NotificationHub> hubContext,
 		ILogger<TransactionDomain> logger,
@@ -40,7 +38,6 @@ public class TransactionDomain : ITransactionDomain
 		_unitOfWork = unitOfWork;
 		_transactionRepository = transactionRepository;
 		_accountRepository = accountRepository;
-		_categoryRepository = categoryRepository;
 		_budgetDomain = budgetDomain;
 		_hubContext = hubContext;
 		_logger = logger;
@@ -68,8 +65,7 @@ public class TransactionDomain : ITransactionDomain
 		var account = await _accountRepository.GetByUserIdAsync(userId.Value);
 		if (account == null) throw new NotFoundException($"Account for User Id: {userId} not found");
 
-		var category = await _categoryRepository.GetByIdAsync(transactionRequest.CategoryId);
-		if (category == null) throw new NotFoundException($"Category Id: {transactionRequest.CategoryId}");
+
 
 
 		var transaction = transactionRequest.ToTransaction(account.Id);
@@ -99,7 +95,7 @@ public class TransactionDomain : ITransactionDomain
 			}
 
 
-		var message = await ProcessTransaction(transactionRequest, account, category);
+		var message = await ProcessTransaction(transactionRequest, account);
 		transaction.CreatedAt = DateTime.UtcNow;
 
 		_transactionRepository.AddAsync(transaction);
@@ -118,7 +114,7 @@ public class TransactionDomain : ITransactionDomain
 	}
 
 
-	private async Task<string> ProcessTransaction(TransactionRequest transactionRequest, Account account, Category category)
+	private async Task<string> ProcessTransaction(TransactionRequest transactionRequest, Account account)
 {
     if (string.IsNullOrEmpty(transactionRequest.TransactionType))
         throw new Exception("Transaction type must be provided.");
@@ -139,19 +135,18 @@ public class TransactionDomain : ITransactionDomain
         var transaction = new Transaction
         {
             AccountId = account.Id,
-            CategoryId = category.Id,
             BudgetId = transactionRequest.BudgetId.Value,
             Currency = transactionRequest.Currency,
             Amount = transactionRequest.Amount,
             CreatedAt = DateTime.Now
         };
 
-        await _budgetDomain.UpdateBudgetFundsAsync(transactionRequest.BudgetId.Value, transactionRequest.Amount, transactionRequest.CategoryId);
+        await _budgetDomain.UpdateBudgetFundsAsync(transactionRequest.BudgetId.Value, transactionRequest.Amount);
         account.Balance += transactionRequest.Amount;
 
          _transactionRepository.AddAsync(transaction);
 
-        return $"You just recorded an expense of {transactionRequest.Amount} for '{category.Name}'. Your remaining account balance is {account.Balance}.";
+        return $"You just recorded an expense of {transactionRequest.Amount}. Your remaining account balance is {account.Balance}.";
     }
 
     if (transactionRequest.TransactionType == "Account")
@@ -162,7 +157,6 @@ public class TransactionDomain : ITransactionDomain
 	    var transaction = new Transaction
 	    {
 		    AccountId = account.Id,
-		    CategoryId = category.Id,
 		    BudgetId = null,
 		    Currency = transactionRequest.Currency,
 		    Amount = transactionRequest.Amount,
@@ -173,7 +167,7 @@ public class TransactionDomain : ITransactionDomain
 
 	    _transactionRepository.AddAsync(transaction);
 
-	    return $"You just recorded a transaction of {transactionRequest.Amount} for '{category.Name}'. Your account balance is {account.Balance}.";
+	    return $"You just recorded a transaction of {transactionRequest.Amount}. Your account balance is {account.Balance}.";
     }
 
     return "Transaction processed successfully.";
@@ -185,7 +179,6 @@ public class TransactionDomain : ITransactionDomain
 		if (transaction == null)
 			throw new NotFoundException($"Transaction Id: {transactionId} not found");
 
-		transaction.CategoryId = updateTransactionRequest.CategoryId;
 		transaction.BudgetId = updateTransactionRequest.BudgetId;
 		transaction.Amount = updateTransactionRequest.Amount;
 

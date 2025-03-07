@@ -9,16 +9,20 @@ namespace BudgetExpenseSystem.Domain.Domains;
 public class BudgetDomain : IBudgetDomain
 {
 	private readonly IUnitOfWork _unitOfWork;
+	private readonly IUserRepository _userRepository;
+
 	private readonly IBudgetRepository _budgetRepository;
 	private readonly ICategoryRepository _categoryRepository;
 
 	public BudgetDomain(
 		IUnitOfWork unitOfWork,
+		IUserRepository userRepository,
 		IBudgetRepository budgetRepository,
 		ICategoryRepository categoryRepository
 	)
 	{
 		_unitOfWork = unitOfWork;
+		_userRepository = userRepository;
 		_budgetRepository = budgetRepository;
 		_categoryRepository = categoryRepository;
 	}
@@ -36,15 +40,11 @@ public class BudgetDomain : IBudgetDomain
 		return budget;
 	}
 
-	public async Task UpdateBudgetFundsAsync(int? budgetId, decimal amount, int categoryId)
+	public async Task UpdateBudgetFundsAsync(int? budgetId, decimal amount)
 	{
 		var budget = await _budgetRepository.GetByIdAsync(budgetId);
 		if (budget == null) throw new NotFoundException($"Budget Id: {budgetId} not found");
 
-
-		if (budget.CategoryId != categoryId)
-			throw new BadRequestException(
-				$"The category of the transaction does not match the category of the budget.");
 
 		if (amount < 0)
 			if (budget.Amount < Math.Abs(amount))
@@ -58,9 +58,13 @@ public class BudgetDomain : IBudgetDomain
 
 	public async Task<Budget> AddAsync(Budget budget)
 	{
+		var userId = _userRepository.GetCurrentUserId();
+
 		var category = await _categoryRepository.GetByIdAsync(budget.CategoryId);
 		if (category == null)
 			throw new NotFoundException($"Category Id: {budget.CategoryId} not found");
+
+		budget.UserId = userId ?? throw new BadRequestException("User Id cannot ne null");
 
 		_budgetRepository.AddAsync(budget);
 		await _unitOfWork.SaveAsync();

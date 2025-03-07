@@ -10,10 +10,6 @@ public class Transaction
 	[Required]
 	public int AccountId { get; set; }
 
-	[Required]
-	public int CategoryId { get; set; }
-
-	[Required]
 	public int? BudgetId { get; set; }
 
 	[Required]
@@ -26,6 +22,5 @@ public class Transaction
 	public DateTime CreatedAt { get; set; }
 
 	public virtual Account Account { get; set; }
-	public virtual Category Category { get; set; }
 	public virtual Budget Budget { get; set; }
 }

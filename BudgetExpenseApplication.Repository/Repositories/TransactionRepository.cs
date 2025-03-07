@@ -17,7 +17,6 @@ public class TransactionRepository : GenericRepository<Transaction>, ITransactio
 	{
 		return await _context.Transactions
 			.Include(t => t.Account)
-			.Include(t => t.Category)
 			.Include(t => t.Budget)
 			.ToListAsync();
 	}
@@ -26,7 +25,6 @@ public class TransactionRepository : GenericRepository<Transaction>, ITransactio
 	{
 		return await _context.Transactions
 			.Include(t => t.Account)
-			.Include(t => t.Category)
 			.Include(t => t.Budget)
 			.FirstOrDefaultAsync(t => t.Id == id);
 	}
