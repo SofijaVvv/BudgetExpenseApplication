@@ -10,7 +10,6 @@ public static class BudgetExtentions
 	{
 		return new Budget
 		{
-			UserId = request.UserId,
 			CategoryId = request.CategoryId,
 			Amount = request.Amount,
 		};

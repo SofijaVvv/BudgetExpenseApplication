@@ -132,19 +132,9 @@ public class TransactionDomain : ITransactionDomain
         if (budget.Amount < Math.Abs(transactionRequest.Amount))
             throw new InsufficientFundsException("Budget does not have enough funds for this transaction.");
 
-        var transaction = new Transaction
-        {
-            AccountId = account.Id,
-            BudgetId = transactionRequest.BudgetId.Value,
-            Currency = transactionRequest.Currency,
-            Amount = transactionRequest.Amount,
-            CreatedAt = DateTime.Now
-        };
-
         await _budgetDomain.UpdateBudgetFundsAsync(transactionRequest.BudgetId.Value, transactionRequest.Amount);
         account.Balance += transactionRequest.Amount;
 
-         _transactionRepository.AddAsync(transaction);
 
         return $"You just recorded an expense of {transactionRequest.Amount}. Your remaining account balance is {account.Balance}.";
     }
@@ -154,18 +144,7 @@ public class TransactionDomain : ITransactionDomain
 	    if (transactionRequest.Amount < 0 && account.Balance < Math.Abs(transactionRequest.Amount))
 		    throw new InsufficientFundsException("Account does not have enough funds for this transaction.");
 
-	    var transaction = new Transaction
-	    {
-		    AccountId = account.Id,
-		    BudgetId = null,
-		    Currency = transactionRequest.Currency,
-		    Amount = transactionRequest.Amount,
-		    CreatedAt = DateTime.Now
-	    };
-
 	    account.Balance += transactionRequest.Amount;
-
-	    _transactionRepository.AddAsync(transaction);
 
 	    return $"You just recorded a transaction of {transactionRequest.Amount}. Your account balance is {account.Balance}.";
     }

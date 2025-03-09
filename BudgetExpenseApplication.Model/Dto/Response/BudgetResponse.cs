@@ -7,7 +7,6 @@ public class BudgetResponse
 	public int UserId { get; set; }
 	public CategoryResponse Category { get; set; }
 
-	public BudgetTypeResponse BudgetType { get; set; }
 
 	public decimal Amount { get; set; }
 

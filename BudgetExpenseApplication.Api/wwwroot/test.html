@@ -52,7 +52,7 @@
                     .withUrl("http://localhost:5112/notificationHub", {
 
                         headers: {
-                            "Authorization": `Bearer ${authToken}` // Use headers to pass the token
+                            "Authorization": `Bearer ${authToken}`
                         },
                         transport: signalR.HttpTransportType.LongPolling
                     })
@@ -73,7 +73,7 @@
                     })
                     .catch(err => {
                         console.error("SignalR connection error: ", err);
-                        setTimeout(() => connection.start(), 5000);  // Retry after 5 seconds
+                        setTimeout(() => connection.start(), 5000);
                     });
             }
 
