@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using BudgetExpenseSystem.Domain.Exceptions;
 using BudgetExpenseSystem.Domain.Interfaces;
 using BudgetExpenseSystem.Model.Dto.Requests;
@@ -15,9 +16,9 @@ namespace BudgetExpenseSystem.Domain.Domains;
 public class TransactionDomain : ITransactionDomain
 {
 	private readonly IUnitOfWork _unitOfWork;
+	private readonly ICurrentUserService _currentUserService;
 	private readonly ITransactionRepository _transactionRepository;
 	private readonly IAccountRepository _accountRepository;
-	private readonly IUserRepository _userRepository;
 	private readonly IBudgetDomain _budgetDomain;
 	private readonly IHubContext<NotificationHub> _hubContext;
 	private readonly ILogger<TransactionDomain> _logger;
@@ -25,7 +26,7 @@ public class TransactionDomain : ITransactionDomain
 
 	public TransactionDomain(
 		IUnitOfWork unitOfWork,
-		IUserRepository userRepository,
+		ICurrentUserService currentUserService,
 		ITransactionRepository transactionRepository,
 		IAccountRepository accountRepository,
 		IBudgetDomain budgetDomain,
@@ -34,8 +35,8 @@ public class TransactionDomain : ITransactionDomain
 		ICurrencyConversionService currencyConversionService
 	)
 	{
-		_userRepository = userRepository;
 		_unitOfWork = unitOfWork;
+		_currentUserService = currentUserService;
 		_transactionRepository = transactionRepository;
 		_accountRepository = accountRepository;
 		_budgetDomain = budgetDomain;
@@ -59,14 +60,15 @@ public class TransactionDomain : ITransactionDomain
 
 	public async Task<Transaction> AddAsync(TransactionRequest transactionRequest)
 	{
-		var userId = _userRepository.GetCurrentUserId();
-		if (!userId.HasValue) throw new NotFoundException("User ID claim is missing or empty");
+		var userIdClaim = _currentUserService.CurrentUser?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+		if (userIdClaim == null)
+			throw new UnauthorizedAccessException("User is not authenticated.");
 
-		var account = await _accountRepository.GetByUserIdAsync(userId.Value);
+		if (!int.TryParse(userIdClaim, out var userId))
+			throw new Exception("Invalid user ID.");
+
+		var account = await _accountRepository.GetByUserIdAsync(userId);
 		if (account == null) throw new NotFoundException($"Account for User Id: {userId} not found");
-
-
-
 
 		var transaction = transactionRequest.ToTransaction(account.Id);
 
@@ -125,7 +127,7 @@ public class TransactionDomain : ITransactionDomain
             throw new Exception("BudgetId must be provided for budget transactions.");
 
         if (transactionRequest.Amount >= 0)
-	        throw new Exception("You can only add negative amounts to the budget (expenses).");
+	        throw new BadRequestException("Only negative amounts are allowed for budget.");
 
         var budget = await _budgetDomain.GetByIdAsync(transactionRequest.BudgetId.Value);
 

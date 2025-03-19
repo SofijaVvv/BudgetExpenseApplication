@@ -3,6 +3,7 @@ using BudgetExpenseSystem.Domain.Exceptions;
 using BudgetExpenseSystem.Model.Dto.Requests;
 using BudgetExpenseSystem.Model.Models;
 using BudgetExpenseApplication.Repository.Interfaces;
+using BudgetExpenseApplication.Service.Interfaces;
 using Moq;
 
 namespace BudgetExpenseApplication.Tests.Domains;
@@ -11,7 +12,7 @@ namespace BudgetExpenseApplication.Tests.Domains;
 public class BudgetDomainTests
 {
 	private readonly Mock<IUnitOfWork> _mockUnitOfWork;
-	private readonly Mock<IUserRepository> _mockUserRepository;
+	private readonly Mock<ICurrentUserService> _mockCurrentUserService;
 	private readonly Mock<IBudgetRepository> _mockBudgetRepository;
 	private readonly Mock<ICategoryRepository> _mockCategoryRepository;
 	private readonly BudgetDomain _budgetDomain;
@@ -19,12 +20,12 @@ public class BudgetDomainTests
 	public BudgetDomainTests()
 	{
 		_mockUnitOfWork = new Mock<IUnitOfWork>();
-		_mockUserRepository = new Mock<IUserRepository>();
+		_mockCurrentUserService = new Mock<ICurrentUserService>();
 		_mockBudgetRepository = new Mock<IBudgetRepository>();
 		_mockCategoryRepository = new Mock<ICategoryRepository>();
 		_budgetDomain = new BudgetDomain(
 			_mockUnitOfWork.Object,
-			_mockUserRepository.Object,
+			_mockCurrentUserService.Object,
 			_mockBudgetRepository.Object,
 			_mockCategoryRepository.Object
 		);

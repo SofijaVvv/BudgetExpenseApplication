@@ -1,4 +1,6 @@
+using System.Security.Claims;
 using BudgetExpenseApplication.Repository.Interfaces;
+using BudgetExpenseApplication.Service.Interfaces;
 using BudgetExpenseSystem.Model.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -9,16 +11,24 @@ public class BudgetRepository : GenericRepository<Budget>, IBudgetRepository
 {
 	private readonly ApplicationDbContext _context;
 	private readonly ILogger<BudgetRepository> _logger;
+	private readonly ICurrentUserService _currentUserService;
 
-	public BudgetRepository(ApplicationDbContext context, ILogger<BudgetRepository> logger) : base(context)
+	public BudgetRepository(ApplicationDbContext context,
+		ILogger<BudgetRepository> logger,
+		ICurrentUserService currentUserService) : base(context)
 	{
 		_context = context;
 		_logger = logger;
+		_currentUserService = currentUserService;
 	}
 
 	public async Task<List<Budget>> GetAllBudgetsAsync()
 	{
+		var userIdClaim = _currentUserService.CurrentUser?.FindFirst(ClaimTypes.NameIdentifier);
+		int userId = int.Parse(userIdClaim?.Value);
+
 		var budget = await _context.Budgets
+			.Where(b => b.UserId == userId)
 			.Include(b => b.Category)
 			.Include(b => b.User)
 			.ToListAsync();

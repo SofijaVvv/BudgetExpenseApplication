@@ -3,6 +3,7 @@ using BudgetExpenseSystem.Domain.Exceptions;
 using BudgetExpenseSystem.Model.Dto.Requests;
 using BudgetExpenseSystem.Model.Models;
 using BudgetExpenseApplication.Repository.Interfaces;
+using BudgetExpenseApplication.Service.Interfaces;
 using Moq;
 
 namespace BudgetExpenseApplication.Tests.Domains;
@@ -13,12 +14,13 @@ public class AccountDomainTests
 	private readonly Mock<IAccountRepository> _mockAccountRepository;
 	private readonly Mock<IUnitOfWork> _mockUnitOfWork;
 	private readonly AccountDomain _accountDomain;
+	private readonly Mock<ICurrentUserService> _mockCurrentUserService;
 
 	public AccountDomainTests()
 	{
 		_mockAccountRepository = new Mock<IAccountRepository>();
 		_mockUnitOfWork = new Mock<IUnitOfWork>();
-		_accountDomain = new AccountDomain(_mockUnitOfWork.Object, _mockAccountRepository.Object);
+		_accountDomain = new AccountDomain(_mockUnitOfWork.Object, _mockAccountRepository.Object, _mockCurrentUserService?.Object);
 	}
 
 	[Test]

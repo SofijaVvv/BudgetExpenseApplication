@@ -1,28 +1,30 @@
+using System.Security.Claims;
 using BudgetExpenseSystem.Domain.Exceptions;
 using BudgetExpenseSystem.Domain.Interfaces;
 using BudgetExpenseSystem.Model.Dto.Requests;
 using BudgetExpenseSystem.Model.Models;
 using BudgetExpenseApplication.Repository.Interfaces;
+using BudgetExpenseApplication.Service.Interfaces;
 
 namespace BudgetExpenseSystem.Domain.Domains;
 
 public class BudgetDomain : IBudgetDomain
 {
 	private readonly IUnitOfWork _unitOfWork;
-	private readonly IUserRepository _userRepository;
+	private readonly ICurrentUserService _currentUserService;
 
 	private readonly IBudgetRepository _budgetRepository;
 	private readonly ICategoryRepository _categoryRepository;
 
 	public BudgetDomain(
 		IUnitOfWork unitOfWork,
-		IUserRepository userRepository,
+		ICurrentUserService currentUserService,
 		IBudgetRepository budgetRepository,
 		ICategoryRepository categoryRepository
 	)
 	{
 		_unitOfWork = unitOfWork;
-		_userRepository = userRepository;
+		_currentUserService = currentUserService;
 		_budgetRepository = budgetRepository;
 		_categoryRepository = categoryRepository;
 	}
@@ -58,14 +60,14 @@ public class BudgetDomain : IBudgetDomain
 
 	public async Task<Budget> AddAsync(Budget budget)
 	{
-		var userId = _userRepository.GetCurrentUserId();
+		var userIdClaim = _currentUserService.CurrentUser?.FindFirst(ClaimTypes.NameIdentifier);
+		if (userIdClaim is null) throw new UnauthorizedAccessException("User is not authenticated");
 
 		var category = await _categoryRepository.GetByIdAsync(budget.CategoryId);
 		if (category == null)
 			throw new NotFoundException($"Category Id: {budget.CategoryId} not found");
 
-		budget.UserId = userId ?? throw new BadRequestException("User Id cannot ne null");
-
+		budget.UserId = int.Parse(userIdClaim.Value);
 		_budgetRepository.AddAsync(budget);
 		await _unitOfWork.SaveAsync();
 
@@ -83,6 +85,7 @@ public class BudgetDomain : IBudgetDomain
 		var category = await _categoryRepository.GetByIdAsync(updateBudgetRequest.CategoryId);
 		if (category == null) throw new NotFoundException($"Category Id: {updateBudgetRequest.CategoryId} not found");
 
+		budget.Name = updateBudgetRequest.Name;
 		budget.CategoryId = updateBudgetRequest.CategoryId;
 		budget.Amount = updateBudgetRequest.Amount;
 

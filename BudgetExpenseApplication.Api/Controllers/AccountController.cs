@@ -38,6 +38,15 @@ public class AccountController : ControllerBase
 		return Ok(result);
 	}
 
+	[HttpGet("Details")]
+	public async Task<ActionResult> GetAccountDetails()
+	{
+		var role = await _accountDomain.GetAccountDetails();
+
+		var result = role.ToResponse();
+		return Ok(result);
+	}
+
 	[HttpPost]
 	[ProducesResponseType(StatusCodes.Status201Created, Type = typeof(AccountResponse))]
 	public async Task<ActionResult> AddAccount([FromBody] AccountRequest account)

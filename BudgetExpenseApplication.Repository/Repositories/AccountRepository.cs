@@ -1,4 +1,6 @@
+using System.Security.Claims;
 using BudgetExpenseApplication.Repository.Interfaces;
+using BudgetExpenseApplication.Service.Interfaces;
 using BudgetExpenseSystem.Model.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,16 +9,22 @@ namespace BudgetExpenseApplication.Repository.Repositories;
 public class AccountRepository : GenericRepository<Account>, IAccountRepository
 {
 	private readonly ApplicationDbContext _context;
+	private readonly ICurrentUserService _currentUserService;
 
-	public AccountRepository(ApplicationDbContext context) : base(context)
+	public AccountRepository(ApplicationDbContext context, ICurrentUserService currentUserService) : base(context)
 	{
+		_currentUserService = currentUserService;
 		_context = context;
 	}
 
 
 	public async Task<List<Account>> GetAllAccountsAsync()
 	{
+		var userIdClaim = _currentUserService.CurrentUser?.FindFirst(ClaimTypes.NameIdentifier);
+		int userId = int.Parse(userIdClaim?.Value);
+
 		var account = await _context.Accounts
+			.Where(a => a.UserId == userId)
 			.Include(a => a.User)
 			.ToListAsync();
 

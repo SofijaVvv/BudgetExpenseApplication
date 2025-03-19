@@ -9,15 +9,11 @@ namespace BudgetExpenseApplication.Repository.Repositories;
 public class UserRepository : GenericRepository<User>, IUserRepository
 {
 	private readonly ApplicationDbContext _context;
-	private readonly IHttpContextAccessor _httpContextAccessor;
 
 
-	public UserRepository(
-		ApplicationDbContext context,
-		IHttpContextAccessor httpContextAccessor) : base(context)
+	public UserRepository(ApplicationDbContext context) : base(context)
 	{
 		_context = context;
-		_httpContextAccessor = httpContextAccessor;
 	}
 
 	public async Task<List<User>> GetAllUsersAsync()
@@ -42,11 +38,6 @@ public class UserRepository : GenericRepository<User>, IUserRepository
 	public async Task<User?> GetUserEmailAsync(string email)
 	{
 		return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
-	}
-
-	public int? GetCurrentUserId()
-	{
-		return int.Parse(_httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value);
 	}
 
 

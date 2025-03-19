@@ -10,6 +10,7 @@ public static class BudgetExtentions
 	{
 		return new Budget
 		{
+			Name = request.Name,
 			CategoryId = request.CategoryId,
 			Amount = request.Amount,
 		};
@@ -20,6 +21,7 @@ public static class BudgetExtentions
 		return new BudgetResponse
 		{
 			Id = response.Id,
+			Name = response.Name,
 			UserId = response.UserId,
 			Category = new CategoryResponse
 			{

@@ -7,7 +7,6 @@ namespace BudgetExpenseApplication.Repository.Repositories;
 public class TransactionRepository : GenericRepository<Transaction>, ITransactionRepository
 {
 	private readonly ApplicationDbContext _context;
-
 	public TransactionRepository(ApplicationDbContext context) : base(context)
 	{
 		_context = context;

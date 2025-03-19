@@ -3,7 +3,7 @@ namespace BudgetExpenseSystem.Model.Dto.Response;
 public class BudgetResponse
 {
 	public int Id { get; set; }
-
+	public string Name { get; set; }
 	public int UserId { get; set; }
 	public CategoryResponse Category { get; set; }
 

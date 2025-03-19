@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BudgetExpenseSystem.Api.Controllers;
 
 
-[Route("api/[controller]s")]
+[Route("api/[controller]")]
 [ApiController]
 public class CategoryController : ControllerBase
 {

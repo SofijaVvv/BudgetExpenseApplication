@@ -6,6 +6,7 @@ using BudgetExpenseApplication.Service;
 using BudgetExpenseApplication.Service.Interfaces;
 using BudgetExpenseApplication.Service.Mock;
 using BudgetExpenseApplication.WebSocket.Hub;
+using BudgetExpenseSystem.Api.Middleware;
 using Hangfire;
 using Hangfire.MySql;
 using Microsoft.EntityFrameworkCore;
@@ -27,6 +28,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDomains();
 builder.Services.AddRepositories();
+builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 
 builder.Services.AddLogging();
 builder.Services.AddHttpClient();
@@ -90,9 +92,7 @@ using (var scope = app.Services.CreateScope())
 
 app.UseCors("AllowSpecificOrigin");
 
-
 app.MapHub<NotificationHub>("/notificationHub");
-
 app.UseStaticFiles();
 
 if (app.Environment.IsDevelopment())
@@ -101,7 +101,6 @@ if (app.Environment.IsDevelopment())
 	app.UseSwaggerUI();
 	app.UseHangfireDashboard();
 }
-
 
 using (var scope = app.Services.CreateScope())
 {
@@ -118,13 +117,10 @@ using (var scope = app.Services.CreateScope())
 	);
 }
 
-
-
 app.UseHttpsRedirection();
 app.UseAuthentication();
-
 app.UseAuthorization();
-
+app.UseMiddleware<CurrentUserMiddleware>();
 app.MapControllers();
 
 app.Run();
