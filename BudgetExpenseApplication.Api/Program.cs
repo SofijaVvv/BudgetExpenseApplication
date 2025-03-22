@@ -43,10 +43,7 @@ builder.Services.AddHangfire(config =>
 builder.Services.AddHangfireServer();
 builder.Services.AddSwaggerWithJwtAuth();
 builder.Services.AddHttpContextAccessor();
-
-var secretKey = builder.Configuration["JwtSettings:SecretKey"]
-                ?? throw new Exception("JwtSettings:SecretKey not found in configuration");
-builder.AddJwtAuthentication(secretKey);
+builder.AddJwtAuthentication();
 builder.Services.AddAuthorization(
 	options => options.AddPolicies()
 );

@@ -6,8 +6,10 @@ namespace BudgetExpenseSystem.Api.Extentions;
 
 public static class JwtAuthExtention
 {
-	public static void AddJwtAuthentication(this WebApplicationBuilder builder, string secretKey)
+	public static void AddJwtAuthentication(this WebApplicationBuilder builder)
 	{
+		var secretKey = builder.Configuration["JwtSettings:SecretKey"]
+		                ?? throw new Exception("JwtSettings:SecretKey not found in configuration");
 		var key = Encoding.UTF8.GetBytes(secretKey);
 
 		builder.Services.AddAuthentication(x =>
