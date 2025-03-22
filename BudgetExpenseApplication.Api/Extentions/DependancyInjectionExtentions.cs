@@ -45,4 +45,20 @@ public static class DependancyInjectionExtentions
                 .AddScoped<ICurrencyConversionService, CurrencyConversionService>();
     }
 
+    public static void AddCors(this WebApplicationBuilder builder)
+    {
+        var allowedOrigin = builder.Configuration["CorsSettings:AllowedOrigin"]
+                            ?? throw new Exception("CorsSettings:AllowedOrigin not found in configuration");
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("AllowSpecificOrigin", corsPolicyBuilder =>
+            {
+                corsPolicyBuilder.WithOrigins(allowedOrigin)
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials();
+            });
+        });
+    }
+
 }

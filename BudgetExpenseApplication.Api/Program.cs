@@ -47,16 +47,7 @@ builder.AddJwtAuthentication();
 builder.Services.AddAuthorization(
 	options => options.AddPolicies()
 );
-builder.Services.AddCors(options =>
-{
-	options.AddPolicy("AllowSpecificOrigin", corsPolicyBuilder =>
-	{
-		corsPolicyBuilder.WithOrigins("http://localhost:4200")
-			.AllowAnyMethod()
-			.AllowAnyHeader()
-			.AllowCredentials();
-	});
-});
+builder.AddCors();
 builder.Services.AddSignalR();
 
 var app = builder.Build();
