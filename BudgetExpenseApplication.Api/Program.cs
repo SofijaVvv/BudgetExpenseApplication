@@ -28,16 +28,11 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDomains();
 builder.Services.AddRepositories();
-builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
-
+builder.AddServices();
 builder.Services.AddLogging();
 builder.Services.AddHttpClient();
 
-if (builder.Environment.IsDevelopment())
-	builder.Services.AddScoped<ICurrencyConversionService, MockCurrencyConversionService>();
-else
-	builder.Services
-		.AddScoped<ICurrencyConversionService, CurrencyConversionService>();
+
 
 builder.Services.AddHangfire(config =>
 {

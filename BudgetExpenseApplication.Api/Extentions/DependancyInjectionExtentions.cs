@@ -2,10 +2,13 @@ using BudgetExpenseSystem.Domain.Domains;
 using BudgetExpenseSystem.Domain.Interfaces;
 using BudgetExpenseApplication.Repository.Interfaces;
 using BudgetExpenseApplication.Repository.Repositories;
+using BudgetExpenseApplication.Service;
+using BudgetExpenseApplication.Service.Interfaces;
+using BudgetExpenseApplication.Service.Mock;
 
 namespace BudgetExpenseSystem.Api.Extentions;
 
-public static class ServiceExtensions
+public static class DependancyInjectionExtentions
 {
     public static void AddDomains(this IServiceCollection services)
     {
@@ -32,5 +35,14 @@ public static class ServiceExtensions
         services.AddScoped<IScheduledTransactionRepository, ScheduledTransactionRepository>();
     }
 
+    public static void AddServices(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+        if (builder.Environment.IsDevelopment())
+            builder.Services.AddScoped<ICurrencyConversionService, MockCurrencyConversionService>();
+        else
+            builder.Services
+                .AddScoped<ICurrencyConversionService, CurrencyConversionService>();
+    }
 
 }
