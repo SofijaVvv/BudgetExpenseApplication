@@ -13,8 +13,7 @@ public class ScheduledTransactionRepository : GenericRepository<ScheduledTransac
 		_context = context;
 	}
 
-
-	public async Task<List<ScheduledTransaction>> GetAllScheduledTransactionsAsync()
+	public override async Task<List<ScheduledTransaction>> GetAllAsync()
 	{
 		return await _context.ScheduledTransactions
 			.Include(t => t.Account)
@@ -23,22 +22,12 @@ public class ScheduledTransactionRepository : GenericRepository<ScheduledTransac
 			.ToListAsync();
 	}
 
-	public async Task<ScheduledTransaction?> GetScheduledTransactionByIdAsync(int? id)
+	public override async Task<ScheduledTransaction?> GetByIdAsync(int? id)
 	{
 		return await _context.ScheduledTransactions
 			.Include(t => t.Account)
 			.Include(t => t.Category)
 			.Include(t => t.Budget)
 			.FirstOrDefaultAsync(t => t.Id == id);
-	}
-
-	public override async Task<List<ScheduledTransaction>> GetAllAsync()
-	{
-		return await GetAllScheduledTransactionsAsync();
-	}
-
-	public override async Task<ScheduledTransaction?> GetByIdAsync(int? id)
-	{
-		return await GetScheduledTransactionByIdAsync(id);
 	}
 }

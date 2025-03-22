@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using BudgetExpenseApplication.Repository.Interfaces;
 using BudgetExpenseApplication.Service.Interfaces;
 using BudgetExpenseSystem.Model.Models;
@@ -22,7 +21,7 @@ public class BudgetRepository : GenericRepository<Budget>, IBudgetRepository
 		_currentUserService = currentUserService;
 	}
 
-	public async Task<List<Budget>> GetAllBudgetsAsync()
+	public override async Task<List<Budget>> GetAllAsync()
 	{
 		var userId = _currentUserService.GetUserId();
 
@@ -37,7 +36,7 @@ public class BudgetRepository : GenericRepository<Budget>, IBudgetRepository
 		return budget;
 	}
 
-	public async Task<Budget?> GetBudgetByIdAsync(int? id)
+	public override async Task<Budget?> GetByIdAsync(int? id)
 	{
 		var budget = await _context.Budgets
 			.Include(b => b.Category)
@@ -45,15 +44,5 @@ public class BudgetRepository : GenericRepository<Budget>, IBudgetRepository
 			.FirstOrDefaultAsync(b => b.Id == id);
 
 		return budget;
-	}
-
-	public override async Task<List<Budget>> GetAllAsync()
-	{
-		return await GetAllBudgetsAsync();
-	}
-
-	public override async Task<Budget?> GetByIdAsync(int? id)
-	{
-		return await GetBudgetByIdAsync(id);
 	}
 }

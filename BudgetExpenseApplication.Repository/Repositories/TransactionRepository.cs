@@ -16,7 +16,7 @@ public class TransactionRepository : GenericRepository<Transaction>, ITransactio
 		_currentUserService = currentUserService;
 	}
 
-	public async Task<List<Transaction>> GetAllTransactionsAsync()
+	public override async Task<List<Transaction>> GetAllAsync()
 	{
 		var userId = _currentUserService.GetUserId();
 
@@ -27,21 +27,11 @@ public class TransactionRepository : GenericRepository<Transaction>, ITransactio
 			.ToListAsync();
 	}
 
-	public async Task<Transaction?> GetTransactionById(int? id)
+	public override async Task<Transaction?> GetByIdAsync(int? id)
 	{
 		return await _context.Transactions
 			.Include(t => t.Account)
 			.Include(t => t.Budget)
 			.FirstOrDefaultAsync(t => t.Id == id);
-	}
-
-	public override async Task<List<Transaction>> GetAllAsync()
-	{
-		return await GetAllTransactionsAsync();
-	}
-
-	public override async Task<Transaction?> GetByIdAsync(int? id)
-	{
-		return await GetTransactionById(id);
 	}
 }

@@ -14,23 +14,11 @@ public class UserRepository : GenericRepository<User>, IUserRepository
 		_context = context;
 	}
 
-	public async Task<List<User>> GetAllUsersAsync()
+	public override async Task<List<User>> GetAllAsync()
 	{
 		return await _context.Users
 			.Include(u => u.Role)
 			.ToListAsync();
-	}
-
-	public async Task<User?> GetUserByIdAsync(int? id)
-	{
-		return await _context.Users
-			.Include(u => u.Role)
-			.FirstOrDefaultAsync(u => u.Id == id);
-	}
-
-	public override async Task<List<User>> GetAllAsync()
-	{
-		return await GetAllUsersAsync();
 	}
 
 	public async Task<User?> GetUserEmailAsync(string email)
@@ -41,6 +29,8 @@ public class UserRepository : GenericRepository<User>, IUserRepository
 
 	public override async Task<User?> GetByIdAsync(int? id)
 	{
-		return await GetUserByIdAsync(id);
+		return await _context.Users
+			.Include(u => u.Role)
+			.FirstOrDefaultAsync(u => u.Id == id);
 	}
 }

@@ -51,7 +51,7 @@ public class ScheduledTransactionDomain : IScheduledTransactionDomain
 		var category = await _categoryRepository.GetByIdAsync(scheduledTransaction.CategoryId);
 		if (category == null) throw new NotFoundException($"Category Id: {scheduledTransaction.CategoryId} not found");
 
-		var budget = await _budgetRepository.GetBudgetByIdAsync(scheduledTransaction.BudgetId);
+		var budget = await _budgetRepository.GetByIdAsync(scheduledTransaction.BudgetId);
 		if (budget == null) throw new NotFoundException($"Budget Id: {scheduledTransaction.CategoryId} not found");
 
 		_scheduledTransactionRepository.Add(scheduledTransaction);
