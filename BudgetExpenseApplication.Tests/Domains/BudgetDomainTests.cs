@@ -123,7 +123,7 @@ public class BudgetDomainTests
 
 		_mockCategoryRepository.Setup(repo => repo.GetByIdAsync(budget.CategoryId)).ReturnsAsync(category);
 
-		_mockBudgetRepository.Setup(repo => repo.AddAsync(budget));
+		_mockBudgetRepository.Setup(repo => repo.Add(budget));
 		_mockUnitOfWork.Setup(repo => repo.SaveAsync()).Returns(Task.CompletedTask);
 
 		_mockBudgetRepository.Setup(repo => repo.GetByIdAsync(budget.Id)).ReturnsAsync(budget);
@@ -138,7 +138,7 @@ public class BudgetDomainTests
 		Assert.That(result.CategoryId, Is.EqualTo(budget.CategoryId));
 
 		// Verify
-		_mockBudgetRepository.Verify(repo => repo.AddAsync(budget), Times.Once);
+		_mockBudgetRepository.Verify(repo => repo.Add(budget), Times.Once);
 		_mockUnitOfWork.Verify(uow => uow.SaveAsync(), Times.Once);
 		_mockBudgetRepository.Verify(repo => repo.GetByIdAsync(budget.Id), Times.Once);
 		_mockCategoryRepository.Verify(repo => repo.GetByIdAsync(budget.CategoryId), Times.Once);

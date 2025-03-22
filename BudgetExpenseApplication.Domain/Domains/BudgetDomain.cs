@@ -42,34 +42,30 @@ public class BudgetDomain : IBudgetDomain
 		return budget;
 	}
 
-	public async Task UpdateBudgetFundsAsync(int? budgetId, decimal amount)
+	public async Task UpdateBudgetFundsAsync(int budgetId, decimal amount)
 	{
 		var budget = await _budgetRepository.GetByIdAsync(budgetId);
 		if (budget == null) throw new NotFoundException($"Budget Id: {budgetId} not found");
 
 
-		if (amount < 0)
-			if (budget.Amount < Math.Abs(amount))
-				throw new InsufficientFundsException(
-					$"Budget with Id: {budgetId} does not have enough funds for the transaction.");
+		if (amount < 0  && budget.Amount < Math.Abs(amount)) throw new InsufficientFundsException
+		($"Budget with Id: {budgetId} does not have enough funds for the transaction.");
 
 		budget.Amount += amount;
-		_budgetRepository.Update(budget);
 		await _unitOfWork.SaveAsync();
 	}
 
 	public async Task<Budget> AddAsync(Budget budget)
 	{
-		var userIdClaim = _currentUserService.CurrentUser?.FindFirst(ClaimTypes.NameIdentifier);
-		if (userIdClaim is null) throw new UnauthorizedAccessException("User is not authenticated");
+		var userId = _currentUserService.GetUserId();
+		if (userId is null) throw new UnauthorizedAccessException("User is unauthorised");
 
 		var category = await _categoryRepository.GetByIdAsync(budget.CategoryId);
 		if (category == null)
 			throw new NotFoundException($"Category Id: {budget.CategoryId} not found");
 
 		budget.CreatedAt = DateTime.UtcNow;
-		budget.UserId = int.Parse(userIdClaim.Value);
-		_budgetRepository.AddAsync(budget);
+		_budgetRepository.Add(budget);
 		await _unitOfWork.SaveAsync();
 
 		var savedBudget = await _budgetRepository.GetByIdAsync(budget.Id) ?? throw new Exception(

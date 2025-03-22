@@ -9,6 +9,6 @@ public interface IBudgetDomain
 	Task<Budget> GetByIdAsync(int id);
 	Task<Budget> AddAsync(Budget budget);
 	Task Update(int budgetId, UpdateBudgetRequest updateBudgetRequest);
-	Task UpdateBudgetFundsAsync(int? budgetId, decimal amount);
+	Task UpdateBudgetFundsAsync(int budgetId, decimal amount);
 	Task DeleteAsync(int id);
 }

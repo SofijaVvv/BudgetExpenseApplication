@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using BudgetExpenseSystem.Domain.Exceptions;
 using BudgetExpenseSystem.Domain.Interfaces;
 using BudgetExpenseSystem.Model.Dto.Requests;
@@ -39,9 +38,9 @@ public class AccountDomain : IAccountDomain
 
 	public async Task<Account> GetAccountDetails()
 	{
-		var userIdClaim = _currentUserService.CurrentUser?.FindFirst(ClaimTypes.NameIdentifier);
-		int userId = int.Parse(userIdClaim?.Value ??
-		                       throw new InvalidOperationException("User ID claim not found"));
+		var userId = _currentUserService.GetUserId();
+		if (userId == null)
+			throw new UnauthorizedAccessException("User is unauthorised");
 
 		var account = await _accountRepository.GetByUserIdAsync(userId);
 		if (account is null) throw new NotFoundException("User account not found");
@@ -53,7 +52,7 @@ public class AccountDomain : IAccountDomain
 	{
 		account.CreatedAt = DateTime.UtcNow;
 
-		_accountRepository.AddAsync(account);
+		_accountRepository.Add(account);
 		await _unitOfWork.SaveAsync();
 
 		var savedAccount = await _accountRepository.GetByIdAsync(account.Id) ??

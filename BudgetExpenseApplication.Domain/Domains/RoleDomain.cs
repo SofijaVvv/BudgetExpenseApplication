@@ -34,7 +34,7 @@ public class RoleDomain : IRoleDomain
 
 	public async Task<Role> AddAsync(Role role)
 	{
-		_roleRepository.AddAsync(role);
+		_roleRepository.Add(role);
 
 		await _unitOfWork.SaveAsync();
 		return role;

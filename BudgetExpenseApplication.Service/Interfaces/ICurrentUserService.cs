@@ -1,8 +1,10 @@
+
 using System.Security.Claims;
 
 namespace BudgetExpenseApplication.Service.Interfaces;
 
 public interface ICurrentUserService
 {
-	ClaimsPrincipal? CurrentUser { get; set; }
+      int? GetUserId();
+      void Set(ClaimsPrincipal user);
 }

@@ -20,8 +20,7 @@ public class AccountRepository : GenericRepository<Account>, IAccountRepository
 
 	public async Task<List<Account>> GetAllAccountsAsync()
 	{
-		var userIdClaim = _currentUserService.CurrentUser?.FindFirst(ClaimTypes.NameIdentifier);
-		int userId = int.Parse(userIdClaim?.Value);
+		var userId = _currentUserService.GetUserId();
 
 		var account = await _context.Accounts
 			.Where(a => a.UserId == userId)
@@ -40,7 +39,7 @@ public class AccountRepository : GenericRepository<Account>, IAccountRepository
 		return account;
 	}
 
-	public async Task<Account?> GetByUserIdAsync(int userId)
+	public async Task<Account?> GetByUserIdAsync(int? userId)
 	{
 		return await _context.Accounts.FirstOrDefaultAsync(a => a.UserId == userId);
 	}

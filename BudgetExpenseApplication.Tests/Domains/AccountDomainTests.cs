@@ -72,7 +72,7 @@ public class AccountDomainTests
 	{
 		var account = new Account { UserId = 8, Balance = 100 };
 
-		_mockAccountRepository.Setup(repo => repo.AddAsync(account));
+		_mockAccountRepository.Setup(repo => repo.Add(account));
 		_mockUnitOfWork.Setup(repo => repo.SaveAsync()).Returns(Task.CompletedTask);
 
 		_mockAccountRepository.Setup(repo => repo.GetByIdAsync(account.Id)).ReturnsAsync(account);
@@ -83,7 +83,7 @@ public class AccountDomainTests
 		Assert.That(result.UserId, Is.EqualTo(account.UserId));
 		Assert.That(result.Balance, Is.EqualTo(account.Balance));
 
-		_mockAccountRepository.Verify(repo => repo.AddAsync(account), Times.Once);
+		_mockAccountRepository.Verify(repo => repo.Add(account), Times.Once);
 		_mockUnitOfWork.Verify(uow => uow.SaveAsync(), Times.Once);
 		_mockAccountRepository.Verify(repo => repo.GetByIdAsync(account.Id), Times.Once);
 	}

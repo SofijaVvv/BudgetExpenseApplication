@@ -74,7 +74,7 @@ public class UserDomain : IUserDomain
 			Role = role
 		};
 
-		_userRepository.AddAsync(newUser);
+		_userRepository.Add(newUser);
 		await _unitOfWork.SaveAsync();
 
 		var newAccount = new Account
@@ -84,7 +84,7 @@ public class UserDomain : IUserDomain
 			Currency = _defaultCurrency
 		};
 
-		_accountRepository.AddAsync(newAccount);
+		_accountRepository.Add(newAccount);
 		await _unitOfWork.SaveAsync();
 
 		return newUser;

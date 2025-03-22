@@ -60,12 +60,9 @@ public class TransactionDomain : ITransactionDomain
 
 	public async Task<Transaction> AddAsync(TransactionRequest transactionRequest)
 	{
-		var userIdClaim = _currentUserService.CurrentUser?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-		if (userIdClaim == null)
-			throw new UnauthorizedAccessException("User is not authenticated.");
-
-		if (!int.TryParse(userIdClaim, out var userId))
-			throw new Exception("Invalid user ID.");
+		var userId = _currentUserService.GetUserId();
+		if (userId == null)
+			throw new UnauthorizedAccessException("User is unauthorised");
 
 		var account = await _accountRepository.GetByUserIdAsync(userId);
 		if (account == null) throw new NotFoundException($"Account for User Id: {userId} not found");
@@ -100,7 +97,7 @@ public class TransactionDomain : ITransactionDomain
 		var message = await ProcessTransaction(transactionRequest, account);
 		transaction.CreatedAt = DateTime.UtcNow;
 
-		_transactionRepository.AddAsync(transaction);
+		_transactionRepository.Add(transaction);
 		await _unitOfWork.SaveAsync();
 
 		await _hubContext.Clients.User(account.UserId.ToString())

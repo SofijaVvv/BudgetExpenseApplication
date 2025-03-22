@@ -34,7 +34,7 @@ public class CategoryDomain : ICategoryDomain
 
 	public async Task<Category> AddAsync(Category category)
 	{
-		_categoryRepository.AddAsync(category);
+		_categoryRepository.Add(category);
 
 		await _unitOfWork.SaveAsync();
 		return category;

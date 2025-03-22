@@ -13,7 +13,7 @@ public class CurrentUserMiddleware
 
 	public async Task InvokeAsync(HttpContext context, ICurrentUserService currentUserService)
 	{
-		currentUserService.CurrentUser = context.User;
+		currentUserService.Set(context.User);
 		await _next(context);
 	}
 }

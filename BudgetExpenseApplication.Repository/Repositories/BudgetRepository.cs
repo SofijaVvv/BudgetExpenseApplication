@@ -24,8 +24,7 @@ public class BudgetRepository : GenericRepository<Budget>, IBudgetRepository
 
 	public async Task<List<Budget>> GetAllBudgetsAsync()
 	{
-		var userIdClaim = _currentUserService.CurrentUser?.FindFirst(ClaimTypes.NameIdentifier);
-		int userId = int.Parse(userIdClaim?.Value);
+		var userId = _currentUserService.GetUserId();
 
 		var budget = await _context.Budgets
 			.Where(b => b.UserId == userId)
