@@ -2,9 +2,6 @@ using BudgetExpenseSystem.Api.Extentions;
 using BudgetExpenseSystem.Api.Filters;
 using BudgetExpenseApplication.Repository;
 using BudgetExpenseApplication.Repository.Seeder;
-using BudgetExpenseApplication.Service;
-using BudgetExpenseApplication.Service.Interfaces;
-using BudgetExpenseApplication.Service.Mock;
 using BudgetExpenseApplication.WebSocket.Hub;
 using BudgetExpenseSystem.Api.Middleware;
 using Hangfire;
@@ -13,27 +10,20 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
 var databaseConnectionString = builder.Configuration.GetConnectionString("Database")
                        ?? throw new Exception("Connection string 'Database' is not configured or is missing.");
 var mySqlVersion = ServerVersion.AutoDetect(databaseConnectionString);
 builder.Services.AddDbContext<ApplicationDbContext>(options => { options.UseMySql(databaseConnectionString, mySqlVersion); });
-
 builder.Services.AddControllers(options =>
 	options.Filters.Add<GlobalExceptionFilter>()
 );
-
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-builder.Services.AddDomains();
-builder.Services.AddRepositories();
+builder.AddDomains();
+builder.AddRepositories();
 builder.AddServices();
 builder.Services.AddLogging();
 builder.Services.AddHttpClient();
-
-
-
 builder.Services.AddHangfire(config =>
 {
 	config.SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
@@ -50,20 +40,16 @@ builder.Services.AddHangfire(config =>
 			TransactionTimeout = TimeSpan.FromMinutes(1)
 		}));
 });
-
 builder.Services.AddHangfireServer();
 builder.Services.AddSwaggerWithJwtAuth();
 builder.Services.AddHttpContextAccessor();
 
 var secretKey = builder.Configuration["JwtSettings:SecretKey"]
                 ?? throw new Exception("JwtSettings:SecretKey not found in configuration");
-
-builder.Services.AddJwtAuthentication(secretKey);
-
+builder.AddJwtAuthentication(secretKey);
 builder.Services.AddAuthorization(
 	options => options.AddPolicies()
 );
-
 builder.Services.AddCors(options =>
 {
 	options.AddPolicy("AllowSpecificOrigin", corsPolicyBuilder =>
@@ -74,7 +60,6 @@ builder.Services.AddCors(options =>
 			.AllowCredentials();
 	});
 });
-
 builder.Services.AddSignalR();
 
 var app = builder.Build();
@@ -86,7 +71,6 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.UseCors("AllowSpecificOrigin");
-
 app.MapHub<NotificationHub>("/notificationHub");
 app.UseStaticFiles();
 

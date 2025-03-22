@@ -6,11 +6,11 @@ namespace BudgetExpenseSystem.Api.Extentions;
 
 public static class JwtAuthExtention
 {
-	public static void AddJwtAuthentication(this IServiceCollection services, string secretKey)
+	public static void AddJwtAuthentication(this WebApplicationBuilder builder, string secretKey)
 	{
 		var key = Encoding.UTF8.GetBytes(secretKey);
 
-		services.AddAuthentication(x =>
+		builder.Services.AddAuthentication(x =>
 			{
 				x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
 				x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;

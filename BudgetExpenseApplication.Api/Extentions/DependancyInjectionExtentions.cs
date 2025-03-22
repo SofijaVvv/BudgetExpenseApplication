@@ -10,29 +10,29 @@ namespace BudgetExpenseSystem.Api.Extentions;
 
 public static class DependancyInjectionExtentions
 {
-    public static void AddDomains(this IServiceCollection services)
+    public static void AddDomains(this WebApplicationBuilder builder)
     {
-        services.AddScoped<IRoleDomain, RoleDomain>();
-        services.AddScoped<IAccountDomain, AccountDomain>();
-        services.AddScoped<IUserDomain, UserDomain>();
-        services.AddScoped<IBudgetDomain, BudgetDomain>();
-        services.AddScoped<ICategoryDomain, CategoryDomain>();
-        services.AddScoped<ITransactionDomain, TransactionDomain>();
-        services.AddScoped<IScheduledTransactionDomain, ScheduledTransactionDomain>();
-        services.AddScoped<IScheduledTransactionHandlerDomain, ScheduledTransactionHandlerDomain>();
+        builder.Services.AddScoped<IRoleDomain, RoleDomain>();
+        builder.Services.AddScoped<IAccountDomain, AccountDomain>();
+        builder.Services.AddScoped<IUserDomain, UserDomain>();
+        builder.Services.AddScoped<IBudgetDomain, BudgetDomain>();
+        builder.Services.AddScoped<ICategoryDomain, CategoryDomain>();
+        builder.Services.AddScoped<ITransactionDomain, TransactionDomain>();
+        builder.Services.AddScoped<IScheduledTransactionDomain, ScheduledTransactionDomain>();
+        builder.Services.AddScoped<IScheduledTransactionHandlerDomain, ScheduledTransactionHandlerDomain>();
     }
 
-    public static void AddRepositories(this IServiceCollection services)
+    public static void AddRepositories(this WebApplicationBuilder builder)
     {
-        services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-        services.AddScoped<IUnitOfWork, UnitOfWork>();
-        services.AddScoped<IBudgetRepository, BudgetRepository>();
-        services.AddScoped<ITransactionRepository, TransactionRepository>();
-        services.AddScoped<IAccountRepository, AccountRepository>();
-        services.AddScoped<ICategoryRepository, CategoryRepository>();
-        services.AddScoped<IRoleRepository, RoleRepository>();
-        services.AddScoped<IUserRepository, UserRepository>();
-        services.AddScoped<IScheduledTransactionRepository, ScheduledTransactionRepository>();
+        builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+        builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+        builder.Services.AddScoped<IBudgetRepository, BudgetRepository>();
+        builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
+        builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+        builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+        builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+        builder.Services.AddScoped<IUserRepository, UserRepository>();
+        builder.Services.AddScoped<IScheduledTransactionRepository, ScheduledTransactionRepository>();
     }
 
     public static void AddServices(this WebApplicationBuilder builder)
