@@ -13,15 +13,6 @@ public class CurrentUserMiddleware
 
 	public async Task InvokeAsync(HttpContext context, ICurrentUserService currentUserService)
 	{
-		if (context.User?.Identity?.IsAuthenticated == true)
-		{
-			var claims = string.Join(", ", context.User.Claims.Select(c => $"{c.Type}:{c.Value}"));
-			Console.WriteLine($"User is authenticated. Claims: {claims}");
-		}
-		else
-		{
-			Console.WriteLine("User is NOT authenticated.");
-		}
 		currentUserService.CurrentUser = context.User;
 		await _next(context);
 	}
