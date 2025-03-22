@@ -39,14 +39,14 @@ public class ScheduledTransactionHandlerDomain : IScheduledTransactionHandlerDom
 		var userId = account.UserId;
 
 		await _hubContext.Clients.User(userId.ToString()).SendAsync("ReceiveTransactionNotification",
-			$"Your scheduled recurring transaction of {transaction.Amount:C} in the category '{transaction.Category.Name}' will be processed in 24 hours.");
+			$"Your scheduled recurring transaction of {transaction.Amount} in the category '{transaction.Category.Name}' will be processed in 24 hours.");
 	}
 
 
 	public async Task DeleteScheduledTransactionAsync(int scheduledTransactionId)
 	{
 		var scheduledTransaction =
-			await _scheduledTransactionDomain.GetByIdAsync(scheduledTransactionId); // ovo nije nullable, zovi repo
+			await _scheduledTransactionDomain.GetByIdAsync(scheduledTransactionId);
 
 		if (scheduledTransaction.IsRecurring)
 		{
@@ -95,7 +95,7 @@ public class ScheduledTransactionHandlerDomain : IScheduledTransactionHandlerDom
 			$"Processing scheduled transaction ID {transactionId} for amount {scheduledTransaction.Amount}.");
 
 		if (scheduledTransaction.IsRecurring && scheduledTransaction.ScheduledDate > DateTime.UtcNow &&
-		    scheduledTransaction.ScheduledDate <= DateTime.UtcNow.AddMinutes(5))
+		    scheduledTransaction.ScheduledDate <= DateTime.UtcNow.AddHours(24))
 		{
 			await NotifyUserAboutTransaction(scheduledTransaction);
 		}
@@ -235,7 +235,6 @@ public class ScheduledTransactionHandlerDomain : IScheduledTransactionHandlerDom
 		scheduledTransaction.ScheduledDate = updateScheduleTransaction.ScheduledDate;
 		scheduledTransaction.IsRecurring = updateScheduleTransaction.IsRecurring;
 		await _unitOfWork.SaveAsync();
-		_logger.LogInformation($"STATUS {scheduledTransaction.IsRecurring} ");
 	}
 
 	public string GetMonthlyCronExpression(DateTime scheduledDate)

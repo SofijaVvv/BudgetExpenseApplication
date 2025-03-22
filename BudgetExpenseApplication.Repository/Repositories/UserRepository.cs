@@ -1,7 +1,5 @@
-using System.Security.Claims;
 using BudgetExpenseApplication.Repository.Interfaces;
 using BudgetExpenseSystem.Model.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace BudgetExpenseApplication.Repository.Repositories;

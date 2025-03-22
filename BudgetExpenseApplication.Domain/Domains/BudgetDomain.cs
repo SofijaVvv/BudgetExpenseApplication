@@ -67,6 +67,7 @@ public class BudgetDomain : IBudgetDomain
 		if (category == null)
 			throw new NotFoundException($"Category Id: {budget.CategoryId} not found");
 
+		budget.CreatedAt = DateTime.UtcNow;
 		budget.UserId = int.Parse(userIdClaim.Value);
 		_budgetRepository.AddAsync(budget);
 		await _unitOfWork.SaveAsync();
@@ -85,6 +86,7 @@ public class BudgetDomain : IBudgetDomain
 		var category = await _categoryRepository.GetByIdAsync(updateBudgetRequest.CategoryId);
 		if (category == null) throw new NotFoundException($"Category Id: {updateBudgetRequest.CategoryId} not found");
 
+		budget.CreatedAt = DateTime.UtcNow;
 		budget.Name = updateBudgetRequest.Name;
 		budget.CategoryId = updateBudgetRequest.CategoryId;
 		budget.Amount = updateBudgetRequest.Amount;

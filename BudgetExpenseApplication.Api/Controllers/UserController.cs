@@ -59,7 +59,6 @@ public class UserController : ControllerBase
 	}
 
 	[HttpDelete("{id}")]
-	[Authorize(Policy = "AdminOnly")]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
 	public async Task<ActionResult> DeleteUser([FromRoute] int id)
 	{

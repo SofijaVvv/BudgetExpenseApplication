@@ -144,7 +144,7 @@ public class UserDomain : IUserDomain
 			null,
 			null,
 			claims,
-			expires: DateTime.Now.AddHours(10),
+			expires: DateTime.Now.AddHours(5),
 			signingCredentials: creds);
 
 		return new JwtSecurityTokenHandler().WriteToken(token);

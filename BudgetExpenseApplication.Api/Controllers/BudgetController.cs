@@ -51,14 +51,16 @@ public class BudgetController : ControllerBase
 	}
 
 	[HttpPut("{id}")]
-	[ProducesResponseType(StatusCodes.Status204NoContent)]
+	[ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BudgetResponse))]
 	public async Task<ActionResult> UpdateBudget(
 		[FromRoute] int id,
 		[FromBody] UpdateBudgetRequest updateBudgetRequest)
 	{
 		await _budgetDomain.Update(id, updateBudgetRequest);
+		var updatedBudget = await _budgetDomain.GetByIdAsync(id);
+		var result = updatedBudget.ToResponse();
 
-		return NoContent();
+		return Ok(result);
 	}
 
 	[HttpDelete("{id}")]
