@@ -14,10 +14,10 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 
-var connectionString = builder.Configuration.GetConnectionString("ConnectionDefault")
-                       ?? throw new Exception("Connection string 'ConnectionDefault' is not configured or is missing.");
-var mySqlVersion = ServerVersion.AutoDetect(connectionString);
-builder.Services.AddDbContext<ApplicationDbContext>(options => { options.UseMySql(connectionString, mySqlVersion); });
+var databaseConnectionString = builder.Configuration.GetConnectionString("Database")
+                       ?? throw new Exception("Connection string 'Database' is not configured or is missing.");
+var mySqlVersion = ServerVersion.AutoDetect(databaseConnectionString);
+builder.Services.AddDbContext<ApplicationDbContext>(options => { options.UseMySql(databaseConnectionString, mySqlVersion); });
 
 builder.Services.AddControllers(options =>
 	options.Filters.Add<GlobalExceptionFilter>()
@@ -44,7 +44,7 @@ builder.Services.AddHangfire(config =>
 	config.SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
 		.UseSimpleAssemblyNameTypeSerializer()
 		.UseDefaultTypeSerializer()
-		.UseStorage(new MySqlStorage(connectionString, new MySqlStorageOptions
+		.UseStorage(new MySqlStorage(databaseConnectionString, new MySqlStorageOptions
 		{
 			TransactionIsolationLevel = System.Transactions.IsolationLevel.ReadCommitted,
 			QueuePollInterval = TimeSpan.FromSeconds(15),

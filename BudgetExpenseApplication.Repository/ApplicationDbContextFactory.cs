@@ -17,7 +17,7 @@ public class ApplicationDbContextFactory : IDesignTimeDbContextFactory<Applicati
 			.AddJsonFile("appsettings.json", false)
 			.Build();
 
-		var connectionString = configuration.GetConnectionString("ConnectionDefault");
+		var connectionString = configuration.GetConnectionString("Database");
 		var mySqlVersion = ServerVersion.AutoDetect(connectionString);
 		optionsBuilder.UseMySql(connectionString ?? throw new InvalidOperationException(ErrorMessage), mySqlVersion);
 
