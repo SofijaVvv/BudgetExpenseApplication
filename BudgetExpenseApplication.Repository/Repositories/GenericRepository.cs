@@ -28,13 +28,9 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
 		_dbSet.Add(entity);
 	}
 
-	public virtual async Task<bool> DeleteAsync(int id)
+	public virtual void DeleteAsync(T entity)
 	{
-		var entity = await GetByIdAsync(id);
-		if (entity == null) return false;
-
 		_dbSet.Remove(entity);
-		return true;
 	}
 
 	public virtual void Update(T entity)

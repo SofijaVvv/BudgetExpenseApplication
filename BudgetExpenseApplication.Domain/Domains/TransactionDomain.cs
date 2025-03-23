@@ -170,7 +170,7 @@ public class TransactionDomain : ITransactionDomain
 		var transaction = await _transactionRepository.GetByIdAsync(id);
 		if (transaction == null) throw new NotFoundException($"Transaction Id: {id} not found");
 
-		await _transactionRepository.DeleteAsync(id);
+		 _transactionRepository.DeleteAsync(transaction);
 		await _unitOfWork.SaveAsync();
 	}
 }

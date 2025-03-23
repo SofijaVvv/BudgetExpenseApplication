@@ -78,7 +78,7 @@ public class AccountDomain : IAccountDomain
 		var account = await _accountRepository.GetByIdAsync(id);
 		if (account is null) throw new NotFoundException($"Account Id: {id} not found");
 
-		await _accountRepository.DeleteAsync(id);
+		_accountRepository.DeleteAsync(account);
 		await _unitOfWork.SaveAsync();
 	}
 }

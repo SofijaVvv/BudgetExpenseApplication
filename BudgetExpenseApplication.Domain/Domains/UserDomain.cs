@@ -117,7 +117,7 @@ public class UserDomain : IUserDomain
 		var user = await _userRepository.GetByIdAsync(id);
 		if (user == null) throw new NotFoundException($"User Id: {id} not found");
 
-		await _userRepository.DeleteAsync(id);
+		 _userRepository.DeleteAsync(user);
 		await _unitOfWork.SaveAsync();
 	}
 

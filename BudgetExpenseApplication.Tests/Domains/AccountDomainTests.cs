@@ -20,7 +20,7 @@ public class AccountDomainTests
 	{
 		_mockAccountRepository = new Mock<IAccountRepository>();
 		_mockUnitOfWork = new Mock<IUnitOfWork>();
-		_accountDomain = new AccountDomain(_mockUnitOfWork.Object, _mockAccountRepository.Object, _mockCurrentUserService?.Object);
+		_accountDomain = new AccountDomain(_mockUnitOfWork.Object, _mockAccountRepository.Object, _mockCurrentUserService.Object);
 	}
 
 	[Test]
@@ -138,13 +138,13 @@ public class AccountDomainTests
 		var account = new Account { Id = 1, UserId = 8, Balance = 100 };
 
 		_mockAccountRepository.Setup(repo => repo.GetByIdAsync(account.Id)).ReturnsAsync(account);
-		_mockAccountRepository.Setup(repo => repo.DeleteAsync(account.Id));
+		_mockAccountRepository.Setup(repo => repo.DeleteAsync(account));
 		_mockUnitOfWork.Setup(uow => uow.SaveAsync()).Returns(Task.CompletedTask);
 
 		await _accountDomain.DeleteAsync(account.Id);
 
 		_mockAccountRepository.Verify(repo => repo.GetByIdAsync(account.Id), Times.Once);
-		_mockAccountRepository.Verify(repo => repo.DeleteAsync(account.Id), Times.Once);
+		_mockAccountRepository.Verify(repo => repo.DeleteAsync(account), Times.Once);
 		_mockUnitOfWork.Verify(uow => uow.SaveAsync(), Times.Once);
 	}
 
@@ -157,6 +157,6 @@ public class AccountDomainTests
 		Assert.That(ex.Message, Is.EqualTo("Account Id: 999 not found"));
 
 		_mockAccountRepository.Verify(repo => repo.GetByIdAsync(999), Times.Once);
-		_mockAccountRepository.Verify(repo => repo.DeleteAsync(It.IsAny<int>()), Times.Never);
+		_mockAccountRepository.Verify(repo => repo.DeleteAsync(It.IsAny<Account>()), Times.Never);
 	}
 }

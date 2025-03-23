@@ -246,7 +246,7 @@ public class BudgetDomainTests
 		var budget = new Budget { Id = 2, CategoryId = 1,  Amount = 200 };
 
 		_mockBudgetRepository.Setup(repo => repo.GetByIdAsync(budget.Id)).ReturnsAsync(budget);
-		_mockBudgetRepository.Setup(repo => repo.DeleteAsync(budget.Id));
+		_mockBudgetRepository.Setup(repo => repo.DeleteAsync(budget));
 		_mockUnitOfWork.Setup(uow => uow.SaveAsync()).Returns(Task.CompletedTask);
 
 		//Act
@@ -254,7 +254,7 @@ public class BudgetDomainTests
 
 		//Verify
 		_mockBudgetRepository.Verify(repo => repo.GetByIdAsync(budget.Id), Times.Once);
-		_mockBudgetRepository.Verify(repo => repo.DeleteAsync(budget.Id), Times.Once);
+		_mockBudgetRepository.Verify(repo => repo.DeleteAsync(budget), Times.Once);
 		_mockUnitOfWork.Verify(uow => uow.SaveAsync(), Times.Once);
 	}
 }

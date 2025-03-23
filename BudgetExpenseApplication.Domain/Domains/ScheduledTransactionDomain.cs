@@ -88,7 +88,7 @@ public class ScheduledTransactionDomain : IScheduledTransactionDomain
 		var scheduledTransaction = await _scheduledTransactionRepository.GetByIdAsync(id);
 		if (scheduledTransaction == null) throw new NotFoundException($"Scheduled Transaction Id: {id} not found ");
 
-		await _scheduledTransactionRepository.DeleteAsync(id);
+		 _scheduledTransactionRepository.DeleteAsync(scheduledTransaction);
 		await _unitOfWork.SaveAsync();
 	}
 }

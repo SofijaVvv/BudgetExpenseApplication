@@ -95,7 +95,7 @@ public class BudgetDomain : IBudgetDomain
 		var budget = await _budgetRepository.GetByIdAsync(id);
 		if (budget == null) throw new NotFoundException($"Budget Id: {id} not found");
 
-		await _budgetRepository.DeleteAsync(id);
+		_budgetRepository.DeleteAsync(budget);
 		await _unitOfWork.SaveAsync();
 	}
 }

@@ -57,7 +57,7 @@ public class RoleDomain : IRoleDomain
 		var role = await _roleRepository.GetByIdAsync(id);
 		if (role == null) throw new NotFoundException($"Role Id: {id} not found");
 
-		await _roleRepository.DeleteAsync(id);
+		 _roleRepository.DeleteAsync(role);
 		await _unitOfWork.SaveAsync();
 	}
 }
