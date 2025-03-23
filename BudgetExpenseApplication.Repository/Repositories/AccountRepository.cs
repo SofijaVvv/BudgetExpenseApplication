@@ -33,7 +33,7 @@ public class AccountRepository : GenericRepository<Account>, IAccountRepository
 		return account;
 	}
 
-	public override async Task<Account?> GetByIdAsync(int? id)
+	public override async Task<Account?> GetByIdAsync(int id)
 	{
 		var account = await _context.Accounts
 			.Include(a => a.User)

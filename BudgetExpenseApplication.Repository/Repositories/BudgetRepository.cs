@@ -36,7 +36,7 @@ public class BudgetRepository : GenericRepository<Budget>, IBudgetRepository
 		return budget;
 	}
 
-	public override async Task<Budget?> GetByIdAsync(int? id)
+	public override async Task<Budget?> GetByIdAsync(int id)
 	{
 		var budget = await _context.Budgets
 			.Include(b => b.Category)

@@ -27,7 +27,7 @@ public class TransactionRepository : GenericRepository<Transaction>, ITransactio
 			.ToListAsync();
 	}
 
-	public override async Task<Transaction?> GetByIdAsync(int? id)
+	public override async Task<Transaction?> GetByIdAsync(int id)
 	{
 		return await _context.Transactions
 			.Include(t => t.Account)

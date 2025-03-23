@@ -57,14 +57,15 @@ public class BudgetDomain : IBudgetDomain
 
 	public async Task<Budget> AddAsync(Budget budget)
 	{
-		var userId = _currentUserService.GetUserId();
-		if (userId is null) throw new UnauthorizedAccessException("User is unauthorised");
+		var userId = _currentUserService.GetUserId()
+			?? throw new UnauthorizedAccessException("User is unauthorised");
 
 		var category = await _categoryRepository.GetByIdAsync(budget.CategoryId);
 		if (category == null)
 			throw new NotFoundException($"Category Id: {budget.CategoryId} not found");
 
 		budget.CreatedAt = DateTime.UtcNow;
+		budget.UserId = userId;
 		_budgetRepository.Add(budget);
 		await _unitOfWork.SaveAsync();
 

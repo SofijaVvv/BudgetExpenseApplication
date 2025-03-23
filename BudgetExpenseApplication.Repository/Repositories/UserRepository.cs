@@ -27,7 +27,7 @@ public class UserRepository : GenericRepository<User>, IUserRepository
 	}
 
 
-	public override async Task<User?> GetByIdAsync(int? id)
+	public override async Task<User?> GetByIdAsync(int id)
 	{
 		return await _context.Users
 			.Include(u => u.Role)

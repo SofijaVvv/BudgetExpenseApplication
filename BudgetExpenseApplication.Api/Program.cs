@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 var databaseConnectionString = builder.Configuration.GetConnectionString("Database")
-                       ?? throw new Exception("Connection string 'Database' is not configured or is missing.");
+                       ?? throw new Exception("Database Connection string 'Database' is not configured or is missing.");
 var mySqlVersion = ServerVersion.AutoDetect(databaseConnectionString);
 builder.Services.AddDbContext<ApplicationDbContext>(options => { options.UseMySql(databaseConnectionString, mySqlVersion); });
 builder.Services.AddControllers(options =>
